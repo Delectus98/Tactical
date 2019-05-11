@@ -1,0 +1,13 @@
+*.class
+*.log
+*.ctxt
+
+*.jar
+*.war
+*.war
+*.zip
+*.tar.gz
+*.rar
+
+.idea
+build
