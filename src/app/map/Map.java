@@ -7,10 +7,10 @@ import java.util.List;
 
 public abstract class Map
 {
-    List<Pair<Integer, Integer>> spawnPlayer1;
-    List<Pair<Integer, Integer>> spawnPlayer2;
+    protected List<Pair<Integer, Integer>> spawnPlayer1;
+    protected List<Pair<Integer, Integer>> spawnPlayer2;
 
-    Tile[][] world;
+    protected Tile[][] world;
 
     public abstract void draw(Camera2D camera, RenderTarget target);
 }
