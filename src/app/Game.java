@@ -25,9 +25,9 @@ public abstract class Game
         return visibles[currentPlayer];
     }
 
-    abstract void draw(RenderTarget target); //si initialisation (placement unites debut)
+    public abstract void draw(RenderTarget target); //si initialisation (placement unites debut)
 
-    abstract void update(ConstTime time);
+    public abstract void update(ConstTime time);
 
     public final Map getMap()
     {
