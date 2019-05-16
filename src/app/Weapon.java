@@ -10,14 +10,15 @@ import java.util.List;
 
 public abstract class Weapon
 {
-    int amunition; //-1 = infini, sinon utile pour armes speciales
-    Pair<Integer, Integer> range;
-    float[] precision; //= new float[range.fst - range.snd];
-    int damagePerRounds;
-    int rounds;
-    int cout; //negatif = vide les PA si déjà déplacer; sinon val absolue
+    protected int amunition; //-1 = infini, sinon utile pour armes speciales
+    protected Pair<Integer, Integer> range;
+    protected float[] precision; //= new float[range.fst - range.snd];
+    protected int damagePerRounds;
+    protected int rounds;
+    protected int cout; //negatif = vide les PA si déjà déplacer; sinon val absolue
 
     public abstract int damageInflected(int distance); //calcul des degats d'apres la distance de tir
+
     public abstract boolean isInRange(int distance);
 
     public abstract int getAmunition(); //-1 = infini, sinon utile pour armes speciales
