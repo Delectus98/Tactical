@@ -27,4 +27,18 @@ public class Tile
 
     }
 
+    public Sprite getFloor()
+    {
+        return floor;
+    }
+
+    public Sprite getStruct()
+    {
+        return struct;
+    }
+
+    public boolean isObstacle()
+    {
+        return isObstacle;
+    }
 }
