@@ -3,6 +3,7 @@ package app.map;
 import Graphics.FloatRect;
 import Graphics.Sprite;
 import Graphics.Texture;
+import System.*;
 
 public class Tile
 {
@@ -17,6 +18,11 @@ public class Tile
     }
 
     public Tile(Texture floor, FloatRect rectFloor, Texture struct, FloatRect rectStruct, boolean isObstacle)
+    {
+
+    }
+
+    public void draw(RenderTarget target)
     {
 
     }

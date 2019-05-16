@@ -16,4 +16,6 @@ public abstract class Screen {
     public abstract void handle(Event event); // handle window event as resizing, closing, etc..
 
     public abstract void draw(RenderTarget target); // render to target
+
+    public abstract String toString(); //baddraw
 }

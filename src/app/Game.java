@@ -7,12 +7,14 @@ import System.*;
 
 import java.util.Set;
 
-abstract class Game
+public abstract class Game
 {
     protected int currentPlayer; //1 ou 0
     protected Player[] players;
     protected Map map;
     protected Set<Pair<Integer, Integer>>[] visibles;
+    protected Unite selected;
+    protected boolean initialisation;
 
     public abstract void endTurn(); //change le joueur
 
@@ -23,6 +25,18 @@ abstract class Game
         return visibles[currentPlayer];
     }
 
-    abstract void draw(RenderTarget target);
+    abstract void draw(RenderTarget target); //si initialisation (placement unites debut)
 
+    abstract void update(ConstTime time);
+
+    public final Map getMap()
+    {
+        return map;
+    }
+
+    public final Player[] getPlayers(){
+        return players;
+    }
+
+    public abstract void baddraw();
 }
