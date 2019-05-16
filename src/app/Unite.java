@@ -18,30 +18,30 @@ public abstract class Unite
     protected Texture texture;
     protected Sprite sprite;
 
-    abstract boolean isDead();
+    public abstract boolean isDead();
 
-    abstract short getHp();
+    public abstract short getHp();
 
-    abstract short getFov();
+    public abstract short getFov();
 
-    abstract Weapon getPrimary();
+    public abstract Weapon getPrimary();
 
-    abstract Weapon getSecondary();
+    public abstract Weapon getSecondary();
 
-    abstract Weapon getMelee();
+    public abstract Weapon getMelee();
 
-    abstract void setGraphicPosition(Vector2f position); // sprite,setPosition(...)
+    public abstract void setGraphicPosition(Vector2f position); // sprite,setPosition(...)
 
-    abstract void seMapPosition(Vector2i coords); // Map[x][y]
+    public abstract void seMapPosition(Vector2i coords); // Map[x][y]
 
-    abstract void draw(RenderTarget target);
+    public abstract void draw(RenderTarget target);
 
-    abstract Vector2i getMapPosition();
+    public abstract Vector2i getMapPosition();
 
-    abstract void drawMoveRange(RenderTarget target);
+    public abstract void drawMoveRange(RenderTarget target);
 
-    abstract void takeDamages(int amount);
+    public abstract void takeDamages(int amount);
 
-    abstract short getActionPoints();
+    public abstract short getActionPoints();
 
 }

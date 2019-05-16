@@ -17,12 +17,12 @@ public abstract class Weapon
     int rounds;
     int cout; //negatif = vide les PA si déjà déplacer; sinon val absolue
 
-    abstract int damageInflected(int distance); //calcul des degats d'apres la distance de tir
-    abstract boolean isInRange(int distance);
+    public abstract int damageInflected(int distance); //calcul des degats d'apres la distance de tir
+    public abstract boolean isInRange(int distance);
 
-    abstract int getAmunition(); //-1 = infini, sinon utile pour armes speciales
+    public abstract int getAmunition(); //-1 = infini, sinon utile pour armes speciales
 
-    abstract void draw(RenderTarget target);
+    public abstract void draw(RenderTarget target);
 
-    abstract void shot(Map map, List<Unite> unites, Vector2i start, Vector2i end); //toutes les unites
+    public abstract void shot(Map map, List<Unite> unites, Vector2i start, Vector2i end); //toutes les unites
 }

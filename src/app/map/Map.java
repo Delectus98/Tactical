@@ -12,5 +12,5 @@ public abstract class Map
 
     Tile[][] world;
 
-    abstract void draw(Camera2D camera, RenderTarget target);
+    public abstract void draw(Camera2D camera, RenderTarget target);
 }
