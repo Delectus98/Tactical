@@ -42,4 +42,6 @@ public abstract class Unite
 
     abstract void takeDamages(int amount);
 
+    abstract short getActionPoints();
+
 }

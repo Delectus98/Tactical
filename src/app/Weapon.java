@@ -8,7 +8,7 @@ import System.*;
 
 import java.util.List;
 
-abstract class Weapon
+public abstract class Weapon
 {
     int amunition; //-1 = infini, sinon utile pour armes speciales
     Pair<Integer, Integer> range;
