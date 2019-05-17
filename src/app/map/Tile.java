@@ -19,7 +19,7 @@ public class Tile
 
     public Tile(Texture floor, FloatRect rectFloor, Texture struct, FloatRect rectStruct, boolean isObstacle)
     {
-
+        this.isObstacle = isObstacle;
     }
 
     public void draw(RenderTarget target)
