@@ -1,7 +1,6 @@
 package app.map;
 
 import Graphics.Vector2i;
-import com.sun.tools.javac.util.Pair;
 import System.*;
 
 import java.util.List;
