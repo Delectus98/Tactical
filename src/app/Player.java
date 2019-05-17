@@ -3,7 +3,7 @@ package app;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Player
+public class Player
 {
     protected String name;
     protected List<Unite> unites;
