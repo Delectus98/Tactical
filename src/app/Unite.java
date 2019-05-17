@@ -36,9 +36,9 @@ public abstract class Unite
 
     public abstract void draw(RenderTarget target);
 
-    public abstract Vector2i getMapPosition();
+    public abstract Vector2f getGraphicPosition();
 
-    public abstract void drawMoveRange(RenderTarget target);
+    public abstract Vector2i getMapPosition();
 
     public abstract void takeDamages(int amount);
 
