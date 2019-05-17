@@ -42,7 +42,7 @@ public class Line
         int c2 = ((int) line.x) * b.x + ((int)line.y) * b.y;
         int c = ((int) line.z);
 
-        return (c1 <= c && c <= c2) || (c2 <= c && c <= c1);
+        return (c1 < c && c < c2) || (c2 < c && c < c1) || c == c1 || c == c2;
     }
 
     /**
@@ -60,31 +60,31 @@ public class Line
         arr0 = new Vector2i[]{attacker,
                 new Vector2i(attacker.x, attacker.y + 1),
                 new Vector2i(attacker.x + 1, attacker.y),
-                new Vector2i(attacker.x + 1, attacker.y + 2)};
+                new Vector2i(attacker.x + 1, attacker.y + 1)};
         arr1 = new Vector2i[]{victim,
                 new Vector2i(victim.x, victim.y + 1),
                 new Vector2i(victim.x + 1, victim.y),
-                new Vector2i(victim.x + 1, victim.y + 2)};
-        System.out.print("\n[");
-        for (Vector2i v : Arrays.asList(arr0))
-        {
-            System.out.print("(" + v.x + "," + v.y + ")");
-        }
-        System.out.print("]\n[");
-        for (Vector2i v : Arrays.asList(arr1))
-        {
-            System.out.print("(" + v.x + "," + v.y + ")");
-        }
-        System.out.println("]");
+                new Vector2i(victim.x + 1, victim.y + 1)};
+//        System.out.print("\n[");
+//        for (Vector2i v : Arrays.asList(arr0))
+//        {
+//            System.out.print("(" + v.x + "," + v.y + ")");
+//        }
+//        System.out.print("]\n[");
+//        for (Vector2i v : Arrays.asList(arr1))
+//        {
+//            System.out.print("(" + v.x + "," + v.y + ")");
+//        }
+//        System.out.println("]");
 
         for (int i = 0; i < arr0.length; i++)
         {
             boolean obs = false;
             Vector3f line = computeLine(arr0[i], arr1[i]);
-            System.out.println(line.x + " " + line.y + " " + line.z);
-            for(int x = Integer.min(arr0[i].x, arr1[i].x); x <= Integer.max(arr0[i].x, arr1[i].x); x++)
+//            System.out.println(line.x + "x + " + line.y + " = " + line.z);
+            for(int x = Integer.min(attacker.x, victim.x); x <= Integer.max(attacker.x, victim.x); x++)
             {
-                for (int y = Integer.min(arr0[i].y, arr1[i].y); y <= Integer.max(arr0[i].y, arr1[i].y); y++)
+                for (int y = Integer.min(attacker.y, victim.y); y <= Integer.max(attacker.y, victim.y); y++)
                 {
                     //System.out.println(x + " " + y);
                     if(validIndex(map.getWorld(), x, y))
@@ -102,7 +102,6 @@ public class Line
                                     || lineIsBetween2pts(line, supRightCorner, lowLeftCorner);
                             if (obs)
                             {
-                                System.out.println("obs");
                                 break;
                             }
                         }
