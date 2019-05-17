@@ -2,54 +2,40 @@ package app;
 
 import Graphics.Color;
 import System.*;
+import app.play.LocalhostGame;
+
+import java.io.IOException;
 
 public class Main
 {
-    static boolean baddraw = false;
 
-    public static void main(String[] args)
-    {
-        if (!baddraw)
+    public static void main(String[] args) throws IOException {
+        GLFWWindow window = new GLFWWindow(VideoMode.getDesktopMode(), "Tactical", WindowStyle.DEFAULT);
+        Game current = new LocalhostGame(window);
+        Clock clock = new Clock();
+
+        while (window.isOpen())
         {
-            GLFWWindow window = new GLFWWindow(VideoMode.getDesktopMode(), "Tactical", WindowStyle.DEFAULT);
-            Game current = null;
-            Clock clock = new Clock();
-            while (window.isOpen())
+            Event event;
+            while ((event = window.pollEvents()) != null)
             {
-                Event event;
-                while ((event = window.pollEvents()) != null)
+                current.handle(event);
+
+                if (event.type == Event.Type.CLOSE)
                 {
-                    if (event.type == Event.Type.CLOSE)
-                    {
-                        window.close();
-                    }
-                }
-                window.clear(Color.Cyan);
-                //Menu principal
-                //....
-                //
-                if (!current.isFinished())
-                {
-                    current.update(clock.restart());
-                    current.draw(window);
-                }
-                window.display();
-            }
-        } else
-        {
-            GLFWWindow window = new GLFWWindow(VideoMode.getDesktopMode(), "Tactical", WindowStyle.DEFAULT);
-            window.hide();
-            while (window.isOpen())
-            {
-                Event event;
-                while ((event = window.pollEvents()) != null)
-                {
-                    if (event.type == Event.Type.CLOSE)
-                    {
-                        window.close();
-                    }
+                    window.close();
                 }
             }
+            window.clear(Color.Cyan);
+            //Menu principal
+            //....
+            //
+            /*if (!current.isFinished())
+            {*/
+                current.update(clock.restart());
+                current.draw(window);
+            //}
+            window.display();
         }
     }
     //Menu principale
