@@ -5,14 +5,22 @@ import app.Unite;
 
 public abstract class Action
 {
-    Unite unite;
-    Game game;
+    protected Unite unite;
+    protected Game game;
+    protected boolean inAction;
+
+
+    public Action(Unite user, Game game){
+        this.unite = user;
+        this.game = game;
+        this.inAction = false;
+    }
+
     //Position depart/arrivee
-    boolean inAction;
 
-    abstract void update(ConstTime time);
+    public abstract void update(ConstTime time);
 
-    abstract boolean isFinished();
+    public abstract boolean isFinished();
 
-    abstract void draw(RenderTarget target);
+    public abstract void draw(RenderTarget target);
 }
