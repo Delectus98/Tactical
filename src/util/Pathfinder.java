@@ -16,15 +16,9 @@ public class Pathfinder {
     private int height;
     List<Vector2i> mapList;
 
-    LinkedList<Vector2i> current; //pour conserver la table pathfind de l'unité courante
-
-    /* public Pathfinder(int width, int height, Tile[][] map){
-         this.height=height;this.width=width; this.map=map; updateBlocked();
-     }*/
     public Pathfinder(Map m) {
         this.width = m.getWorld().length;
         this.height = m.getWorld()[0].length;
-
         convertMap(m);
     }
 
@@ -40,16 +34,11 @@ public class Pathfinder {
         int distmax = u.getActionPoints() * cost;
 
         //Tableau des distances
-        final int[] dist = new int[mapList.size()];
-        //  final Vector2i[] pred = new Vector2i[mapList.size()];
+        int[] dist = new int[mapList.size()];
         HashMap<Vector2i, Vector2i> pred = new HashMap<>();
         final boolean[] visited = new boolean[mapList.size()]; // all false initially
-        for (int x = 0; x < mapList.size(); x++) {
-            visited[x] = false;
-        }
         for (int i = 0; i < dist.length; i++) {
             dist[i] = Integer.MAX_VALUE;
-
         }
 
         //depuis la position de l'unité
@@ -62,15 +51,15 @@ public class Pathfinder {
             // The shortest path to next is dist[next] and via pred[next].
             Vector2i nil = new Vector2i(-1, -1);
             final ArrayList<Vector2i> n = parents(mapList.get(next));
-            for (int j = 0; j < n.size(); j++) {
-                final int v = mapList.indexOf(n.get(j));
+            for (Vector2i vector2i : n) {
+                final int v = mapList.indexOf(vector2i);
                 final int d = dist[next] + 1;
                 if (dist[v] > d) {
                     dist[v] = d;
                     if (dist[v] <= distmax) { //Vérification distance
-                        pred.put(n.get(j), mapList.get(next));
+                        pred.put(vector2i, mapList.get(next));
                     } else {
-                        pred.put(n.get(j), nil);//TODO à enlever? pour réduire la taille de la map.
+                        pred.put(vector2i, nil);//TODO à enlever? pour réduire la taille de la map.
                     }
 
                 }
@@ -112,16 +101,6 @@ public class Pathfinder {
         }
     }
 
-    /*  private Vector2i[] parents(Vector2i v) {//old
-          int compteur=0;
-          Vector2i[] res = new Vector2i[4];
-          for (int i = 0; i < mapList.size(); i++) {
-              Vector2i current = mapList.get(i);
-              if ((current.x == v.x - 1 || current.x == v.x + 1) && current.y == v.y)
-                  res[compteur]=(current);compteur++;
-          }
-          return res;
-      }*/
     private ArrayList<Vector2i> parents(Vector2i v) {
         //int compteur=0;
         ArrayList<Vector2i> res = new ArrayList<>();
