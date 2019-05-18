@@ -70,15 +70,35 @@ public class Pathfinder {
         return pred;  // (ignore pred[s]==0!)
     }
 
-
-    public ArrayList Pathfind(HashMap<Vector2i, Vector2i> correspondance, Vector2i start, Vector2i goal) {
-        final java.util.ArrayList path = new java.util.ArrayList();
+    //à la fin, l'unité s'arrête si elle rencontre une unité. amélioration: considérer les aliés comme obstacles, et ennemis comme actuellement.
+    public ArrayList<Vector2i> Pathfind(HashMap<Vector2i, Vector2i> correspondance, List<Unite> units, Vector2i start, Vector2i goal) {
+        final java.util.ArrayList<Vector2i> path = new java.util.ArrayList<>();
         Vector2i current = goal;
         while (!found(current, start)) {
             path.add(0, current);
             current = correspondance.get(current);
         }
         path.add(0, start);
+        return checkunits(units, path);//collisions d'unités
+    }
+
+    public ArrayList<Vector2i> checkunits(List<Unite> units, ArrayList<Vector2i> path) {
+        Vector2i[] v = new Vector2i[units.size()];
+        for (int i = 0; i < units.size(); i++) {
+            v[i] = units.get(i).getMapPosition();
+        }
+
+        for (int i = 0; i < path.size(); i++) {
+            //recherche
+            for (int j = 0; j < v.length; j++) {
+                if (path.get(i).equals(v[j]))
+                    return (ArrayList) path.subList(0, i);
+            }
+            //rencontre
+
+            //fin
+
+        }
         return path;
     }
 
