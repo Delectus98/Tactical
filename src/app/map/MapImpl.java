@@ -12,28 +12,32 @@ public class MapImpl extends Map {
     private int width ;
     private int height ;
 
+    public MapImpl(){}
+
     public MapImpl(int width, int height){
         world = new Tile[width][height];
         this.width = width;
         this.height = height;
     }
 
+    public void loadFromMemory(String pattern) {}
+
     @Override
     public void draw(Camera2D camera, RenderTarget target) {
-        Vector2f dim = camera.getDimension();
-        Vector2f tlCorner = camera.getCenter().sum(dim.mul(-0.5f));
+        // on obtient les coordonnées de la caméra
+        Vector2f dim = camera.getDimension(); // dimension de la vue de la caméra
+        Vector2f tlCorner = camera.getCenter().sum(dim.mul(-0.5f)); // coin gauche haut de la caméra
 
-
-        int x = Math.max(0,(int)(tlCorner.x / tileWidth));
-        int y = Math.max(0,(int)(tlCorner.y / tileWidth));
-
-        int w = (int)(dim.x / tileWidth); // tuile en longueur affichée
-        int h = (int)(dim.y / tileWidth); // tuile en hauteur affichée
-
-
+        // on cacule la zone rectangulaire où les tuiles doivent être affichées
+        int x = Math.max(0,(int)(tlCorner.x / tileWidth)); // tuile la plus a gauche du point de vue de la caméra
+        int y = Math.max(0,(int)(tlCorner.y / tileWidth)); // tuile la plus a gauche du point de vue de la caméra
         final int offset = 2; // sert pour afficher les cases mal concidérées
-        for (int i = x ; i < x + w + offset && i < width ; ++i) {
-            for (int j = y ; j < y + h + offset && j < height ; ++j) {
+        int x2 = Math.max(0, (int)(tlCorner.x / tileWidth) + (int)(dim.x / tileWidth) + offset); // tuile la plus a droite affichée du point de vue de la caméra
+        int y2 = Math.max(0, (int)(tlCorner.y / tileWidth) + (int)(dim.y / tileWidth) + offset); // tuile la plus en bas affichée du point de vue de la caméra
+
+        // on affiche uniquement cette zone
+        for (int i = x ; i < x2 && i < width ; ++i) {
+            for (int j = y ; j < y2 && j < height ; ++j) {
                 this.getWorld()[i][j].draw(target);
             }
         }
