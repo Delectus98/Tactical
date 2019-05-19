@@ -30,13 +30,11 @@ public abstract class Unite
 
     public abstract Weapon getMelee();
 
-    public abstract void setGraphicPosition(Vector2f position); // sprite,setPosition(...)
+    public abstract Sprite getSprite();
 
     public abstract void seMapPosition(Vector2i coords); // Map[x][y]
 
     public abstract void draw(RenderTarget target);
-
-    public abstract Vector2f getGraphicPosition();
 
     public abstract Vector2i getMapPosition();
 
