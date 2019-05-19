@@ -49,10 +49,26 @@ public class Line
      * @param attacker
      * @param victim
      * @param map
-     * @return float : où 1 = 100%
+     * @return float : where 1 = 100% and -1 means there was an error (attacker or victim out of bounds)
      */
     public static float computePercentage(Vector2i attacker, Vector2i victim, Map map)
     {
+        //checks if attacker and victim are within the map
+        if (!validIndex(map.getWorld(), attacker.x, attacker.y))
+        {
+            //Todo : Si ajout de loger : log
+
+            // System.out.println("Attacker isn't within map range");
+            return -1;
+        }
+
+        if (!validIndex(map.getWorld(), victim.x, victim.y))
+        {
+            //Todo : Si ajout de loger.. idem
+
+            //System.out.println("Victim isn't within map range");
+            return -1;
+        }
         float ret = 1;
         Vector2i[] arr0, arr1;
         arr0 = new Vector2i[]{attacker,

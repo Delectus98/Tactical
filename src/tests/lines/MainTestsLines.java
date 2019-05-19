@@ -30,6 +30,9 @@ public class MainTestsLines
         assert x == .25 : " (Ligne) Décaler de 1, et cible derriere obstacle. Res != .25";
         //todo : Run d'autres tests
 
+        x = Line.computePercentage(new Vector2i(-1, -1), new Vector2i(0,0), ligne);
+        assert x == -1 : "Unite oob and x != -1";
+
 
     }
 }
