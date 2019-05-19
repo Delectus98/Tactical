@@ -18,7 +18,7 @@ public class MapObsMemeLigne extends Map
                 {sol, sol, sol, sol, sol, sol, sol, sol, sol, sol},
                 {sol, sol, sol, sol, sol, sol, sol, sol, sol, sol},
                 {sol, sol, sol, sol, sol, sol, sol, sol, sol, sol},
-                {sol, sol, sol, sol, sol, sol, sol, sol, sol, sol},
+                {obs, sol, sol, sol, sol, sol, sol, sol, sol, sol},
                 {sol, sol, sol, sol, sol, sol, sol, sol, sol, sol},
                 {sol, sol, sol, sol, sol, sol, sol, sol, sol, sol},
                 {sol, sol, sol, sol, sol, sol, sol, sol, sol, sol},

@@ -10,8 +10,6 @@ import java.util.Arrays;
 
 public class Line
 {
-    //TODO : lineIsBetween
-    //      OU computePercentage
     /**
      * Calcule l'equation de la droite entre x et y
      *
