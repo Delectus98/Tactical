@@ -13,18 +13,12 @@ public abstract class Game
     protected int currentPlayer; //1 ou 0
     protected Player[] players;
     protected Map map;
-    protected Set<Vector2i>[] visibles;
     protected Unite selected;
     protected boolean initialisation;
 
     public abstract void endTurn(); //change le joueur
 
     public abstract boolean isFinished(); //return true si un joueur n'as plus d'unites
-
-    public Set<Vector2i> getCurrentVisibles()
-    {
-        return visibles[currentPlayer];
-    }
 
     public abstract void draw(RenderTarget target); //si initialisation (placement unites debut)
 
