@@ -20,6 +20,8 @@ public abstract class Game
 
     public abstract boolean isFinished(); //return true si un joueur n'as plus d'unites
 
+    public abstract void start();
+
     public abstract void draw(RenderTarget target); //si initialisation (placement unites debut)
 
     public abstract void handle(Event event);
@@ -30,6 +32,8 @@ public abstract class Game
     {
         return map;
     }
+
+    public abstract Set<Vector2i> getCurrentVisibles();
 
     public final Player[] getPlayers(){
         return players;

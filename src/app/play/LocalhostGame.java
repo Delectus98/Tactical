@@ -26,6 +26,8 @@ public class LocalhostGame extends Game {
     private Viewport[] mapViewports;
     private Camera2D[] hudCam;
 
+    private boolean isRunning;
+
     private Queue<Action> currentPlayerActions = new PriorityQueue<>();
     private boolean inAction = false;
     private Unite selectedUnite = null;
@@ -81,7 +83,12 @@ public class LocalhostGame extends Game {
 
     @Override
     public boolean isFinished() {
-        return Arrays.stream(super.players).map(Player::getUnites).anyMatch(l -> l.stream().allMatch(Unite::isDead));
+        return isRunning && Arrays.stream(super.players).map(Player::getUnites).anyMatch(l -> l.stream().allMatch(Unite::isDead));
+    }
+
+    @Override
+    public void start() {
+        isRunning = true;
     }
 
     private void updateActionProgress(ConstTime time){
@@ -144,7 +151,9 @@ public class LocalhostGame extends Game {
         }
     }
     private void updateEscapeMenu(ConstTime time) {
-
+        if (keyboard.isKeyPressed(AZERTYLayout.END.getKeyID())){
+            isRunning = false;
+        }
     }
 
     @Override
