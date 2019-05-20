@@ -14,12 +14,12 @@ public final class WindowUtils {
      * @return
      */
     public static Vector2f mapCoordToPixel(Vector2f coord, Viewport viewport, Camera2D cam) {
-        Vector2f offset = viewport.getTopLeftCorner().sum(cam.getCenter().sum(cam.getDimension().mul(-0.5f)));
+        Vector2f offset = viewport.getTopLeftCorner().neg().sum(cam.getCenter().sum(cam.getDimension().mul(-0.5f)));
         return offset.add(coord);
     }
 
     public static Vector2f mapPixelToCoord(Vector2f pixel, Viewport viewport, Camera2D cam) {
-        Vector2f offset = viewport.getTopLeftCorner().sum(cam.getCenter().sum(cam.getDimension().mul(-0.5f)));
+        Vector2f offset = viewport.getTopLeftCorner().neg().sum(cam.getCenter().sum(cam.getDimension().mul(-0.5f)));
         return pixel.sum(offset.negate());
     }
 
