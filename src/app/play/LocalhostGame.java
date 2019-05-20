@@ -1,78 +1,82 @@
 package app.play;
 
-import Graphics.Color;
-import Graphics.FloatRect;
-import Graphics.Texture;
-import Graphics.Vector2f;
+import Graphics.*;
 import System.*;
 import System.IO.AZERTYLayout;
 import app.Game;
 import app.Player;
 import app.Unite;
 import app.actions.Action;
+import app.map.Map;
 import app.map.MapImpl;
 import app.map.Tile;
+import util.WindowUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
 
 public class LocalhostGame extends Game {
-    private Camera2D[] mapPlayerCam;
-    private Camera2D[] hudPlayerCam;
+    private static final float MAP_WIDTH_PERCENT = 0.50F;
+    private static final float MAP_HEIGHT_PERCENT = 0.75F;
+
+    private Camera2D[] mapCam;
+    private Viewport[] mapViewports;
+    private Camera2D[] hudCam;
 
     private Queue<Action> currentPlayerActions = new PriorityQueue<>();
     private boolean inAction = false;
+    private Unite selectedUnite = null;
     private Keyboard keyboard;
     private Mouse mouse;
     private boolean menuEchap = false;
     private Texture spritesheet;
 
+    private Set<Vector2i>[] visibles;
 
-    public LocalhostGame(GLFWWindow window) throws IOException {
+    public Set<Vector2i> getCurrentVisibles()
+    {
+        return visibles[currentPlayer];
+    }
+
+    static final int size = 40;
+    public LocalhostGame(GLFWWindow window, Player p1, Player p2, Map map) throws IOException {
+        // set up game context
         context = window;
 
+        // set up inputs
         keyboard = new Keyboard(context);
         mouse = new Mouse(context);
 
+        // init games values
         currentPlayer = 0;
         inAction = false;
 
-        spritesheet = new Texture("res/spritesheet.png");
+        // creating map
+        this.map = map;
 
-        final int size = 40;
-        map = new MapImpl(size, size);
+        // set up players
+        players = new Player[2];
+        players[0] = p1;
+        players[1] = p2;
 
-        for (int i = 0 ; i < size ; ++i) {
-            for (int j = 0 ; j < size ; ++j) {
-                //map.getWorld()[i][j] = new Tile(ResourceHandler.getTexture("floor"), );
-                map.getWorld()[i][j] = new Tile(spritesheet, new FloatRect(0,0, 64, 64));
-                map.getWorld()[i][j].getFloor().setPosition(i * 64, j * 64);
-                map.getWorld()[i][j].getFloor().setFillColor(new Color(i / (float)size, j / (float)size, 1));
-                //map.getWorld()[i][j].getS().setPosition(i * 64, j * 64);
-            }
-        }
+        // set up camera
+        mapCam = new Camera2D[2];
+        mapViewports = new Viewport[2];
+        hudCam = new Camera2D[2];
 
-        mapPlayerCam = new Camera2D[2];
-        hudPlayerCam = new Camera2D[2];
+        mapCam[0] = new Camera2D(new Vector2f(context.getDimension().x * MAP_WIDTH_PERCENT, context.getDimension().y * MAP_HEIGHT_PERCENT));
+        mapViewports[0] = new Viewport(new FloatRect(100,100, mapCam[0].getDimension().x, mapCam[0].getDimension().y));
 
-        mapPlayerCam[0] = new Camera2D(new Vector2f(
-                context.getDimension())//.mul(0.5f)
-        );
-        //mapPlayerCam[0].setZoom(0.05f);
-        //mapPlayerCam[0].setCenter(new Vector2f(size * 64 / 2.f, size * 64 / 2.f));
-
-        //hudPlayerCam[1] = new Camera2D(new Vector2f(context.getDimension()).mul(0.5f));
-        //hudPlayerCam[1].setCenter(new Vector2f(size * 64 / 2.f, size * 64 / 2.f));
+        mapCam[1] = new Camera2D(new Vector2f(context.getDimension().x * MAP_WIDTH_PERCENT, context.getDimension().y * MAP_HEIGHT_PERCENT));
+        mapViewports[1] = new Viewport(new FloatRect(mapCam[0].getDimension().x,0, mapCam[1].getDimension().x, mapCam[1].getDimension().y));
     }
 
     @Override
     public void endTurn() {
-        switch (currentPlayer) {
-            case 0: currentPlayer = 1; break;
-            case 1: currentPlayer = 0; break;
-        }
+        currentPlayer = (currentPlayer + 1) % 2;
     }
 
     @Override
@@ -98,20 +102,45 @@ public class LocalhostGame extends Game {
         }
     }
     private void updateUserInput(ConstTime time){
+        if (mouse.isButtonPressed(Mouse.Button.Left)) {
+            Vector2f pos = WindowUtils.mapCoordToPixel(mouse.getRelativePosition(), mapViewports[currentPlayer], mapCam[currentPlayer]);
+            System.out.println(pos.x+":"+pos.y);
 
+            int x = (int)(pos.x / 64.F);
+            int y = (int)(pos.y / 64.F);
 
-        //camera user moves
+            if (x >= 0 && x < size && y >= 0 && y < size ) {
+                if (super.map.getWorld()[x][y].getFloor().getBounds().contains(pos.x, pos.y))
+                    super.map.getWorld()[x][y].getFloor().setFillColor(new Color((float) time.asSeconds(), (float) (Math.random()), (float) (Math.random())));
+            }
+        }
+
+        //player 1 camera control
         if (keyboard.isKeyPressed(AZERTYLayout.UP_ARROW.getKeyID())) {
-            mapPlayerCam[currentPlayer].move(new Vector2f(0, -300*(float) time.asSeconds()));
+            mapCam[currentPlayer].move(new Vector2f(0, -300*(float) time.asSeconds()));
         }
         if (keyboard.isKeyPressed(AZERTYLayout.DOWN_ARROW.getKeyID())) {
-            mapPlayerCam[currentPlayer].move(new Vector2f(0, 300*(float) time.asSeconds()));
+            mapCam[currentPlayer].move(new Vector2f(0, 300*(float) time.asSeconds()));
         }
         if (keyboard.isKeyPressed(AZERTYLayout.LEFT_ARROW.getKeyID())) {
-            mapPlayerCam[currentPlayer].move(new Vector2f(-300*(float) time.asSeconds(), 0));
+            mapCam[currentPlayer].move(new Vector2f(-300*(float) time.asSeconds(), 0));
         }
         if (keyboard.isKeyPressed(AZERTYLayout.RIGHT_ARROW.getKeyID())) {
-            mapPlayerCam[currentPlayer].move(new Vector2f(300*(float) time.asSeconds(), 0));
+            mapCam[currentPlayer].move(new Vector2f(300*(float) time.asSeconds(), 0));
+        }
+
+        //player 2 camera control
+        if (keyboard.isKeyPressed(AZERTYLayout.Z.getKeyID())) {
+            mapCam[1].move(new Vector2f(0, -300*(float) time.asSeconds()));
+        }
+        if (keyboard.isKeyPressed(AZERTYLayout.S.getKeyID())) {
+            mapCam[1].move(new Vector2f(0, 300*(float) time.asSeconds()));
+        }
+        if (keyboard.isKeyPressed(AZERTYLayout.Q.getKeyID())) {
+            mapCam[1].move(new Vector2f(-300*(float) time.asSeconds(), 0));
+        }
+        if (keyboard.isKeyPressed(AZERTYLayout.D.getKeyID())) {
+            mapCam[1].move(new Vector2f(300*(float) time.asSeconds(), 0));
         }
     }
     private void updateEscapeMenu(ConstTime time) {
@@ -134,19 +163,30 @@ public class LocalhostGame extends Game {
     @Override
     public void draw(RenderTarget target) {
         if (!menuEchap) {
-            //target.setCamera(hudPlayerCam[0]);
-            //target.draw(hud1);
-            Camera cam = target.getCamera();
+            // on conserve l'ancienne View
+            final Camera cam = target.getCamera();
+            final Viewport vp = target.getViewport();
 
-            target.setCamera(mapPlayerCam[0]);
-            map.draw(mapPlayerCam[0], target);
+            // on applique nos view spécifique du joueur 1
+            target.setViewport(mapViewports[0]);
+            target.setCamera(mapCam[0]);
+            map.draw(mapCam[0], target);
 
-            /*target.setCamera(hudPlayerCam[1]);
-            //target.draw(hud1);
-            target.setCamera(mapPlayerCam[1]);
-            map.draw(mapPlayerCam[1], target);*/
+            // on applique nos view spécifique du joueur 2
+            target.setViewport(mapViewports[1]);
+            target.setCamera(mapCam[1]);
+            map.draw(mapCam[1], target);
 
+            // on affiche les unités
+            Arrays.stream(players).forEach(p -> {
+                if (p != null && !p.getUnites().isEmpty()) {
+                    p.getUnites().get(0).draw(target);
+                }
+            }
+            );
+            // on remet l'ancienne view
             target.setCamera(cam);
+            target.setViewport(vp);
         } else {
             //on affiche le menu echap
             target.clear();
@@ -156,12 +196,14 @@ public class LocalhostGame extends Game {
     @Override
     public void handle(Event event) {
         if (event.type == Event.Type.RESIZE) {
-            //hudPlayerCam[0].setDimension(new Vector2f(event.resizeX / 2.f, event.resizeY));
-            mapPlayerCam[0].setDimension(new Vector2f(event.resizeX, event.resizeY));
+            //hudCam[0].setDimension(new Vector2f(event.resizeX / 2.f, event.resizeY));
+            mapCam[0].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
+            mapViewports[0].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
 
+            mapCam[1].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
+            mapViewports[1].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
+            mapViewports[1].setTopLeftCorner(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, 0.f));
 
-            /*hudPlayerCam[1].setDimension(new Vector2f(event.resizeX / 2.f, event.resizeY));
-            mapPlayerCam[1].setDimension(new Vector2f(event.resizeX / 2.f, event.resizeY));*/
         } else if (event.type == Event.Type.KEYRELEASED && event.keyReleased == AZERTYLayout.ESCAPE.getKeyID()) {
             menuEchap = !menuEchap;
         }
