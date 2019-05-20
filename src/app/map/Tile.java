@@ -32,12 +32,6 @@ public class Tile
         this.isObstacle = isObstacle;
     }
 
-    public void draw(RenderTarget target)
-    {
-        if (floor != null) target.draw(floor);
-        if (struct != null) target.draw(struct);
-    }
-
     public Sprite getFloor()
     {
         return floor;

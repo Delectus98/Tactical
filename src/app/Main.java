@@ -11,7 +11,7 @@ public class Main
 
     public static void main(String[] args) throws IOException {
         GLFWWindow window = new GLFWWindow(VideoMode.getDesktopMode(), "Tactical", WindowStyle.DEFAULT);
-        Game current = new LocalhostGame(window);
+        //Game current = new LocalhostGame(window);
         Clock clock = new Clock();
 
         while (window.isOpen())
@@ -19,7 +19,7 @@ public class Main
             Event event;
             while ((event = window.pollEvents()) != null)
             {
-                current.handle(event);
+                //current.handle(event);
 
                 if (event.type == Event.Type.CLOSE)
                 {
@@ -32,8 +32,8 @@ public class Main
             //
             /*if (!current.isFinished())
             {*/
-                current.update(clock.restart());
-                current.draw(window);
+                //current.update(clock.restart());
+                //current.draw(window);
             //}
             window.display();
         }

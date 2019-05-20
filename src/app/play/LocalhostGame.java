@@ -169,6 +169,40 @@ public class LocalhostGame extends Game {
         }
     }
 
+    private void drawScreen(RenderTarget target, int player){
+        // on applique nos view spécifique du joueur
+        target.setViewport(mapViewports[player]);
+        target.setCamera(mapCam[player]);
+
+        // on obtient les coordonnées de la caméra
+        Vector2f dim = mapCam[player].getDimension(); // dimension de la vue de la caméra
+        Vector2f tlCorner = mapCam[player].getCenter().sum(dim.mul(-0.5f)); // coin gauche haut de la caméra
+
+        // on cacule la zone rectangulaire où les tuiles doivent être affichées
+        int x = Math.max(0,(int)(tlCorner.x / 64.f)); // tuile la plus a gauche du point de vue de la caméra
+        int y = Math.max(0,(int)(tlCorner.y / 64.f)); // tuile la plus a gauche du point de vue de la caméra
+        final int offset = 2; // sert pour afficher les cases mal concidérées
+        int x2 = Math.max(0, (int)(tlCorner.x / 64.f) + (int)(dim.x / 64.f) + offset); // tuile la plus a droite affichée du point de vue de la caméra
+        int y2 = Math.max(0, (int)(tlCorner.y / 64.f) + (int)(dim.y / 64.f) + offset); // tuile la plus en bas affichée du point de vue de la caméra
+        // on affiche la premiere couche
+        map.drawFloor(x, y, x2, y2, target);
+        // on affiche les unités des deux joueurs
+        Arrays.stream(players).forEach(p -> {if (p != null && !p.getUnites().isEmpty()) p.getUnites().get(0).draw(target);});
+        // on affiche la seconde couche
+        map.drawStruct(x, y, x2, y2, target);
+        // on affiche le brouillard de guerre
+
+        for (int px = x ; px < x2 ; ++px) {
+            for (int py = y ; py < y2 ; ++py) {
+                if (!visibles[player].contains(new Vector2i(px, py))) {
+                    //Sprite fog = new Sprite(textureWithFog);
+                    //fog.setPosition(new Vector2f(px * 64.f, py * 64.f);
+                    //target.draw(fog);
+                }
+            }
+        }
+    }
+
     @Override
     public void draw(RenderTarget target) {
         if (!menuEchap) {
@@ -176,23 +210,10 @@ public class LocalhostGame extends Game {
             final Camera cam = target.getCamera();
             final Viewport vp = target.getViewport();
 
-            // on applique nos view spécifique du joueur 1
-            target.setViewport(mapViewports[0]);
-            target.setCamera(mapCam[0]);
-            map.draw(mapCam[0], target);
+            // on affiche les deux écrans
+            this.drawScreen(target, 0);
+            this.drawScreen(target, 1);
 
-            // on applique nos view spécifique du joueur 2
-            target.setViewport(mapViewports[1]);
-            target.setCamera(mapCam[1]);
-            map.draw(mapCam[1], target);
-
-            // on affiche les unités
-            Arrays.stream(players).forEach(p -> {
-                if (p != null && !p.getUnites().isEmpty()) {
-                    p.getUnites().get(0).draw(target);
-                }
-            }
-            );
             // on remet l'ancienne view
             target.setCamera(cam);
             target.setViewport(vp);
