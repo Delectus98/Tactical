@@ -48,5 +48,7 @@ public class MainTestsLines
         System.out.println(x);
         assert x == .25 : "Diagonale direct et unites collées au même obstacle; x != .25";
 
+        x = Line.computePercentage(new Vector2i(1, 4), new Vector2i(1,6), ligne);
+        System.out.println("1 a cote obs " + x);
     }
 }

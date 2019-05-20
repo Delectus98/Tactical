@@ -96,6 +96,9 @@ public class Line
             boolean obs = false;
             Vector3f line = computeLine(arr0[i], arr1[i]);
 //            System.out.println(line.x + "x + " + line.y + " = " + line.z);
+
+            //on regarde uniquement les cases entre attacker et victim pour calculer le degats
+            // cela permet qu'une unité qui tire en ligne droite, tout en étant à coté d'un mur ne perde pas .5
             for(int x = Integer.min(attacker.x, victim.x); x <= Integer.max(attacker.x, victim.x); x++)
             {
                 for (int y = Integer.min(attacker.y, victim.y); y <= Integer.max(attacker.y, victim.y); y++)
