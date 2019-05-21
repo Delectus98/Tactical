@@ -8,8 +8,6 @@ import app.Player;
 import app.Unite;
 import app.actions.Action;
 import app.map.Map;
-import app.map.MapImpl;
-import app.map.Tile;
 import util.WindowUtils;
 
 import java.io.IOException;
@@ -18,8 +16,6 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glDisable;
 
 public class LocalhostGame extends Game {
     private static final float MAP_WIDTH_PERCENT = 0.50F;
@@ -192,9 +188,8 @@ public class LocalhostGame extends Game {
         //glDisable(GL_DEPTH_TEST);
         map.drawFloor(x, y, x2, y2, target);
         Arrays.stream(players).forEach(p -> {if (p != null && !p.getUnites().isEmpty()) p.getUnites().get(0).draw(target);});
-
         // on affiche la seconde couche
-        //map.drawStruct(x, y, x2, y2, target);
+        map.drawStruct(x, y, x2, y2, target);
         // on affiche le brouillard de guerre
 
         /*for (int px = x ; px < x2 ; ++px) {

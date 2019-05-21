@@ -88,11 +88,10 @@ public class Main
         ResourceHandler.loadTexture("res/wall.png");
         ResourceHandler.loadTexture("res/character.png");
 
-        Map map = new MapImpl(MapList.Battlefield);
+        Map map = new MapImpl(MapList.Battlefield3);
         Player p1 = new Player("P1");
         Unite unite = new UniteTest(ResourceHandler.getTexture("res/character.png"), new FloatRect(0,0,64,64));
         unite.getSprite().setPosition(64, 64);
-        unite.getSprite().setZLayer(-0.15f);
         p1.addUnite(unite);
         Player p2 = new Player("P2");
         Unite unite2 = new UniteTest(ResourceHandler.getTexture("res/character.png"), new FloatRect(64,0,64,64));
@@ -118,9 +117,8 @@ public class Main
                     window.close();
                 }
             }
-            window.clear(Color.Cyan);
+            window.clear();
             //Menu principal:
-            //TODO
 
             //Game Menu:  game is running
             if (!current.isFinished())

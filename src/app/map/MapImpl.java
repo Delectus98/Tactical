@@ -6,6 +6,8 @@ import System.*;
 import Graphics.Vector2i;
 import util.ResourceHandler;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MapImpl extends Map {
@@ -18,12 +20,19 @@ public class MapImpl extends Map {
         width = info.width;
         height = info.height;
 
+        spawnPoints = new ArrayList[2];
+        spawnPoints[0] = new ArrayList<>();
+        spawnPoints[1] = new ArrayList<>();
+        //spawnPoints = new ArrayList<>();
+        //spawnPoints.add(new ArrayList<>());
+        //spawnPoints.add(new ArrayList<>());
+
         world = new Tile[width][height];
 
         //info.build(this);
         //or
-        for (int i=0 ; i < height; ++i) {
-            for (int j = 0; j < width ; ++j) {
+        for (int i=0 ; i < width; ++i) {
+            for (int j = 0; j < height ; ++j) {
                 MapInfo.TileInfo ti = info.getTileInfo(i, j);
 
                 if (ti.enableFloor) {
@@ -70,6 +79,11 @@ public class MapImpl extends Map {
                 this.getWorld()[i][j].drawStruct(target);
             }
         }
+    }
+
+    @Override
+    public void setSpawnPoints(Collection<Vector2i> spawnPoints, int player) {
+        super.spawnPoints[player].addAll(spawnPoints);
     }
 
     @Override
