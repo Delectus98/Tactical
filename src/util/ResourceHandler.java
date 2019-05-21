@@ -17,10 +17,11 @@ public class ResourceHandler {
         return textures.put(file, new Texture(file));
     }
 
+    public static ConstTexture getTexture(String name){
+        return textures.get(name);
+    }
+
 /*
     public static ConstSound loadSound(String sound) throws IOException {}
-    public static ConstSound getTexture(String name){
-        return sounds.get(name);
-    }
 */
 }

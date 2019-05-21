@@ -18,6 +18,9 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glDisable;
+
 public class LocalhostGame extends Game {
     private static final float MAP_WIDTH_PERCENT = 0.50F;
     private static final float MAP_HEIGHT_PERCENT = 0.75F;
@@ -26,7 +29,7 @@ public class LocalhostGame extends Game {
     private Viewport[] mapViewports;
     private Camera2D[] hudCam;
 
-    private boolean isRunning;
+    private boolean isRunning = false;
 
     private Queue<Action> currentPlayerActions = new PriorityQueue<>();
     private boolean inAction = false;
@@ -70,7 +73,7 @@ public class LocalhostGame extends Game {
         hudCam = new Camera2D[2];
 
         mapCam[0] = new Camera2D(new Vector2f(context.getDimension().x * MAP_WIDTH_PERCENT, context.getDimension().y * MAP_HEIGHT_PERCENT));
-        mapViewports[0] = new Viewport(new FloatRect(100,100, mapCam[0].getDimension().x, mapCam[0].getDimension().y));
+        mapViewports[0] = new Viewport(new FloatRect(0,0, mapCam[0].getDimension().x, mapCam[0].getDimension().y));
 
         mapCam[1] = new Camera2D(new Vector2f(context.getDimension().x * MAP_WIDTH_PERCENT, context.getDimension().y * MAP_HEIGHT_PERCENT));
         mapViewports[1] = new Viewport(new FloatRect(mapCam[0].getDimension().x,0, mapCam[1].getDimension().x, mapCam[1].getDimension().y));
@@ -83,7 +86,7 @@ public class LocalhostGame extends Game {
 
     @Override
     public boolean isFinished() {
-        return isRunning && Arrays.stream(super.players).map(Player::getUnites).anyMatch(l -> l.stream().allMatch(Unite::isDead));
+        return !isRunning && Arrays.stream(super.players).map(Player::getUnites).anyMatch(l -> l.stream().allMatch(Unite::isDead));
     }
 
     @Override
@@ -116,8 +119,8 @@ public class LocalhostGame extends Game {
             int x = (int)(pos.x / 64.F);
             int y = (int)(pos.y / 64.F);
 
-            if (x >= 0 && x < size && y >= 0 && y < size ) {
-                if (super.map.getWorld()[x][y].getFloor().getBounds().contains(pos.x, pos.y))
+            if (x >= 0 && x < map.getWidth() && y >= 0 && y < map.getHeight()) {
+                if (super.map.getWorld()[x][y].getFloor() != null && super.map.getWorld()[x][y].getFloor().getBounds().contains(pos.x, pos.y))
                     super.map.getWorld()[x][y].getFloor().setFillColor(new Color((float) time.asSeconds(), (float) (Math.random()), (float) (Math.random())));
             }
         }
@@ -185,14 +188,16 @@ public class LocalhostGame extends Game {
         int x2 = Math.max(0, (int)(tlCorner.x / 64.f) + (int)(dim.x / 64.f) + offset); // tuile la plus a droite affichée du point de vue de la caméra
         int y2 = Math.max(0, (int)(tlCorner.y / 64.f) + (int)(dim.y / 64.f) + offset); // tuile la plus en bas affichée du point de vue de la caméra
         // on affiche la premiere couche
-        map.drawFloor(x, y, x2, y2, target);
         // on affiche les unités des deux joueurs
+        //glDisable(GL_DEPTH_TEST);
+        map.drawFloor(x, y, x2, y2, target);
         Arrays.stream(players).forEach(p -> {if (p != null && !p.getUnites().isEmpty()) p.getUnites().get(0).draw(target);});
+
         // on affiche la seconde couche
-        map.drawStruct(x, y, x2, y2, target);
+        //map.drawStruct(x, y, x2, y2, target);
         // on affiche le brouillard de guerre
 
-        for (int px = x ; px < x2 ; ++px) {
+        /*for (int px = x ; px < x2 ; ++px) {
             for (int py = y ; py < y2 ; ++py) {
                 if (!visibles[player].contains(new Vector2i(px, py))) {
                     //Sprite fog = new Sprite(textureWithFog);
@@ -200,7 +205,7 @@ public class LocalhostGame extends Game {
                     //target.draw(fog);
                 }
             }
-        }
+        }*/
     }
 
     @Override

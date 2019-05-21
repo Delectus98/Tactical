@@ -1,5 +1,6 @@
 package app.map;
 
+import Graphics.ConstTexture;
 import Graphics.FloatRect;
 import Graphics.Sprite;
 import Graphics.Texture;
@@ -8,20 +9,24 @@ import System.*;
 public class Tile
 {
     //prend une texture en param
-    Sprite floor;
-    Sprite struct;
+    Sprite floor = null;
+    Sprite struct = null;
     boolean isObstacle;
 
-    public Tile(Texture texture, FloatRect rect) //sans struct <=> !isObstacle
+    public Tile(ConstTexture texture, FloatRect rect, boolean isObstacle) //sans struct <=> !isObstacle
     {
-        //todo
-        floor = new Sprite(texture);
-        floor.setTextureRect(rect.l, rect.t, rect.w, rect.h);
+        if (!isObstacle) {
+            floor = new Sprite(texture);
+            floor.setTextureRect(rect.l, rect.t, rect.w, rect.h);
+        } else {
+            struct = new Sprite(texture);
+            struct.setTextureRect(rect.l, rect.t, rect.w, rect.h);
+        }
 
-        isObstacle = false;
+        this.isObstacle = isObstacle;
     }
 
-    public Tile(Texture floor, FloatRect rectFloor, Texture struct, FloatRect rectStruct, boolean isObstacle)
+    public Tile(ConstTexture floor, FloatRect rectFloor, ConstTexture struct, FloatRect rectStruct, boolean isObstacle)
     {
         this.floor = new Sprite(floor);
         this.floor.setTextureRect(rectFloor.l, rectFloor.t, rectFloor.w, rectFloor.h);
@@ -40,6 +45,14 @@ public class Tile
     public Sprite getStruct()
     {
         return struct;
+    }
+
+    public void drawFloor(RenderTarget target) {
+        if (floor != null) target.draw(floor);
+    }
+
+    public void drawStruct(RenderTarget target) {
+        if (struct != null) target.draw(struct);
     }
 
     public boolean isObstacle()
