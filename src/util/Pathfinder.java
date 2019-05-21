@@ -24,10 +24,13 @@ public class Pathfinder {
     //PossiblePath => reachable Tiles
 
     /**
-     * @param u L'unité en cours
-     * @return une Hashmap de <Position, position pour y arriver>
+     * Sert à afficher la zone pù il est possible de se déplacer
+     * @param u L'unité à déplacer
+     * @param ennemyunits Liste des unités ennemies (gestion collisions)
+     * @param vectVisibles Liste des positions visibles
+     * @return Map<Position, position pour y accéder> de cases où il est possible de se déplacer.
      */
-    public HashMap<Vector2i, Vector2i> possiblePath(Unite u, List<Unite> units, List<Vector2i> vectVisibles) {
+    public HashMap<Vector2i, Vector2i> possiblePath(Unite u, List<Unite> ennemyunits, List<Vector2i> vectVisibles) {
 
 
         //Checkunits
@@ -35,7 +38,7 @@ public class Pathfinder {
 
         int cost = 1; //à changer si besoin
         int distmax = u.getActionPoints() * cost;
-        ArrayList<Vector2i> tmpMapList = collisionVisible(units, vectVisibles);
+        ArrayList<Vector2i> tmpMapList = collisionVisible(ennemyunits, vectVisibles);
         //Tableau des distances
         int[] dist = new int[tmpMapList.size()];
         HashMap<Vector2i, Vector2i> pred = new HashMap<>();
@@ -78,41 +81,71 @@ public class Pathfinder {
     }
 
     //à la fin, l'unité s'arrête si elle rencontre une unité. amélioration: considérer les aliés comme obstacles, et ennemis comme actuellement.
-    public ArrayList<Vector2i> pathfind(HashMap<Vector2i, Vector2i> correspondance, ArrayList<Unite> units, Vector2i start, Vector2i goal) {
+
+    /**
+     * Trouve le chemin le plus court entre deux positions si possible.
+     *
+     * @param correspondance Hashmap fournie par possiblePath
+     * @param ennemyunits    liste des unités ennemies
+     * @param allyunits      liste des unités alliées
+     * @param start          position de départ ( généralement Unité.getMapPosition )
+     * @param goal           objectif à atteindre
+     * @return Arraylist des cases à traverser. la première est la case start.
+     */
+    public ArrayList<Vector2i> pathfind(HashMap<Vector2i, Vector2i> correspondance, ArrayList<Unite> ennemyunits, ArrayList<Unite> allyunits, Vector2i start, Vector2i goal) {
 
         final ArrayList<Vector2i> path = new ArrayList<>();
 
 
-        //Check si goal appartient bien a maplist, et prend l'adresse du vecteur équivement à goal dans maplist
+        //check si goal est sur la position d'une unité amie
         Vector2i startInMap = inMap(start);
         Vector2i goalInMap = inMap(goal);
+        for (Unite v : allyunits)
+            if (inMap(v.getMapPosition()).equals(inMap(goal))) {
+
+                System.out.println("Case occupée par un allié");
+                return path;
+            }
+
+
+        //Check si goal appartient bien a maplist, et prend l'adresse du vecteur équivement à goal dans maplist
         if (startInMap == null || goalInMap == null) {
-            System.out.println("Pathfind Vecteur non trouvé");
+            System.out.println("Pathfind: Position non trouvée");
         } else if (!correspondance.keySet().contains(goalInMap)) {
-            System.out.println("Objectif trop loin");
+            System.out.println("Objectif trop loin, occupée par un ennemi ou un décors");
+
         } else {
             //Début de la recherche
             Vector2i current = goalInMap;
-            while (!found(current, startInMap)) {
+            //  while (!found(current, startInMap)) { //obsolète
+            while (!current.equals(startInMap)) {
                 path.add(0, current);
                 current = correspondance.get(current);
             }
             path.add(0, startInMap);
         }
 
-        return collisionInvisible(units, path);// path;
+        return collisionInvisible(ennemyunits, path);// path;
     }
 
     //ANNEXES
 
 
     //pour la détection dunités: dans pathfind prendre en arg la liste de visibilité du joueur et créer un maplist temporaire qui ne contient pas les vecteurs où se trouvent des ennemis
-    private ArrayList<Vector2i> collisionVisible(List<Unite> units, List<Vector2i> lightzone) {//ici doit être placé la liste des unités ennemies et la zone de visibilité du joueur
+
+    /**
+     * Utilisé par possiblePath pour bloquer temporairement le déplacement vers une case ennemie
+     *
+     * @param ennemyunits liste unités ennemies
+     * @param lightzone   liste cases visibles par le joueur
+     * @return Arraylist équivalente à la map, positions ennemies visibles sont "Bloquées"
+     */
+    private ArrayList<Vector2i> collisionVisible(List<Unite> ennemyunits, List<Vector2i> lightzone) {//ici doit être placé la liste des unités ennemies et la zone de visibilité du joueur
 //clone la mapList
         ArrayList<Vector2i> tmpMapList = new ArrayList<>(mapList);
 
         //intersection toRemove lightzine n units
-        for (Unite ennemyunit : units)
+        for (Unite ennemyunit : ennemyunits)
             for (Vector2i v : lightzone)
                 if (ennemyunit.getMapPosition().equals(v))
                     tmpMapList.remove(inMap(v));
@@ -121,10 +154,17 @@ public class Pathfinder {
         return tmpMapList;
     }
 
-    private ArrayList<Vector2i> collisionInvisible(List<Unite> units, ArrayList<Vector2i> path) {//ici doit être placé la liste des unités ennemies.
-        Vector2i[] v = new Vector2i[units.size()];
-        for (int i = 0; i < units.size(); i++) {
-            v[i] = inMap(units.get(i).getMapPosition());
+    /**
+     * Utiliser par pathfind, coupe la liste si l'unité doit passer par une case occupée
+     *
+     * @param ennemyunits liste unités ennemies
+     * @param path        le chemin prévu
+     * @return path raccourci si ennemi trouvé sur la trajectoire
+     */
+    private ArrayList<Vector2i> collisionInvisible(List<Unite> ennemyunits, ArrayList<Vector2i> path) {//ici doit être placé la liste des unités ennemies.
+        Vector2i[] v = new Vector2i[ennemyunits.size()];
+        for (int i = 0; i < ennemyunits.size(); i++) {
+            v[i] = inMap(ennemyunits.get(i).getMapPosition());
         }
 
         for (int i = 0; i < path.size(); i++) {
@@ -175,12 +215,18 @@ public class Pathfinder {
         return res;
     }
 
+    /* /**
+     * Similaire à equals. Pourraît être supprimé
+     * @param current
+     * @param goal
+     * @return
 
     private boolean found(Vector2i current, Vector2i goal) {
         // System.out.println("Current:" + current.x+'/'+current.y);
         // System.out.println("Goal:" + goal.x + "/" + goal.y);
-        return (current.x == goal.x && current.y == goal.y);
-    }
+        return current.equals(goal);
+        //return (current.x == goal.x && current.y == goal.y);
+    }*/
 
     /**
      * @param v un vecteur à tester
@@ -188,7 +234,7 @@ public class Pathfinder {
      */
     private Vector2i inMap(Vector2i v) {
         for (Vector2i vect : mapList)
-            if (found(vect, v))
+            if (vect.equals(v))
                 return vect;
 
         System.out.println("Position (" + v.x + "," + v.y + " )non trouvée dans la map. Hauteur " + height + ", Largeur " + width);
