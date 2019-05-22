@@ -7,6 +7,7 @@ public class Player
 {
     protected String name;
     protected List<Unite> unites;
+    protected Team team;
 
     public Player(String name)
     {
@@ -17,6 +18,7 @@ public class Player
     public void addUnite(Unite unite)
     {
         this.unites.add(unite);
+        unite.setTeam(this.team);
     }
 
     public String getName()
@@ -28,4 +30,15 @@ public class Player
     {
         return unites;
     }
+
+    public Team getTeam()
+    {
+        return team;
+    }
+
+    public void setTeam(Team team)
+    {
+        this.team = team;
+    }
+
 }

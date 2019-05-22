@@ -2,7 +2,6 @@ package app;
 
 import Graphics.Vector2i;
 import app.map.Map;
-import com.sun.tools.javac.util.Pair;
 
 import System.*;
 
@@ -11,7 +10,7 @@ import java.util.List;
 public abstract class Weapon
 {
     protected int amunition; //-1 = infini, sinon utile pour armes speciales
-    protected Pair<Integer, Integer> range;
+    protected Vector2i range;
     protected float[] precision; //= new float[range.fst - range.snd];
     protected int damagePerRounds;
     protected int rounds;

@@ -5,14 +5,41 @@ import app.Unite;
 
 public abstract class Action
 {
-    Unite unite;
-    Game game;
-    //Position depart/arrivee
-    boolean inAction;
+    protected Unite unite;
+    protected Game game;
+    private boolean inAction;
 
-    abstract void update(ConstTime time);
+    public Action(Unite user, Game game){
+        this.unite = user;
+        this.game = game;
+        this.inAction = false;
+    }
 
-    abstract boolean isFinished();
+    public abstract int getCost(); // renvoie le cout de l'action en PA
 
-    abstract void draw(RenderTarget target);
+    public abstract boolean isAvailable(); // renvoie vrai si l'action est possible/disponible <=> renvoie vrai si la préparation est possible
+
+    protected abstract void updatePreparation(ConstTime time); // met a jour la phase préparation où le joueur choisit encore comment elle va se faire
+
+    protected abstract void updateProcess(ConstTime time); // met a jour la phase déroulement de l'action où le joueur regarde l'action
+
+    public final void run() { inAction = true; } // déclanche le déroulement de l'action
+
+    public abstract boolean isFinished(); // l'action s'est bien déroulé et est maintenant terminée
+
+    public abstract boolean isRunning(); // l'action est en train de se derouler
+
+    protected abstract void drawPreparation(RenderTarget target);
+
+    protected abstract void drawProgress(RenderTarget target);
+
+    public final void draw(RenderTarget target) {
+        if (inAction) drawProgress(target);
+        else drawPreparation(target);
+    }
+
+    public final void update(ConstTime time) {
+        if (inAction) updateProcess(time);
+        else updatePreparation(time);
+    } // met a jour la phase préparation lorsque le joueur choisit puis déroulement lorsque l'action est déclanchée
 }

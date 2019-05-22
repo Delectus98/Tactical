@@ -1,9 +1,9 @@
 package app.map;
 
 import Graphics.Vector2i;
-import com.sun.tools.javac.util.Pair;
 import System.*;
 
+import java.util.Collection;
 import java.util.List;
 
 public abstract class Map
@@ -12,9 +12,17 @@ public abstract class Map
 
     protected Tile[][] world;
 
-    public abstract void draw(Camera2D camera, RenderTarget target);
+    public abstract void drawFloor(int x, int y, int w, int h, RenderTarget target);
+
+    public abstract void drawStruct(int x, int y, int w, int h, RenderTarget target);
+
+    public abstract void setSpawnPoints(Collection<Vector2i> spawnPoints, int player);
 
     public abstract Tile[][] getWorld();
+
+    public abstract int getWidth();
+
+    public abstract int getHeight();
 
     public abstract List<Vector2i> getSpawnPoints(int currentPlayer);
 }
