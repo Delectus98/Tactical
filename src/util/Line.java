@@ -1,5 +1,6 @@
 package util;
 
+import Graphics.Vector2f;
 import Graphics.Vector2i;
 import Graphics.Vector3f;
 import app.map.Map;
@@ -18,7 +19,7 @@ public class Line
      * @return Vector3f line où line.x est le facteur des x, line.y le facteur des y et line.z le Z de l'equation
      *          α x + ß y = z
      */
-    public static Vector3f computeLine(Vector2i start, Vector2i end)
+    public static Vector3f computeLine(Vector2f start, Vector2f end)
     {
         float a = end.y - start.y;
         float b = start.x - end.x;
@@ -34,11 +35,11 @@ public class Line
      * @param b                      b
      * @return true si la ligne est entre ces points
      */
-    public static boolean lineIsBetween2pts(Vector3f line, Vector2i a, Vector2i b)
+    public static boolean lineIsBetween2pts(Vector3f line, Vector2f a, Vector2f b)
     {
-        int c1 = ((int) line.x) * a.x + ((int)line.y) * a.y;
-        int c2 = ((int) line.x) * b.x + ((int)line.y) * b.y;
-        int c = ((int) line.z);
+        float c1 = line.x * a.x + line.y * a.y;
+        float c2 = line.x * b.x + line.y * b.y;
+        float c = line.z;
 
         return (c1 < c && c < c2) || (c2 < c && c < c1) || c == c1 || c == c2;
     }
@@ -70,15 +71,15 @@ public class Line
             return -1;
         }
         float ret = 1;
-        Vector2i[] arr0, arr1;
-        arr0 = new Vector2i[]{attacker,
-                new Vector2i(attacker.x, attacker.y + 1),
-                new Vector2i(attacker.x + 1, attacker.y),
-                new Vector2i(attacker.x + 1, attacker.y + 1)};
-        arr1 = new Vector2i[]{victim,
-                new Vector2i(victim.x, victim.y + 1),
-                new Vector2i(victim.x + 1, victim.y),
-                new Vector2i(victim.x + 1, victim.y + 1)};
+        Vector2f[] arr0, arr1;
+        arr0 = new Vector2f[]{new Vector2f(attacker.x, attacker.y),
+                new Vector2f(attacker.x, attacker.y + 1),
+                new Vector2f(attacker.x + 1, attacker.y),
+                new Vector2f(attacker.x + 1, attacker.y + 1)};
+        arr1 = new Vector2f[]{new Vector2f(victim.x, victim.y),
+                new Vector2f(victim.x, victim.y + 1),
+                new Vector2f(victim.x + 1, victim.y),
+                new Vector2f(victim.x + 1, victim.y + 1)};
 //        System.out.print("\n[");
 //        for (Vector2i v : Arrays.asList(arr0))
 //        {
@@ -109,11 +110,11 @@ public class Line
                         //System.out.println("estObs " + map.getWorld()[x][y].isObstacle());
                         if (map.getWorld()[x][y].isObstacle())
                         {
-                            Vector2i supLeftCorner = new Vector2i(x, y);
-                            Vector2i lowRightCorner = new Vector2i(x + 1, y + 1);
+                            Vector2f supLeftCorner = new Vector2f(x, y);
+                            Vector2f lowRightCorner = new Vector2f(x + 1, y + 1);
 
-                            Vector2i supRightCorner = new Vector2i(x, y+1);
-                            Vector2i lowLeftCorner = new Vector2i(x+1, y);
+                            Vector2f supRightCorner = new Vector2f(x, y+1);
+                            Vector2f lowLeftCorner = new Vector2f(x+1, y);
 
                             obs = lineIsBetween2pts(line, supLeftCorner, lowRightCorner)
                                     || lineIsBetween2pts(line, supRightCorner, lowLeftCorner);

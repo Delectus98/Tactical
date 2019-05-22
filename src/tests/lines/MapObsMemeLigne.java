@@ -5,12 +5,14 @@ import app.map.Map;
 import app.map.Tile;
 import System.*;
 
+import java.util.Collection;
 import java.util.List;
 
 public class MapObsMemeLigne extends Map
 {
-    Tile sol = new Tile(null, null, null, null, false);
-    Tile obs = new Tile(null, null, null, null, true);
+    Tile sol = new Tile( false);
+    Tile obs = new Tile(true);
+
     public MapObsMemeLigne()
     {
         this.world = new Tile[][]{
@@ -28,19 +30,36 @@ public class MapObsMemeLigne extends Map
         };
     }
 
-    @Override
-    public void draw(Camera2D camera, RenderTarget target)
+
+    public void drawFloor(int x, int y, int w, int h, RenderTarget target)
     {
 
     }
 
-    @Override
+    public void drawStruct(int x, int y, int w, int h, RenderTarget target)
+    {
+    }
+
+    public void setSpawnPoints(Collection<Vector2i> spawnPoints, int player)
+    {
+    }
+
     public Tile[][] getWorld()
     {
         return this.world;
     }
 
-    @Override
+    public int getWidth()
+    {
+        return 0;
+    }
+
+    public int getHeight()
+    {
+        return 0;
+    }
+
+
     public List<Vector2i> getSpawnPoints(int currentPlayer)
     {
         return null;

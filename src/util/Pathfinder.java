@@ -37,7 +37,7 @@ public class Pathfinder {
 //mapList => résultat de collision
 
         int cost = 1; //à changer si besoin
-        int distmax = u.getActionPoints() * cost;
+        int distmax = u.getSparePoints() * cost;
         ArrayList<Vector2i> tmpMapList = collisionVisible(ennemyunits, vectVisibles);
         //Tableau des distances
         int[] dist = new int[tmpMapList.size()];

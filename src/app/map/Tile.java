@@ -28,20 +28,18 @@ public class Tile
 
     public Tile(ConstTexture floor, FloatRect rectFloor, ConstTexture struct, FloatRect rectStruct, boolean isObstacle)
     {
-<<<<<<< HEAD
-        this.isObstacle = isObstacle;
-    }
-
-    public void draw(RenderTarget target)
-    {
-=======
         this.floor = new Sprite(floor);
         this.floor.setTextureRect(rectFloor.l, rectFloor.t, rectFloor.w, rectFloor.h);
 
         this.struct = new Sprite(struct);
         this.struct.setTextureRect(rectStruct.l, rectStruct.t, rectStruct.w, rectStruct.h);
->>>>>>> master
 
+        this.isObstacle = isObstacle;
+    }
+
+    //pour les testes sans affichage.
+    public Tile(boolean isObstacle)
+    {
         this.isObstacle = isObstacle;
     }
 
