@@ -35,6 +35,8 @@ public abstract class Game
 
     public abstract Set<Vector2i> getCurrentVisibles();
 
+    public abstract void updateFOG();
+
     public final Player[] getPlayers(){
         return players;
     }

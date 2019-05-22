@@ -42,6 +42,12 @@ public class LocalhostGame extends Game {
         return visibles[currentPlayer];
     }
 
+    @Override
+    public void updateFOG()
+    {
+
+    }
+
     static final int size = 40;
     public LocalhostGame(GLFWWindow window, Player p1, Player p2, Map map) throws IOException {
         // set up game context

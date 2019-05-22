@@ -23,21 +23,23 @@ public abstract class Action
 
     protected abstract void updateProcess(ConstTime time); // met a jour la phase déroulement de l'action où le joueur regarde l'action
 
-    public final void update(ConstTime time) {
-        if (inAction) updateProcess(time);
-        else updatePreparation(time);
-    } // met a jour la phase préparation lorsque le joueur choisit puis déroulement lorsque l'action est déclanchée
-
-    public final void trigger() { inAction = true; } // déclanche le déroulement de l'action
+    public final void run() { inAction = true; } // déclanche le déroulement de l'action
 
     public abstract boolean isFinished(); // l'action s'est bien déroulé et est maintenant terminée
 
-    public abstract void drawPreparation(RenderTarget target);
+    public abstract boolean isRunning(); // l'action est en train de se derouler
 
-    public abstract void drawProgress(RenderTarget target);
+    protected abstract void drawPreparation(RenderTarget target);
+
+    protected abstract void drawProgress(RenderTarget target);
 
     public final void draw(RenderTarget target) {
         if (inAction) drawProgress(target);
         else drawPreparation(target);
     }
+
+    public final void update(ConstTime time) {
+        if (inAction) updateProcess(time);
+        else updatePreparation(time);
+    } // met a jour la phase préparation lorsque le joueur choisit puis déroulement lorsque l'action est déclanchée
 }

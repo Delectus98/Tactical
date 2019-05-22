@@ -70,8 +70,33 @@ public class Main
         }
 
         @Override
-        public short getActionPoints() {
+        public short getSparePoints()
+        {
             return 0;
+        }
+
+        @Override
+        public void resetTurn()
+        {
+
+        }
+
+        @Override
+        public ConstTexture getSpritesheet()
+        {
+            return null;
+        }
+
+        @Override
+        public void setTeam(Team team)
+        {
+
+        }
+
+        @Override
+        public Team getTeam()
+        {
+            return null;
         }
 
         @Override
@@ -91,11 +116,13 @@ public class Main
         Map map = new MapImpl(MapList.Battlefield3);
         Player p1 = new Player("P1");
         Unite unite = new UniteTest(ResourceHandler.getTexture("res/character.png"), new FloatRect(0,0,64,64));
+        unite.seMapPosition(new Vector2i(1, 1));
         unite.getSprite().setPosition(64, 64);
         p1.addUnite(unite);
         Player p2 = new Player("P2");
         Unite unite2 = new UniteTest(ResourceHandler.getTexture("res/character.png"), new FloatRect(64,0,64,64));
         unite2.getSprite().setPosition(256, 128);
+        unite2.seMapPosition(new Vector2i(4, 2));
         p2.addUnite(unite2);
         Game current = new LocalhostGame(window, p1, p2, map);
 
