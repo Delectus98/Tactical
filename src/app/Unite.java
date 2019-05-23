@@ -20,8 +20,16 @@ public abstract class Unite
 
     public abstract boolean isDead();
 
+    /**
+     * Heal points of this unite
+     * @return current remaining heal points
+     */
     public abstract short getHp();
 
+    /**
+     * Field of view of this unite
+     * @return
+     */
     public abstract short getFov();
 
     public abstract Weapon getPrimary();
@@ -30,22 +38,48 @@ public abstract class Unite
 
     public abstract Weapon getMelee();
 
+    /**
+     * Gives graphics component that is drawn by the Game
+     * @return
+     */
     public abstract Sprite getSprite();
 
-    public abstract void seMapPosition(Vector2i coords); // Map[x][y]
+    /**
+     * Set Map Position into Tile coordinates
+     * @param coords
+     */
+    public abstract void setMapPosition(Vector2i coords); // Map[x][y]
 
     public abstract void draw(RenderTarget target);
 
+    /**
+     * Gives Map Position into Tile coordinates
+     * @return
+     */
     public abstract Vector2i getMapPosition();
 
+    /**
+     * Hurt/Heal the unite
+     * @param amount
+     * @see Unite#getHp()
+     * @see Unite#isDead()
+     */
     public abstract void takeDamages(int amount);
 
     public abstract short getSparePoints();
 
     public abstract void resetTurn(); //reset les pa et autres bonus suivant l'unite
 
+    /**
+     * Gives the spritesheet used by the unite
+     * @return
+     */
     public abstract ConstTexture getSpritesheet();
 
+    /**
+     * Defines a team for current unite
+     * @param team
+     */
     public abstract void setTeam(Team team); //selectionne le bon sprite sheet
 
     public abstract Team getTeam();
