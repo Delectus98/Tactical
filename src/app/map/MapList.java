@@ -5,6 +5,7 @@ import Graphics.FloatRect;
 
 import java.util.HashMap;
 
+
 public class MapList {
 
    public static MapInfo Battlefield1;
@@ -35,7 +36,7 @@ public class MapList {
                {"W", "W", "W", "W", "W", "W", "W",},
        };
 
-       Battlefield1 = new MapInfo(7,7);
+       Battlefield1 = new MapInfo("Small Battlefield",7,7);
        for (int i=0 ; i < Battlefield1.width ; ++i) {
            for (int j = 0; j < Battlefield1.height ; ++j) {
                Battlefield1.setTileInfo(i, j, infos.get(mapData[i][j]));
@@ -65,7 +66,7 @@ public class MapList {
                 {"W", "W", "W", "W", "W", "W", "W","W", "W", "W"},
         };
 
-        Battlefield2 = new MapInfo(10,10);
+        Battlefield2 = new MapInfo("Medium Battlefield", 10,10);
         for (int i=0 ; i < Battlefield2.width ; ++i) {
             for (int j = 0; j < Battlefield2.height ; ++j) {
                 Battlefield2.setTileInfo(i, j, infos.get(mapData[i][j]));
@@ -126,7 +127,7 @@ public class MapList {
                 {"W", "F", "F", "F", "F", "F", "F","M", "F", "F", "M", "F", "F", "F", "F", "F", "F","F", "F", "W"},
                 {"W", "W", "W", "W", "W", "W", "W","W", "W", "W", "W", "W", "W", "W", "W", "W", "W","W", "W", "W"},        };
 
-        Battlefield3 = new MapInfo(42,20);
+        Battlefield3 = new MapInfo("Huge Battlefield",42,20);
         for (int i=0 ; i < Battlefield3.width ; ++i) {
             for (int j = 0; j < Battlefield3.height ; ++j) {
                 Battlefield3.setTileInfo(i, j, infos.get(mapData[i][j]));
