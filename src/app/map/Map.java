@@ -1,20 +1,20 @@
 package app.map;
 
 import Graphics.Vector2i;
-import System.*;
 
 import java.util.Collection;
 import java.util.List;
 
+//TODO Remove draw features to let Game draw itself
 public abstract class Map
 {
     protected List<Vector2i>[] spawnPoints;
 
     protected Tile[][] world;
 
-    public abstract void drawFloor(int x, int y, int w, int h, RenderTarget target);
+    //TODO (removed?) public abstract void drawFloor(int x, int y, int x2, int y2, RenderTarget target);
 
-    public abstract void drawStruct(int x, int y, int w, int h, RenderTarget target);
+    //TODO (removed?) public abstract void drawStruct(int x, int y, int x2, int y2, RenderTarget target);
 
     public abstract void setSpawnPoints(Collection<Vector2i> spawnPoints, int player);
 
