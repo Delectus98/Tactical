@@ -188,7 +188,7 @@ public class Line
 
     }
 
-    //Todo : seems to have some problems (lowLeft)
+    //Todo : all but supLeft & supRight ?
     public static List<Vector2i> getHidden(Unite unit, Map map)
     {
         ArrayList<Vector2i> hidden = new ArrayList<Vector2i>();
@@ -219,6 +219,7 @@ public class Line
                                 {
                                     if (j - pos.y == 1) //on est collé à un obstacle
                                     {
+                                        System.out.println("we herehh");
                                         //on prends les coins superieurs
                                         coin1 = new Vector2f(i, j + 1);
                                         coin2 = new Vector2f(i + 1, j + 1);
@@ -236,8 +237,9 @@ public class Line
                                     supRight.put(tile, new MyPair<>(fstLine, sndLine));
                                 } else if (j == pos.y) //on est sur la même ligne (GAUCHE)
                                 {
-                                    if (pos.x - j == 1) //obstacle collé
+                                    if (pos.x - i == 1) //obstacle collé
                                     {
+                                        System.out.println("we here");
                                         //on prends les coins gauches
                                         coin1 = new Vector2f(i, j);
                                         coin2 = new Vector2f(i, j + 1);
@@ -302,8 +304,9 @@ public class Line
                             {
                                 if (j == pos.y) //même ligne (DROITE)
                                 {
-                                    if (pos.y - j == 1) //obst collé
+                                    if (i - pos.x == 1) //obst collé
                                     {
+                                        System.out.println("we here ?/??");
                                         //on prends les coins droits
                                         coin1 = new Vector2f(i + 1, j);
                                         coin2 = new Vector2f(i + 1, j + 1);
@@ -353,8 +356,8 @@ public class Line
             {
                 if (key != bis.getKey())
                 {
-                    //on regarde le point en bas à gauche
-                    Vector2f x = new Vector2f(bis.getKey().x, bis.getKey().y);
+                    //on regarde le point en bas à gauche // supgauche
+                    Vector2f x = new Vector2f(bis.getKey().x, bis.getKey().y + 1);
                     if (pointBetweenTwoLines(x, value.getFst(), value.getSnd()))
                     {
                         supLeft.put(key, new MyPair<Vector3f>(value.getFst(), bis.getValue().getSnd()));
@@ -386,10 +389,23 @@ public class Line
                 if (key != bis.getKey())
                 {
                     //on regarde le point sup gauche
-                    Vector2f x = new Vector2f(bis.getKey().x, bis.getKey().y + 1);
+                    //todo le point inf gauche ?
+                    Vector2f x = new Vector2f(bis.getKey().x, bis.getKey().y);
                     if (pointBetweenTwoLines(x, value.getFst(), value.getSnd()))
                     {
-                        supRight.put(key, new MyPair<Vector3f>(value.getFst(), bis.getValue().getSnd()));
+                        for (int i = bis.getKey().x; i < world.length; i++)
+                        {
+                            for (int j = bis.getKey().y; j < world[i].length; j++)
+                            {
+                                if (tileIsBetween2Lines(new Vector2i(i, j), supRight.get(key).fst, supRight.get(bis.getKey()).snd) && !(i == pos.x && j == pos.y))
+                                {
+                                    if (!hidden.contains(new Vector2i(i, j)))
+                                    {
+                                        hidden.add(new Vector2i(i, j));
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
