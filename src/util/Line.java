@@ -219,7 +219,6 @@ public class Line
                                 {
                                     if (j - pos.y == 1) //on est collé à un obstacle
                                     {
-                                        System.out.println("we herehh");
                                         //on prends les coins superieurs
                                         coin1 = new Vector2f(i, j + 1);
                                         coin2 = new Vector2f(i + 1, j + 1);
@@ -239,7 +238,6 @@ public class Line
                                 {
                                     if (pos.x - i == 1) //obstacle collé
                                     {
-                                        System.out.println("we here");
                                         //on prends les coins gauches
                                         coin1 = new Vector2f(i, j);
                                         coin2 = new Vector2f(i, j + 1);
@@ -253,7 +251,7 @@ public class Line
                                     fstLine = computeLine(startOfLines, coin1);
                                     sndLine = computeLine(startOfLines, coin2);
                                     supLeft.put(tile, new MyPair<>(fstLine, sndLine));
-                                    lowLeft.put(tile, new MyPair<>(fstLine, sndLine));
+                                    lowLeft.put(tile, new MyPair<>(sndLine, fstLine));
                                 } else //on est dans la partie strict sup gauche
                                 {
                                     //on prends les coins basGauche et supDroit
@@ -306,7 +304,6 @@ public class Line
                                 {
                                     if (i - pos.x == 1) //obst collé
                                     {
-                                        System.out.println("we here ?/??");
                                         //on prends les coins droits
                                         coin1 = new Vector2f(i + 1, j);
                                         coin2 = new Vector2f(i + 1, j + 1);
@@ -383,7 +380,6 @@ public class Line
         {
             Vector2i key = entry.getKey();
             MyPair<Vector3f> value = entry.getValue();
-            System.out.println(key + " -> " + value);
             for (HashMap.Entry<Vector2i, MyPair<Vector3f>> bis : supRight.entrySet())
             {
                 if (key != bis.getKey())
@@ -434,11 +430,21 @@ public class Line
                 if (key != bis.getKey())
                 {
                     //on regarde le point sup à gauche
-                    Vector2f x = new Vector2f(bis.getKey().x, bis.getKey().y + 1);
+                    Vector2f x = new Vector2f(bis.getKey().x, bis.getKey().y+1);
                     if (pointBetweenTwoLines(x, value.getFst(), value.getSnd()))
                     {
-                        lowLeft.put(key, new MyPair<Vector3f>(value.getFst(), bis.getValue().getSnd()));
-                        value = lowLeft.get(key);
+                        for(int i = 0; i <= bis.getKey().x; i++)
+                        {
+                            for (int j = 0; j<= bis.getKey().y; j++)
+                            {
+                                if (tileIsBetween2Lines(new Vector2i(i, j), lowLeft.get(key).fst, lowLeft.get(bis.getKey()).snd)
+                                && !hidden.contains(new Vector2i(i, j)))
+                                {
+                                    hidden.add(new Vector2i(i,j));
+                                }
+                            }
+                        }
+                        //todo
                     }
                 }
             }
