@@ -7,7 +7,6 @@ import app.Unite;
 import app.map.Map;
 import app.map.Tile;
 
-import java.lang.invoke.VolatileCallSite;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -438,7 +437,7 @@ public class Line
                             for (int j = 0; j<= bis.getKey().y; j++)
                             {
                                 if (tileIsBetween2Lines(new Vector2i(i, j), lowLeft.get(key).fst, lowLeft.get(bis.getKey()).snd)
-                                && !hidden.contains(new Vector2i(i, j)))
+                                        && !hidden.contains(new Vector2i(i, j)))
                                 {
                                     hidden.add(new Vector2i(i,j));
                                 }
