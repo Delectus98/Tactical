@@ -33,7 +33,7 @@ public class Main
 
         @Override
         public short getFov() {
-            return 5;
+            return 10;
         }
 
         @Override
@@ -119,15 +119,12 @@ public class Main
         shader.bind();
         GL20.glUniform1f(shader.getUniformLocation("colorRatio"), 0.2f);
 
-        MapList.Battlefield1.save();
-        MapList.Battlefield2.save();
-        MapList.Battlefield3.save();
         /*MapInfo mapInfo = MapInfo.loadFromFile("Small Battlefield.build");
         MapInfo mapInfo = MapInfo.loadFromFile("Medium Battlefield.build");*/
-        MapInfo mapInfo = MapInfo.loadFromFile("Huge Battlefield.build");
+        //MapInfo mapInfo = MapInfo.loadFromFile("Huge Battlefield.build");
 
-        //Map map = new MapImpl(MapList.Battlefield3);
-        Map map = new MapImpl(mapInfo);
+        Map map = new MapImpl(MapList.Example1);
+        //Map map = new MapImpl(mapInfo);
         Player p1 = new Player("P1");
         Unite unite = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
         unite.setMapPosition(new Vector2i(1, 1));
