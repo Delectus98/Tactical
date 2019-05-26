@@ -1,8 +1,6 @@
 package app.map;
 
 import Graphics.ConstTexture;
-import Graphics.Vector2f;
-import System.*;
 import Graphics.Vector2i;
 import util.ResourceHandler;
 
@@ -55,7 +53,7 @@ public class MapImpl extends Map {
     }
 
     /**
-     * Sets a
+     * Sets a specific spawn area for specified player
      * @param spawnPoints
      * @param player
      */
