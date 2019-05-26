@@ -11,10 +11,12 @@ public class MapList {
    public static MapInfo Battlefield1;
    public static MapInfo Battlefield2;
    public static MapInfo Battlefield3;
+   public static MapInfo Example1;
    static {
        loadBattleField1();
        loadBattleField2();
        loadBattleField3();
+       loadExample1();
    }
 
    private static void loadBattleField1(){
@@ -131,6 +133,46 @@ public class MapList {
         for (int i=0 ; i < Battlefield3.width ; ++i) {
             for (int j = 0; j < Battlefield3.height ; ++j) {
                 Battlefield3.setTileInfo(i, j, infos.get(mapData[i][j]));
+            }
+        }
+    }
+
+    private static void loadExample1(){
+        HashMap<String, MapInfo.TileInfo> infos = new HashMap<>();
+
+        infos.putIfAbsent("F", new MapInfo.TileInfo("res/floor.png", new FloatRect(0,0,64,64), false));
+        infos.putIfAbsent("S1", new MapInfo.TileInfo("res/floor.png", new FloatRect(64,0,64,64), true, 0));
+        infos.putIfAbsent("S2", new MapInfo.TileInfo("res/floor.png", new FloatRect(64,0,64,64), true, 1));
+        infos.putIfAbsent("W", new MapInfo.TileInfo("res/wall.png", new FloatRect(0,0,64,64), true));
+        infos.putIfAbsent("M", new MapInfo.TileInfo("res/wall.png", new FloatRect(64,0,64,64), true));
+
+        String[][] mapData = {
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "F", "F", "F", "W", "W", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "F", "F", "F", "W", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "W", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "F", "F", "F", "F", "W", "W", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","W", "W", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","W", "F", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "F", "F", "F", "F", "W", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "W", "F", "F","F", "F", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "W", "F", "F", "F","F", "F", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "W", "F", "F", "F","F", "W", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "W", "W", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F","F", "F", "F", "F", "F", "F", "F", "F", "F", "F","F", "F", "F"},
+        };
+
+        Example1 = new MapInfo("Medium Example", 20,20);
+        for (int i=0 ; i < Example1.width ; ++i) {
+            for (int j = 0; j < Example1.height ; ++j) {
+                Example1.setTileInfo(i, j, infos.get(mapData[i][j]));
             }
         }
     }
