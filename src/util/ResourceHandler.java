@@ -1,20 +1,25 @@
 package util;
 
 
-import Graphics.ConstShader;
-import Graphics.ConstTexture;
-import Graphics.Shader;
-import Graphics.Texture;
+import Graphics.*;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ResourceHandler {
+public final class ResourceHandler {
     private ResourceHandler(){}
 
     private static Map<String, Texture> textures = new HashMap<>();
+    private static Map<String, FontFamily> fonts = new HashMap<>();
     private static Map<String, Shader> shaders = new HashMap<>();
+    //private static Map<String, Sound> sounds = new HashMap<>();
+
+    public void release() {
+        textures.forEach((s,t) -> t.free());
+        //fonts.forEach((s,f) -> f.free());
+        shaders.forEach((s,sh) -> sh.free());
+    }
 
     public static ConstTexture loadTexture(String file, String name) throws IOException {
         ConstTexture t = textures.get(file);
@@ -44,7 +49,24 @@ public class ResourceHandler {
     public static ConstShader getShader(String name) {
         return shaders.get(name);
     }
+
+
+    public static FontFamily loadFont(String file, int pixel, String name) throws IOException {
+        FontFamily s = fonts.get(name);
+        if (s == null) {
+            FontFamily tmp = new FontFamily(file, pixel);
+            s = tmp;
+            fonts.put(name, tmp);
+        }
+        return s;
+    }
+
+    public static FontFamily getFont(String name) {
+        return fonts.get(name);
+    }
 /*
     public static ConstSound loadSound(String sound) throws IOException {}
+
+    public static ConstSound getSound(String name) {}
 */
 }
