@@ -12,42 +12,84 @@ import System.*;
 public class GameInput
 {
     private Camera2D cam;
+    private Camera2D hud;
     private Viewport viewport;
 
     private Keyboard keyboard;
     private Mouse mouse;
 
-    private GameInput(Camera2D cam, Viewport viewport, Mouse mouse, Keyboard keyboard)
+    public GameInput(Camera2D cam, Camera2D hud, Viewport viewport, Mouse mouse, Keyboard keyboard)
     {
         this.cam = cam;
+        this.hud = hud;
         this.viewport = viewport;
         this.mouse = mouse;
         this.keyboard = keyboard;
     }
 
     // keyboard methods
+
+    /**
+     * Gives keyboard interface to manage key input.
+     * @return keyboard interface
+     */
     public Keyboard getKeyboard()
     {
         return keyboard;
     }
 
     // mouse methods
+    /**
+     * Checks if left mouse is clicked.
+     * @return true if left mouse is clicked else false.
+     */
     public boolean isLeftPressed()
     {
         return mouse.isButtonPressed(Mouse.Button.Left);
     }
 
+    /**
+     * Checks if right mouse is clicked.
+     * @return true if right mouse is clicked else false.
+     */
     public boolean isRightPressed()
     {
         return mouse.isButtonPressed(Mouse.Button.Right);
     }
 
-    public Vector2f getMousePosition()
+    /**
+     * Gives the mouse position relative to game screen.
+     * @return the mouse position relative to game screen.
+     */
+    public Vector2f getMousePosition() {
+        return mouse.getRelativePosition();
+    }
+
+    /**
+     * Gives the mouse position relative to map camera and viewport.
+     * @return the mouse position relative to map camera and viewport.
+     */
+    public Vector2f getMousePositionOnMap()
     {
         return WindowUtils.mapCoordToPixel(mouse.getRelativePosition(), viewport, cam);
     }
 
+    /**
+     * Gives the mouse position relative to hud camera and viewport.
+     * @return the mouse position relative to hud camera and viewport.
+     */
+    public Vector2f getMousePositionOnHUD()
+    {
+        return WindowUtils.mapCoordToPixel(mouse.getRelativePosition(), viewport, hud);
+    }
+
     // window methods
+
+    /**
+     * Gives the area on screen where the current player game is rendering
+     * @return the area on screen where the current player game is rendering
+     * @see GameInput#getMousePosition() to checks if mouse position is contained by the area
+     */
     public FloatRect getFrameRectangle()
     {
         return new FloatRect(viewport.getTopLeftCorner().x,  viewport.getTopLeftCorner().y, viewport.getDimension().x, viewport.getDimension().y);
