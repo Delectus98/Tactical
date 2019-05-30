@@ -12,11 +12,12 @@ public abstract class Action
     // définit un context de jeu pour pouvoir modifier certains paramètres
 
     /**
+     *
      * Defines a game context (where the action is done).
-     * Useful when Action is send to network.
+     * Useful when Action is send to network to init 'transient" attributes.
      * @param gameContext context
      */
-    public void setContext(Game gameContext)
+    public void build(Game gameContext)
     {
         this.game = gameContext;
     }
