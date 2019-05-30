@@ -67,7 +67,9 @@ public class ShootingManager extends ActionManager {
             } else {
                 selectMode = true;
             }
-        } else {
+        }
+
+        if (!selectMode) {
             if (input.getKeyboard().isKeyPressed(AZERTYLayout.HOME.getKeyID())) {
                 selectMode = true;
             } else {
@@ -106,7 +108,7 @@ public class ShootingManager extends ActionManager {
     @Override
     public void drawAboveStruct(RenderTarget target)
     {
-        for (RectangleShape rectangle : rectangles) {
+        if (!selectMode) for (RectangleShape rectangle : rectangles) {
             target.draw(rectangle);
         }
         if (!selectMode) target.draw(selected);
@@ -136,7 +138,7 @@ public class ShootingManager extends ActionManager {
 
     @Override
     public boolean isAvailable() {
-        return selectedWeapon != null && selectedWeapon.getAmunition() > 0 && p2 != null /*&& selectedWeapon.isInRange((int)(p2.sum(p1.neg())).length())*/;
+        return selectedWeapon != null && selectedWeapon.getAmmunition() > 0 && p2 != null /*&& selectedWeapon.isInRange((int)(p2.sum(p1.neg())).length())*/;
     }
 
     @Override
