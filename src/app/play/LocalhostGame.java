@@ -7,7 +7,10 @@ import app.Game;
 import app.Player;
 import app.Unite;
 import app.actions.Action;
+import app.actions.ActionManager;
+import app.actions.ShootingManager;
 import app.map.Map;
+import util.GameInput;
 import util.Line;
 import util.ResourceHandler;
 import util.WindowUtils;
@@ -30,10 +33,13 @@ public class LocalhostGame extends Game {
     private boolean isRunning = false;
 
     private Action currentAction = null;
+    private ActionManager manager = null;
     private boolean inAction = false;
     private Unite selectedUnite = null;
     private Keyboard keyboard;
     private Mouse mouse;
+
+    private GameInput inputs[];
 
     private Set<Vector2i>[] visibles;
 
@@ -78,6 +84,15 @@ public class LocalhostGame extends Game {
         mapCam[1] = new Camera2D(new Vector2f(context.getDimension().x * MAP_WIDTH_PERCENT, context.getDimension().y * MAP_HEIGHT_PERCENT));
         hudCam[1] = new Camera2D(new Vector2f(context.getDimension().x * MAP_WIDTH_PERCENT, context.getDimension().y * MAP_HEIGHT_PERCENT));
         viewports[1] = new Viewport(new FloatRect(mapCam[0].getDimension().x, 0, mapCam[1].getDimension().x, mapCam[1].getDimension().y));
+
+        updateFOG();
+
+        inputs = new GameInput[2];
+        inputs[0] = new GameInput(mapCam[0], hudCam[0], viewports[0], mouse, keyboard);
+        inputs[1] = new GameInput(mapCam[1], hudCam[1], viewports[1], mouse, keyboard);
+
+        manager = new ShootingManager(p1.getUnites().get(0), this, inputs[0]);
+
     }
 
     @Override
@@ -160,6 +175,8 @@ public class LocalhostGame extends Game {
     }
 
     private void updateUserInput(ConstTime time) {
+        manager.updatePreparation(time);
+
         if (mouse.isButtonPressed(Mouse.Button.Left)) {
             Vector2f pos = WindowUtils.mapCoordToPixel(mouse.getRelativePosition(), viewports[currentPlayer], mapCam[currentPlayer]);
             System.out.println(pos.x + ":" + pos.y);
@@ -365,14 +382,22 @@ public class LocalhostGame extends Game {
             drawMapFloor(x, y, x2, y2, target, 0);
             if (currentPlayer == 0 && currentAction != null)
                 currentAction.drawAboveFloor(target);
+            if (currentPlayer == 0 && manager != null)
+                manager.drawAboveFloor(target);
             drawUnite(target, 0);
             if (currentPlayer == 0 && currentAction != null)
                 currentAction.drawAboveEntity(target);
+            if (currentPlayer == 0 && manager != null)
+                manager.drawAboveEntity(target);
             drawMapStruct(x, y, x2, y2, target, 0);
             if (currentPlayer == 0 && currentAction != null)
                 currentAction.drawAboveStruct(target);
+            if (currentPlayer == 0 && manager != null)
+                manager.drawAboveStruct(target);
             if (currentPlayer == 0 && currentAction != null)
                 currentAction.drawAboveHUD(target);
+            if (currentPlayer == 0 && manager != null)
+                manager.drawAboveHUD(target);
 
             // on affiche au niveau du hud
             target.setCamera(hudCam[0]);
