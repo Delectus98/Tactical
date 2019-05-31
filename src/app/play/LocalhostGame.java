@@ -10,10 +10,7 @@ import app.actions.Action;
 import app.actions.ActionManager;
 import app.actions.ShootingManager;
 import app.map.Map;
-import util.GameInput;
-import util.Line;
-import util.ResourceHandler;
-import util.WindowUtils;
+import util.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -98,6 +95,8 @@ public class LocalhostGame extends Game {
     @Override
     public void endTurn() {
         currentPlayer = (currentPlayer + 1) % 2;
+
+        players[currentPlayer].getUnites().forEach(Unite::resetTurn);
     }
 
     @Override
@@ -217,79 +216,17 @@ public class LocalhostGame extends Game {
         visibles[0].clear();
         visibles[1].clear();
 
-        /*players[0].getUnites().forEach(
-                u -> {
-                    Vector2i t = u.getMapPosition();
-                    for (int i = Math.max(0, t.x - u.getFov()); i < t.x + u.getFov() && i < map.getWidth(); ++i) {
-                        for (int j = Math.max(0, t.y - u.getFov()); j < t.y + u.getFov() && j < map.getHeight(); ++j) {
-                            visibles[0].add(new Vector2i(i, j));
-                        }
-                    }
-                }
-
-        );
-        players[1].getUnites().forEach(
-                u -> {
-                    Vector2i t = u.getMapPosition();
-                    for (int i = Math.max(0, t.x - u.getFov()); i < t.x + u.getFov() && i < map.getWidth(); ++i) {
-                        for (int j = Math.max(0, t.y - u.getFov()); j < t.y + u.getFov() && j < map.getHeight(); ++j) {
-                            visibles[1].add(new Vector2i(i, j));
-                        }
-                    }
-                }
-
-        );*/
-
+        //visibles[0] :
+        for (Unite unit : players[0].getUnites())
         {
-            ArrayList<Vector2i> square = new ArrayList<>();
-            players[0].getUnites().forEach(
-                    u -> {
-                        Vector2i t = u.getMapPosition();
-                        for (int i = Math.max(0, t.x - u.getFov()); i < t.x + u.getFov() && i < map.getWidth(); ++i) {
-                            for (int j = Math.max(0, t.y - u.getFov()); j < t.y + u.getFov() && j < map.getHeight(); ++j) {
-                                square.add(new Vector2i(i, j));
-                            }
-                        }
-                    }
-
-            );
-
-
-            players[0].getUnites().forEach(
-                    u -> {
-                        square.removeAll(Line.getHidden(u, map));
-                        visibles[0].addAll(
-                                square
-                        );
-                    }
-            );
+            visibles[0].addAll(MapUtil.getVisibles(unit, map));
         }
 
+        //visibles[1] :
+        for (Unite unit : players[1].getUnites())
         {
-            ArrayList<Vector2i> square = new ArrayList<>();
-            players[1].getUnites().forEach(
-                    u -> {
-                        Vector2i t = u.getMapPosition();
-                        for (int i = Math.max(0, t.x - u.getFov()); i < t.x + u.getFov() && i < map.getWidth(); ++i) {
-                            for (int j = Math.max(0, t.y - u.getFov()); j < t.y + u.getFov() && j < map.getHeight(); ++j) {
-                                square.add(new Vector2i(i, j));
-                            }
-                        }
-                    }
-
-            );
-
-
-            players[1].getUnites().forEach(
-                    u -> {
-                        square.removeAll(Line.getHidden(u, map));
-                        visibles[1].addAll(
-                                square
-                        );
-                    }
-            );
+            visibles[1].addAll(MapUtil.getVisibles(unit, map));
         }
-        //TODO compute(visibles[currentPlayer]);
     }
 
     @Override
@@ -301,6 +238,9 @@ public class LocalhostGame extends Game {
         } else {
             updateUserInput(time);
         }
+
+        inputs[0].reset();
+        inputs[1].reset();
     }
 
     //déssine le sol (ce que voit la camera)
@@ -394,13 +334,14 @@ public class LocalhostGame extends Game {
                 currentAction.drawAboveStruct(target);
             if (currentPlayer == 0 && manager != null)
                 manager.drawAboveStruct(target);
+
+            // on affiche au niveau du hud
+            target.setCamera(hudCam[0]);
+
             if (currentPlayer == 0 && currentAction != null)
                 currentAction.drawAboveHUD(target);
             if (currentPlayer == 0 && manager != null)
                 manager.drawAboveHUD(target);
-
-            // on affiche au niveau du hud
-            target.setCamera(hudCam[0]);
         }
 
         ///draw second player screen
@@ -449,6 +390,9 @@ public class LocalhostGame extends Game {
      */
     @Override
     public void handle(Event event) {
+        inputs[0].update(event);
+        inputs[1].update(event);
+
         if (event.type == Event.Type.RESIZE) {
             //hudCam[0].setDimension(new Vector2f(event.resizeX / 2.f, event.resizeY));
             mapCam[0].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
