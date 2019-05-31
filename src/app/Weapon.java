@@ -1,28 +1,43 @@
 package app;
 
+import Graphics.Sprite;
+import System.ConstTime;
+import Graphics.FloatRect;
 import Graphics.Vector2i;
 import app.map.Map;
-
-import System.*;
+import app.weapon.Impact;
 
 import java.util.List;
 
 public abstract class Weapon
 {
-    protected int amunition; //-1 = infini, sinon utile pour armes speciales
-    protected Vector2i range;
-    protected float[] precision; //= new float[range.fst - range.snd];
-    protected int damagePerRounds;
-    protected int rounds;
-    protected int cout; //negatif = vide les PA si déjà déplacer; sinon val absolue
 
-    public abstract int damageInflected(int distance); //calcul des degats d'apres la distance de tir
+    public static class WeaponInfo {
+        private String texture;
+        private FloatRect rect;
+    }
 
-    public abstract boolean isInRange(int distance);
+    public static class ProjectileInfo {
+        private String texture;
+        private List<FloatRect> spriteAnimation;
+        private ConstTime frameDuration;
+        //private Trajectory trajectory;
 
-    public abstract int getAmunition(); //-1 = infini, sinon utile pour armes speciales
+        private float radian;
+    }
 
-    public abstract void draw(RenderTarget target);
+    public abstract boolean isInRange(float distance);
 
-    public abstract void shot(Map map, List<Unite> unites, Vector2i start, Vector2i end); //toutes les unites
+    public abstract int getCost(); //negatif = vide les PA si déjà déplacé; sinon val absolue
+
+    public abstract int getAmmunition(); //-1 = infini, sinon utile pour armes speciales
+
+    public abstract float getAccuracy(float distance);
+
+    public abstract Impact getImpactZone(Vector2i target, Map map);
+
+    public abstract Sprite getSprite();
+    //public abstract ProjectileInfo ...
+
+    //public abstract WeaponInfo ...
 }
