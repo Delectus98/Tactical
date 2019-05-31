@@ -266,7 +266,7 @@ public class MapUtil
                 for (int j = key.y; j <= pos.y + unit.getFov() /*todo : ou pos.y + fov ???*/; j++)
                 {
                     if (validIndex(world, i, j) && tileIsBetween2Lines(new Vector2i(i, j), value.getFst(), value.getSnd())
-                            && i != pos.x && j != pos.y)
+                            && !(i == pos.x && j == pos.y))
                     {
                         if (!hidden.contains(new Vector2i(i, j)))
                         {
@@ -336,7 +336,7 @@ public class MapUtil
                 for (int j = unit.getMapPosition().y - unit.getFov(); j <= key.y; j++)
                 {
                     if (validIndex(world, i, j) && tileIsBetween2Lines(new Vector2i(i, j), value.getFst(), value.getSnd())
-                            && i != pos.x && j != pos.y)
+                            && !(i == pos.x && j == pos.y))
                     {
                         if (!hidden.contains(new Vector2i(i, j)))
                         {
@@ -401,7 +401,7 @@ public class MapUtil
                 for (int j = key.y; j <= unit.getMapPosition().y + unit.getFov(); j++)
                 {
                     if (validIndex(world, i, j) && tileIsBetween2Lines(new Vector2i(i, j), value.getFst(), value.getSnd())
-                            && i!= pos.x && j != pos.y)
+                            && !(i== pos.x && j == pos.y))
                     {
                         if (!hidden.contains(new Vector2i(i, j)))
                         {
@@ -466,7 +466,7 @@ public class MapUtil
                 for (int j = unit.getMapPosition().y - unit.getFov(); j <= key.y; j++)
                 {
                     if (validIndex(world, i, j) && tileIsBetween2Lines(new Vector2i(i, j), value.getFst(), value.getSnd())
-                            && i!= pos.x && j != pos.y)
+                            && !(i == pos.x && j == pos.y))
                     {
                         if (!hidden.contains(new Vector2i(i, j)))
                         {
