@@ -109,13 +109,13 @@ public class Main
 
     public static void main(String[] args) throws IOException {
         GLFWWindow window = new GLFWWindow(VideoMode.getDesktopMode(), "Tactical", WindowStyle.DEFAULT);
-        //Game current = new LocalhostGame(window);
 
         ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
         ResourceHandler.loadTexture("res/wall.png", "res/wall.png");
         ResourceHandler.loadTexture("res/character.png", "character");
+        ResourceHandler.loadFont("res/font.ttf", 20,"default");
 
-        ConstShader shader = ResourceHandler.loadShader("res/shader/grey.vert", "res/shader/grisant.frag", "grey");
+        ConstShader shader = ResourceHandler.loadShader("res/shader/default.vert", "res/shader/grisant.frag", "grey");
         shader.bind();
         GL20.glUniform1f(shader.getUniformLocation("colorRatio"), 0.2f);
 
@@ -123,7 +123,7 @@ public class Main
         MapInfo mapInfo = MapInfo.loadFromFile("Medium Battlefield.build");*/
         //MapInfo mapInfo = MapInfo.loadFromFile("Huge Battlefield.build");
 
-        Map map = new MapImpl(MapList.Example1);
+        Map map = new MapImpl(MapList.Battlefield3);
         //Map map = new MapImpl(mapInfo);
         Player p1 = new Player("P1");
         Unite unite = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
@@ -157,6 +157,7 @@ public class Main
 
                 if (event.type == Event.Type.CLOSE)
                 {
+                    ResourceHandler.free();
                     window.close();
                 }
             }
