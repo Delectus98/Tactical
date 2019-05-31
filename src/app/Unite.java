@@ -68,6 +68,10 @@ public abstract class Unite
 
     public abstract short getSparePoints();
 
+    /**
+     * Reset all action points to maximum.
+     * Trigger specific unite effect.
+     */
     public abstract void resetTurn(); //reset les pa et autres bonus suivant l'unite
 
     /**
