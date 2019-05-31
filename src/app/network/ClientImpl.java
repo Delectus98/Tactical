@@ -2,22 +2,23 @@ package app.network;
 
 import Graphics.Vector2f;
 import Graphics.Vector2i;
-import app.actions.Running;
 import app.actions.Shooting;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
 import java.io.IOException;
+import java.util.PriorityQueue;
 
 
-public class ClientImpl extends Listener {
+public class ClientImpl extends Listener{
 
+    private PriorityQueue<Packet> packets = new PriorityQueue<>(new Packet.Comparator());
     private boolean running;
-    private Client c;
-    private String ip;
-    private int tcpPort;
-    private int udpPort;
+    protected final Client c;
+    protected final String ip;
+    protected final int tcpPort;
+    protected final int udpPort;
 
     public ClientImpl(String ip, int tcp, int udp) throws IOException {
         this.ip = ip;
@@ -31,7 +32,6 @@ public class ClientImpl extends Listener {
         c.getKryo().register(Vector2i.class);
         c.getKryo().register(Vector2f.class);
         c.getKryo().register(Shooting.class);
-        c.getKryo().register(Running.class);
 
         c.start();
         c.connect(1000, ip, tcp, udp);
@@ -41,17 +41,27 @@ public class ClientImpl extends Listener {
         running = true;
     }
 
-    public boolean isRunning(){
+    public synchronized boolean isRunning(){
         return running;
     }
 
-    public void close() {
+    public synchronized void close() {
         running = false;
         c.close();
     }
 
-    public void send(Object o) {
-        c.sendTCP(o);
+    public synchronized void send(Object o) {
+        if (this.isRunning()) {
+            c.sendTCP(o);
+        }
+    }
+
+    public synchronized boolean isReceptionEmpty() {
+        return packets.isEmpty();
+    }
+
+    public synchronized Packet received(){
+        return packets.peek();
     }
 
     @Override
@@ -61,23 +71,9 @@ public class ClientImpl extends Listener {
     }
 
     @Override
-    public void received(Connection connection, Object p) {
-        if (p instanceof PlayerPacket) {
-            System.out.println(((PlayerPacket) p).name);
-        } else if (p instanceof ActionPacket) {
-            System.out.println(((ActionPacket)p).actionId);
-            if (((ActionPacket)p).action instanceof Shooting) {
-                System.out.print("Shooting: ");
-                System.out.println((((ActionPacket)p).action).getCost());
-            } else if (((ActionPacket)p).action instanceof Running) {
-                System.out.print("Running: ");
-                System.out.println((((ActionPacket)p).action).getCost());
-
-            } else {
-                System.out.println("Else");
-            }
-        } else {
-            System.out.println("Try to decode msg!");
+    public synchronized void received(Connection connection, Object p) {
+        if (p instanceof Packet) {
+            packets.add((Packet)p);
         }
     }
 
@@ -87,13 +83,15 @@ public class ClientImpl extends Listener {
         this.close();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         ClientImpl c = new ClientImpl("localhost", 5002, 5003);
 
         System.out.println("Try to receive msg!");
 
         while (c.isRunning()) {
             //c.c.update(0);
+            System.out.println("Client is running");
+            Thread.sleep(100);
         }
     }
 }

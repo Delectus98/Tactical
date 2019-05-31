@@ -3,22 +3,22 @@ package app.network;
 import Graphics.Vector2f;
 import System.*;
 import Graphics.Vector2i;
-import app.actions.Running;
 import app.actions.Shooting;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.PriorityQueue;
 
 
 public class ServerImpl extends Listener {
 
+    private PriorityQueue<Packet> packets = new PriorityQueue<>(new Packet.Comparator());
     private boolean running;
-    private Server s;
-    private int tcpPort;
-    private int udpPort;
+    protected final Server s;
+    protected final int tcpPort;
+    protected final int udpPort;
 
     public ServerImpl(int tcp, int udp) throws IOException {
         this.tcpPort = tcp;
@@ -26,13 +26,11 @@ public class ServerImpl extends Listener {
 
         s = new Server();
 
-
         s.getKryo().register(PlayerPacket.class);
         s.getKryo().register(ActionPacket.class);
         s.getKryo().register(Vector2i.class);
         s.getKryo().register(Vector2f.class);
         s.getKryo().register(Shooting.class);
-        s.getKryo().register(Running.class);
 
         s.start();
         s.bind(tcp, udp);
@@ -42,16 +40,16 @@ public class ServerImpl extends Listener {
         running = true;
     }
 
-    public boolean isRunning(){
+    public synchronized boolean isRunning(){
         return running;
     }
 
-    public void close() {
+    public synchronized void close() {
         running = false;
         s.close();
     }
 
-    public void send(Object o) {
+    public synchronized void send(Object o) {
         s.sendToAllTCP(o);
     }
 
@@ -61,13 +59,24 @@ public class ServerImpl extends Listener {
     }
 
     @Override
-    public void received(Connection connection, Object p) {
-
+    public synchronized void received(Connection connection, Object p) {
+        if (p instanceof Packet) {
+            ((Packet)p).onReceive(connection.getRemoteAddressTCP().getAddress().toString(), connection.getRemoteAddressTCP().getPort());
+            packets.add((Packet)p);
+        }
     }
 
     @Override
     public void disconnected(Connection connection) {
         System.out.println("disconnection:"+connection.getRemoteAddressTCP());
+    }
+
+    public synchronized boolean isReceptionEmpty() {
+        return packets.isEmpty();
+    }
+
+    public synchronized Packet received(){
+        return packets.peek();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -79,7 +88,6 @@ public class ServerImpl extends Listener {
 
         ActionPacket p2 = new ActionPacket();
         p2.action = new Shooting(new Vector2i(0,0), new Vector2i(0,0), 0,10, Time.seconds(0));
-        //p2.action = new Running();
 
         while (s.isRunning()) {
             s.send(p);
