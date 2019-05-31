@@ -1,9 +1,6 @@
 package app.actions;
 
-import Graphics.Color;
-import Graphics.RectangleShape;
-import Graphics.Vector2f;
-import Graphics.Vector2i;
+import Graphics.*;
 import System.*;
 import System.IO.AZERTYLayout;
 import app.Game;
@@ -11,12 +8,15 @@ import app.Unite;
 import app.Weapon;
 import util.GameInput;
 import util.Line;
+import util.MapUtil;
+import util.ResourceHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ShootingManager extends ActionManager {
+    // map
     private List<RectangleShape> rectangles;
     private RectangleShape touched;
     private RectangleShape selected;
@@ -27,6 +27,11 @@ public class ShootingManager extends ActionManager {
     private Vector2i p2 = null;
     private GameInput input = null;
     private boolean selectMode = true;
+    // hud
+    private RectangleShape hudRect;
+    private Text fstWeapon;
+    private Text sndWeapon;
+    private Text thdWeapon;
 
     public ShootingManager(Unite user, Game game, GameInput input) {
         super(user, game);
@@ -34,7 +39,7 @@ public class ShootingManager extends ActionManager {
 
         p1 = user.getMapPosition();
 
-        selectable = Line.getHidden(user, game.getMap());
+        selectable = MapUtil.getVisibles(user, game.getMap());
         selectable = selectable.stream().filter(v2i -> !game.getCurrentVisibles().contains(v2i)).collect(Collectors.toList());
 
         rectangles = new ArrayList<>();
@@ -50,6 +55,11 @@ public class ShootingManager extends ActionManager {
         selected = new RectangleShape(64, 64);
         selected.setFillColor(Color.Transparent);
         selected.setPosition(p1.x * 64, p1.y * 64);
+
+        hudRect = new RectangleShape(500,500,500, 500);
+        fstWeapon = new Text(ResourceHandler.getFont("default"), /*super.unite.getPrimary().toString()*/"1. First Weapon");
+        sndWeapon = new Text(ResourceHandler.getFont("default"), /*super.unite.getPrimary().toString()*/"2. Second Weapon");
+        thdWeapon = new Text(ResourceHandler.getFont("default"), /*super.unite.getPrimary().toString()*/"3. Third Weapon");
     }
 
     @Override
@@ -58,14 +68,44 @@ public class ShootingManager extends ActionManager {
         if (selectMode) {
             selectMode = false;
 
-            if (input.getKeyboard().isKeyPressed(AZERTYLayout.PAD_1.getKeyID())) {
+            fstWeapon.setPosition(input.getFrameRectangle().w / 2.f - 100, input.getFrameRectangle().h / 2.f - 100);
+            sndWeapon.setPosition(input.getFrameRectangle().w / 2.f - 100, input.getFrameRectangle().h / 2.f);
+            thdWeapon.setPosition(input.getFrameRectangle().w / 2.f - 100, input.getFrameRectangle().h / 2.f + 100);
+
+            if (input.getKeyboard().isKeyPressed(AZERTYLayout.PAD_1.getKeyID()) || input.getKeyboard().isKeyPressed(AZERTYLayout.NUM_1.getKeyID())) {
                 selectedWeapon = super.unite.getPrimary();
-            } else if (input.getKeyboard().isKeyPressed(AZERTYLayout.PAD_2.getKeyID())) {
+            } else if (input.getKeyboard().isKeyPressed(AZERTYLayout.PAD_2.getKeyID()) || input.getKeyboard().isKeyPressed(AZERTYLayout.NUM_2.getKeyID())) {
                 selectedWeapon = super.unite.getSecondary();
-            } else if (input.getKeyboard().isKeyPressed(AZERTYLayout.PAD_3.getKeyID())) {
+            } else if (input.getKeyboard().isKeyPressed(AZERTYLayout.PAD_3.getKeyID()) || input.getKeyboard().isKeyPressed(AZERTYLayout.NUM_3.getKeyID())) {
+                selectedWeapon = super.unite.getMelee();
+            }
+
+            else if (input.isLeftReleased() && fstWeapon.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)) {
+                selectedWeapon = super.unite.getPrimary();
+            } else if (input.isLeftReleased() && sndWeapon.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)) {
+                selectedWeapon = super.unite.getSecondary();
+            } else if (input.isLeftReleased() && thdWeapon.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)) {
                 selectedWeapon = super.unite.getMelee();
             } else {
                 selectMode = true;
+            }
+
+
+            if (fstWeapon.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)) {
+                fstWeapon.move(10,0);
+            } else if (sndWeapon.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)) {
+                sndWeapon.move(10,0);
+            } else if (thdWeapon.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)) {
+                thdWeapon.move(10,0);
+            }
+
+            hudRect.setPosition(input.getFrameRectangle().w / 2.f, input.getFrameRectangle().h / 2.f);
+            hudRect.setOrigin(hudRect.getBounds().w / 2.f, hudRect.getBounds().h / 2.f);
+
+            if (input.getFrameRectangle().contains(mouse.x, mouse.y) && hudRect.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)) {
+                hudRect.setFillColor(new Color(0.5f,0.5f, 0.5f, 0.9f));
+            } else {
+                hudRect.setFillColor(new Color(0.5f,0.5f, 0.5f, 0.5f));
             }
         }
 
@@ -79,7 +119,7 @@ public class ShootingManager extends ActionManager {
 
                     Vector2i tile = new Vector2i(mouse.mul(1.f / 64.f));
 
-                    if (input.isLeftPressed()) {
+                    if (input.isLeftReleased()) {
                         if (!tile.equals(p1) && selectable.contains(tile)) {
                             p2 = tile;
                             selected.setFillColor(Color.White);
@@ -124,7 +164,10 @@ public class ShootingManager extends ActionManager {
     @Override
     public void drawAboveHUD(RenderTarget target)
     {
-        ;
+        if (selectMode) target.draw(hudRect);
+        if (selectMode) target.draw(thdWeapon);
+        if (selectMode) target.draw(fstWeapon);
+        if (selectMode) target.draw(sndWeapon);
     }
 
     @Override
