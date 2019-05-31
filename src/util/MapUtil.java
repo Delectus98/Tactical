@@ -479,7 +479,7 @@ public class MapUtil
         return hidden;
     }
 
-    public List<Vector2i> getVisibles(Unite unit, Map map)
+    public static List<Vector2i> getVisibles(Unite unit, Map map)
     {
         Vector2i pos = unit.getMapPosition();
         ArrayList<Vector2i> ret = new ArrayList<>();
