@@ -17,6 +17,8 @@ public class GameInput
 
     private Keyboard keyboard;
     private Mouse mouse;
+    private boolean leftReleased;
+    private boolean rightReleased;
 
     public GameInput(Camera2D cam, Camera2D hud, Viewport viewport, Mouse mouse, Keyboard keyboard)
     {
@@ -58,6 +60,25 @@ public class GameInput
     }
 
     /**
+     * Checks if left mouse is clicked.
+     * @return true if left mouse is clicked else false.
+     */
+    public boolean isLeftReleased()
+    {
+        return leftReleased;
+    }
+
+    /**
+     * Checks if right mouse is clicked.
+     * @return true if right mouse is clicked else false.
+     */
+    public boolean isRightReleased()
+    {
+        return rightReleased;
+    }
+
+
+    /**
      * Gives the mouse position relative to game screen.
      * @return the mouse position relative to game screen.
      */
@@ -95,4 +116,19 @@ public class GameInput
         return new FloatRect(viewport.getTopLeftCorner().x,  viewport.getTopLeftCorner().y, viewport.getDimension().x, viewport.getDimension().y);
     }
 
+
+    public void reset(){
+        leftReleased = false;
+        rightReleased = false;
+    }
+
+    public void update(Event event) {
+        if (event.type == Event.Type.BUTTONRELEASED) {
+            if (Mouse.Button.Left.getButtonID() == event.keyReleased) {
+                leftReleased = true;
+            } else if (Mouse.Button.Left.getButtonID() == event.keyReleased) {
+                rightReleased = true;
+            }
+        }
+    }
 }
