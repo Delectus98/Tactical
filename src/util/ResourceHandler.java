@@ -20,7 +20,7 @@ public final class ResourceHandler {
      */
     public static void free() {
         textures.forEach((s,t) -> t.free());
-        //fonts.forEach((s,f) -> f.free());
+        fonts.forEach((s,f) -> f.free());
         shaders.forEach((s,sh) -> sh.free());
     }
 
