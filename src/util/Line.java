@@ -1,15 +1,20 @@
 package util;
 
-import Graphics.*;
+import Graphics.Vector2f;
+import Graphics.Vector2i;
+import Graphics.Vector3f;
+import app.Unite;
 import app.map.Map;
 import app.map.Tile;
-import java.util.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class Line
 {
-
     /**
      * Calcule l'equation de la droite entre x et y
      *
@@ -181,4 +186,29 @@ public class Line
                 || (eq1 <= lineSup.z && eq2 >= lineInf.z);
 
     }
+
+    public static void main(String[] args)
+    {
+        HashMap<Integer, Integer> x = new HashMap<>();
+        x.put(0, 1);
+        x.put(1, 2);
+        x.put(2, 3);
+        for (HashMap.Entry<Integer, Integer> entry : x.entrySet())
+        {
+            int key = entry.getKey();
+            int value = entry.getValue();
+            for (HashMap.Entry<Integer, Integer> entry1 : x.entrySet())
+            {
+                if (entry1.getKey() != key)
+                {
+                    if (entry1.getValue() == 2)
+                    {
+                        x.put(1, value);
+                    }
+                }
+            }
+        }
+        System.out.println(x);
+    }
+
 }
