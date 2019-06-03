@@ -1,4 +1,3 @@
-
 package util;
 
 public class MyPair<T> //We created our own Pair because some members of the groupe didnt have them.

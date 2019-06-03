@@ -1,45 +1,66 @@
 package app.actions;
 import System.*;
 import app.Game;
-import app.Unite;
 
+/**
+ * Tool for running action handling
+ */
 public abstract class Action
 {
-    protected Unite unite;
-    protected Game game;
-    private boolean inAction;
+    protected transient Game game;
 
-    public Action(Unite user, Game game){
-        this.unite = user;
-        this.game = game;
-        this.inAction = false;
+    // définit un context de jeu pour pouvoir modifier certains paramètres
+
+    /**
+     * Initialise 'transient' attributes
+     * Defines a game context (where the action is done).
+     * Useful when Action is send to network to init 'transient' attributes.
+     * @param gameContext context
+     */
+    public void build(Game gameContext)
+    {
+        this.game = gameContext;
     }
 
+    /**
+     * Gives the cost of the action
+     * @return the cost of the action
+     */
     public abstract int getCost(); // renvoie le cout de l'action en PA
 
-    public abstract boolean isAvailable(); // renvoie vrai si l'action est possible/disponible <=> renvoie vrai si la préparation est possible
-
-    protected abstract void updatePreparation(ConstTime time); // met a jour la phase préparation où le joueur choisit encore comment elle va se faire
-
-    protected abstract void updateProcess(ConstTime time); // met a jour la phase déroulement de l'action où le joueur regarde l'action
-
-    public final void run() { inAction = true; } // déclanche le déroulement de l'action
-
+    /**
+     * Checks if the action is finished.
+     * @return true if the action is finished.
+     */
     public abstract boolean isFinished(); // l'action s'est bien déroulé et est maintenant terminée
 
-    public abstract boolean isRunning(); // l'action est en train de se derouler
+    // met a jour la phase déroulement de l'action où le joueur regarde l'action
 
-    protected abstract void drawPreparation(RenderTarget target);
+    /**
+     * Updates action progress.
+     * @param time elapsed time since last frame.
+     */
+    public abstract void update(ConstTime time);
 
-    protected abstract void drawProgress(RenderTarget target);
+    /**
+     * Draw stuff above floor (on map)
+     * @param target render target
+     */
+    public abstract void drawAboveFloor(RenderTarget target);
+    /**
+     * Draw stuff above struct (on map)
+     * @param target render target
+     */
+    public abstract void drawAboveStruct(RenderTarget target);
+    /**
+     * Draw stuff above entity (on map)
+     * @param target render target
+     */
+    public abstract void drawAboveEntity(RenderTarget target);
+    /**
+     * Draw stuff above hud (on hud)
+     * @param target render target
+     */
+    public abstract void drawAboveHUD(RenderTarget target);
 
-    public final void draw(RenderTarget target) {
-        if (inAction) drawProgress(target);
-        else drawPreparation(target);
-    }
-
-    public final void update(ConstTime time) {
-        if (inAction) updateProcess(time);
-        else updatePreparation(time);
-    } // met a jour la phase préparation lorsque le joueur choisit puis déroulement lorsque l'action est déclanchée
 }

@@ -1,8 +1,6 @@
 package app.map;
 
 import Graphics.ConstTexture;
-import Graphics.Vector2f;
-import System.*;
 import Graphics.Vector2i;
 import util.ResourceHandler;
 
@@ -16,6 +14,10 @@ public class MapImpl extends Map {
     private int width ;
     private int height ;
 
+    /**
+     * Generates a map using MapInfo that contains data to creates Game Map
+     * @param info map info use to load map
+     */
     public MapImpl(MapInfo info){
         width = info.width;
         height = info.height;
@@ -23,14 +25,9 @@ public class MapImpl extends Map {
         spawnPoints = new ArrayList[2];
         spawnPoints[0] = new ArrayList<>();
         spawnPoints[1] = new ArrayList<>();
-        //spawnPoints = new ArrayList<>();
-        //spawnPoints.add(new ArrayList<>());
-        //spawnPoints.add(new ArrayList<>());
 
         world = new Tile[width][height];
 
-        //info.build(this);
-        //or
         for (int i=0 ; i < width; ++i) {
             for (int j = 0; j < height ; ++j) {
                 MapInfo.TileInfo ti = info.getTileInfo(i, j);
@@ -55,54 +52,68 @@ public class MapImpl extends Map {
         }
     }
 
-
-
-    public MapImpl(int width, int height){
-        world = new Tile[width][height];
-        this.width = width;
-        this.height = height;
-    }
-
-    @Override
-    public void drawFloor(int x, int y, int x2, int y2, RenderTarget target) {
-        for (int i = x ; i < x2 && i < width ; ++i) {
-            for (int j = y ; j < y2 && j < height ; ++j) {
-                this.getWorld()[i][j].drawFloor(target);
-            }
-        }
-    }
-
-    @Override
-    public void drawStruct(int x, int y, int x2, int y2, RenderTarget target) {
-        for (int i = x ; i < x2 && i < width ; ++i) {
-            for (int j = y ; j < y2 && j < height ; ++j) {
-                this.getWorld()[i][j].drawStruct(target);
-            }
-        }
-    }
-
+    /**
+     * Sets a specific spawn area for specified player
+     * @param spawnPoints
+     * @param player
+     */
     @Override
     public void setSpawnPoints(Collection<Vector2i> spawnPoints, int player) {
         super.spawnPoints[player].addAll(spawnPoints);
     }
 
+    /**
+     * Gives world's tiles contained inside map
+     * @return
+     */
     @Override
     public Tile[][] getWorld() {
         return world;
     }
 
+    /**
+     * Gives the total tiles on width side
+     * @return
+     */
     @Override
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Gives the total tiles on height side
+     * @return
+     */
     @Override
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Gives possible spawn points for a player for its own units
+     * @param currentPlayer
+     * @return
+     */
     @Override
     public List<Vector2i> getSpawnPoints(int currentPlayer) {
         return spawnPoints[currentPlayer];
     }
 }
+
+/*@Override
+public void drawFloor(int x, int y, int x2, int y2, RenderTarget target) {
+    for (int i = x ; i < x2 && i < width ; ++i) {
+        for (int j = y ; j < y2 && j < height ; ++j) {
+            this.getWorld()[i][j].drawFloor(target);
+        }
+    }
+}
+
+@Override
+public void drawStruct(int x, int y, int x2, int y2, RenderTarget target) {
+    for (int i = x ; i < x2 && i < width ; ++i) {
+        for (int j = y ; j < y2 && j < height ; ++j) {
+            this.getWorld()[i][j].drawStruct(target);
+        }
+    }
+}*/
