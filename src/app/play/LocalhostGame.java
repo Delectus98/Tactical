@@ -368,7 +368,7 @@ public class LocalhostGame extends Game {
             drawUnite(target, 1);
             if (currentPlayer == 1 && currentAction != null)
                 currentAction.drawAboveEntity(target);
-            drawMapStruct(x, y, x2, y2, target, 0);
+            drawMapStruct(x, y, x2, y2, target, 1);
             if (currentPlayer == 1 && currentAction != null)
                 currentAction.drawAboveStruct(target);
             if (currentPlayer == 1 && currentAction != null)
@@ -396,9 +396,13 @@ public class LocalhostGame extends Game {
         if (event.type == Event.Type.RESIZE) {
             //hudCam[0].setDimension(new Vector2f(event.resizeX / 2.f, event.resizeY));
             mapCam[0].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
+            hudCam[0].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
+            hudCam[0].setCenter(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT / 2.f, event.resizeY * MAP_HEIGHT_PERCENT / 2.f));
             viewports[0].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
 
             mapCam[1].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
+            hudCam[1].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
+            hudCam[1].setCenter(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT / 2.f, event.resizeY * MAP_HEIGHT_PERCENT / 2.f));
             viewports[1].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
             viewports[1].setTopLeftCorner(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, 0.f));
         }
