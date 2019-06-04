@@ -35,8 +35,11 @@ public class CombatRifle extends Weapon {
     }
 
     @Override
-    public Impact getImpactZone(Vector2i target, Map map) {
-        return new Impact();
+    public Impact getImpactZone(Vector2i thrower, Vector2i target, Map map) {
+        Impact i = new Impact();
+        i.add(target, 5);
+        i.add(target, 5);
+        return i;
     }
 
     @Override

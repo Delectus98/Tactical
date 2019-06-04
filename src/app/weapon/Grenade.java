@@ -4,6 +4,7 @@ import Graphics.Sprite;
 import Graphics.Vector2i;
 import app.Weapon;
 import app.map.Map;
+import util.MapUtil;
 
 
 public class Grenade extends Weapon {
@@ -27,7 +28,7 @@ public class Grenade extends Weapon {
 
     @Override
     public float getAccuracy(float distance) {
-        return 1;
+        return 1.F;
     }
 
     @Override
@@ -37,8 +38,13 @@ public class Grenade extends Weapon {
     }
 
     @Override
-    public Impact getImpactZone(Vector2i target, Map map) {
-        return new Impact();
+    public Impact getImpactZone(Vector2i thrower, Vector2i target, Map map) {
+        Impact impact = null;
+
+        // add radius if not wall
+        //impact = new Impact(MapUtil.getVisibles())
+
+        return impact;
     }
 
     @Override

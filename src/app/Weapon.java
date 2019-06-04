@@ -35,7 +35,7 @@ public abstract class Weapon
 
     public abstract Projectile buildProjectile();
 
-    public abstract Impact getImpactZone(Vector2i target, Map map);
+    public abstract Impact getImpactZone(Vector2i thrower, Vector2i target, Map map);
 
     public abstract Sprite getSprite();
 
