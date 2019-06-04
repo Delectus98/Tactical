@@ -47,7 +47,9 @@ public final class ResourceHandler {
      * @return a texture according to a pre-defined name
      */
     public static ConstTexture getTexture(String name){
-        return textures.get(name);
+        ConstTexture tmp = textures.get(name);
+        if (tmp == null) tmp = Texture.DefaultTexture();
+        return tmp;
     }
 
     /**
@@ -74,7 +76,9 @@ public final class ResourceHandler {
      * @return a shader according to a pre-defined name
      */
     public static ConstShader getShader(String name) {
-        return shaders.get(name);
+        ConstShader tmp = shaders.get(name);
+        if (tmp == null) tmp = Shader.getDefaultShader();
+        return tmp;
     }
 
     /**
