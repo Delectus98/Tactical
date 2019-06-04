@@ -20,18 +20,18 @@ public class ClientImpl extends Listener{
     protected final int tcpPort;
     protected final int udpPort;
 
-    public ClientImpl(String ip, int tcp, int udp) throws IOException {
+    public ClientImpl(String ip, int tcp, PacketRegistration registration) throws IOException {
+        this(ip, tcp, -1, registration);
+    }
+
+    public ClientImpl(String ip, int tcp, int udp, PacketRegistration registration) throws IOException {
         this.ip = ip;
         this.tcpPort = tcp;
         this.udpPort = udp;
 
         c = new Client();
 
-        c.getKryo().register(PlayerPacket.class);
-        c.getKryo().register(ActionPacket.class);
-        c.getKryo().register(Vector2i.class);
-        c.getKryo().register(Vector2f.class);
-        c.getKryo().register(Shooting.class);
+        registration.register(c);
 
         c.start();
         c.connect(1000, ip, tcp, udp);
@@ -73,6 +73,7 @@ public class ClientImpl extends Listener{
     @Override
     public synchronized void received(Connection connection, Object p) {
         if (p instanceof Packet) {
+            ((Packet)p).onReceive(connection.getRemoteAddressTCP().getAddress().toString(), connection.getRemoteAddressTCP().getPort());
             packets.add((Packet)p);
         }
     }
@@ -84,7 +85,7 @@ public class ClientImpl extends Listener{
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        ClientImpl c = new ClientImpl("localhost", 5002, 5003);
+        ClientImpl c = new ClientImpl("localhost", 5002, 5003, GameRegistration.instance);
 
         System.out.println("Try to receive msg!");
 
