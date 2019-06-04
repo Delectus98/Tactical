@@ -2,7 +2,7 @@ package app.weapon;
 
 import Graphics.Vector2i;
 import app.Unite;
-import javafx.util.Pair;
+import util.MyPair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  */
 public final class Impact
 {
-    private List<Pair<Vector2i, Integer>> impact;
+    private List<MyPair<Vector2i, Integer>> impact;
 
 
     public Impact()
@@ -27,14 +27,14 @@ public final class Impact
      */
     public void add(Vector2i tile, int damage)
     {
-        impact.add(new Pair<>(tile, damage));
+        impact.add(new MyPair<>(tile, damage));
     }
 
     /**
      * Creates an impact zone using a list that contains all tiles associated with a damage
      * @param impact list with pairs of tile pos and damage
      */
-    public Impact(List<Pair<Vector2i, Integer>> impact)
+    public Impact(List<MyPair<Vector2i, Integer>> impact)
     {
         this.impact = impact;
     }
@@ -47,8 +47,8 @@ public final class Impact
     {
         for (Unite unite : all) {
             impact.forEach(i -> {
-                if (i.getKey().equals(unite.getMapPosition())) {
-                    unite.takeDamages(i.getValue());
+                if (i.getFst().equals(unite.getMapPosition())) {
+                    unite.takeDamages(i.getSnd());
                 }
             });
         }
