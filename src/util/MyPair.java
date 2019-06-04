@@ -1,32 +1,32 @@
 package util;
 
-public class MyPair<T> //We created our own Pair because some members of the groupe didnt have them.
+public class MyPair<Key, Value> //We created our own Pair because some members of the groupe didnt have them.
 {
-    T fst;
-    T snd;
+    Key fst;
+    Value snd;
 
-    public MyPair(T fst, T snd)
+    public MyPair(Key fst, Value snd)
     {
         this.fst = fst;
         this.snd = snd;
     }
 
-    public void setFst(T fst)
+    public void setFst(Key fst)
     {
         this.fst = fst;
     }
 
-    public void setSnd(T snd)
+    public void setSnd(Value snd)
     {
         this.snd = snd;
     }
 
-    public T getFst()
+    public Key getFst()
     {
         return fst;
     }
 
-    public T getSnd()
+    public Value getSnd()
     {
         return snd;
     }

@@ -30,10 +30,10 @@ public class MapUtil
     public static List<Vector2i> getHidden(Unite unit, Map map)
     {
         ArrayList<Vector2i> hidden = new ArrayList<Vector2i>();
-        LinkedHashMap<Vector2i, MyPair<Vector3f>> supLeft = new LinkedHashMap<>();
-        LinkedHashMap<Vector2i, MyPair<Vector3f>> supRight = new LinkedHashMap<>();
-        LinkedHashMap<Vector2i, MyPair<Vector3f>> lowLeft = new LinkedHashMap<>();
-        LinkedHashMap<Vector2i, MyPair<Vector3f>> lowRight = new LinkedHashMap<>();
+        LinkedHashMap<Vector2i, MyPair<Vector3f, Vector3f>> supLeft = new LinkedHashMap<>();
+        LinkedHashMap<Vector2i, MyPair<Vector3f, Vector3f>> supRight = new LinkedHashMap<>();
+        LinkedHashMap<Vector2i, MyPair<Vector3f, Vector3f>> lowLeft = new LinkedHashMap<>();
+        LinkedHashMap<Vector2i, MyPair<Vector3f, Vector3f>> lowRight = new LinkedHashMap<>();
         Tile[][] world = map.getWorld();
         Vector2i pos = unit.getMapPosition();
         Vector2f startOfLines = new Vector2f(pos.x + .5f, pos.y + .5f);
@@ -197,16 +197,16 @@ public class MapUtil
         } //FIN AJOUT DANS HASHMAPS
 
         //supLeft
-        for (HashMap.Entry<Vector2i, MyPair<Vector3f>> entry : supLeft.entrySet())
+        for (HashMap.Entry<Vector2i, MyPair<Vector3f, Vector3f>> entry : supLeft.entrySet())
         {
             Vector2i key = entry.getKey();
-            MyPair<Vector3f> value = entry.getValue();
+            MyPair<Vector3f, Vector3f> value = entry.getValue();
             int a = pos.x - key.x;
             int b = key.y - pos.y;
             //System.out.println("==================================================");
             //System.out.println("KEY: " + key);
 
-            for (HashMap.Entry<Vector2i, MyPair<Vector3f>> bis : supLeft.entrySet())
+            for (HashMap.Entry<Vector2i, MyPair<Vector3f, Vector3f>> bis : supLeft.entrySet())
             {
                 //System.out.println("    bKEY : " + bis.getKey());
                 Vector2f coin, coin1;
@@ -277,13 +277,13 @@ public class MapUtil
             }
         }
         //lowLeft
-        for (HashMap.Entry<Vector2i, MyPair<Vector3f>> entry : lowLeft.entrySet())
+        for (HashMap.Entry<Vector2i, MyPair<Vector3f, Vector3f>> entry : lowLeft.entrySet())
         {
             Vector2i key = entry.getKey();
-            MyPair<Vector3f> value = entry.getValue();
+            MyPair<Vector3f, Vector3f> value = entry.getValue();
             int a = pos.x - key.x;
             int b = pos.y - key.y;
-            for (HashMap.Entry<Vector2i, MyPair<Vector3f>> bis : lowLeft.entrySet())
+            for (HashMap.Entry<Vector2i, MyPair<Vector3f, Vector3f>> bis : lowLeft.entrySet())
             {
                 Vector2f coin, coin1;
                 if (a > b)
@@ -347,13 +347,13 @@ public class MapUtil
             }
         }
         //supRight
-        for (HashMap.Entry<Vector2i, MyPair<Vector3f>> entry : supRight.entrySet())
+        for (HashMap.Entry<Vector2i, MyPair<Vector3f, Vector3f>> entry : supRight.entrySet())
         {
             Vector2i key = entry.getKey();
-            MyPair<Vector3f> value = entry.getValue();
+            MyPair<Vector3f, Vector3f> value = entry.getValue();
             int a = key.x - pos.x;
             int b = key.y - pos.y;
-            for (HashMap.Entry<Vector2i, MyPair<Vector3f>> bis : supRight.entrySet())
+            for (HashMap.Entry<Vector2i, MyPair<Vector3f, Vector3f>> bis : supRight.entrySet())
             {
                 //supG
                 Vector2f coin = new Vector2f(bis.getKey().x, bis.getKey().y + 1);
@@ -413,13 +413,13 @@ public class MapUtil
         }
 
         //todo lowRight
-        for (HashMap.Entry<Vector2i, MyPair<Vector3f>> entry : lowRight.entrySet())
+        for (HashMap.Entry<Vector2i, MyPair<Vector3f, Vector3f>> entry : lowRight.entrySet())
         {
             Vector2i key = entry.getKey();
-            MyPair<Vector3f> value = entry.getValue();
+            MyPair<Vector3f, Vector3f> value = entry.getValue();
             int a = key.x - pos.x;
             int b = pos.y - key.y;
-            for (HashMap.Entry<Vector2i, MyPair<Vector3f>> bis : lowRight.entrySet())
+            for (HashMap.Entry<Vector2i, MyPair<Vector3f, Vector3f>> bis : lowRight.entrySet())
             {
                 //sup droit
                 Vector2f coin = new Vector2f(bis.getKey().x + 1, bis.getKey().y + 1);
