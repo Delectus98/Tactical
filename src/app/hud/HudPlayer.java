@@ -1,0 +1,105 @@
+package app.hud;
+
+import Graphics.Sprite;
+import Graphics.Text;
+import Graphics.Vector2f;
+import app.Game;
+import app.Player;
+import System.*;
+import app.Unite;
+import com.sun.tools.javac.util.Pair;
+import util.GameInput;
+import util.ResourceHandler;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
+public class HudPlayer
+{
+    Game game;
+    Player player;
+    GameInput gameInput;
+    HashMap<Unite, Pair<Sprite, Text>> sprites;
+    boolean selected;
+    Unite selectedUnit;
+
+    /*
+    getBounds tu as le rectangle left top width height
+setOrigin() (par défaut 0,0) tu le met setOrigin(hudBounds.w / 2.f, hudBounds.h/2.f)
+puis setPositon(INPUT.getFrameRectangle().w/2,....)
+     */
+
+    public HudPlayer(Game game, Player player, GameInput gameInput)
+    {
+        this.game = game;
+        this.player = player;
+        this.gameInput = gameInput;
+        this.sprites = new LinkedHashMap<>();
+        this.createSprites();
+
+    }
+
+    public void draw(RenderTarget target)
+    {
+        for(HashMap.Entry<Unite, Pair<Sprite, Text>> entry : sprites.entrySet())
+        {
+            target.draw(entry.getValue().fst);
+            target.draw(entry.getValue().snd);
+        }
+    }
+
+    private void createSprites()
+    {
+        float decLeft = 1;
+        float decHeight = 10;
+        for (Unite unit : player.getUnites())
+        {
+            Sprite tmp = new Sprite(unit.getSprite().getTexture());
+            tmp.setTextureRect(0,0,64,64);
+            tmp.setPosition(decLeft, decHeight);
+            Text hp = new Text(ResourceHandler.getFont("default"), "HP: " + unit.getHp());
+            hp.setPosition(decLeft + 15, decHeight + 64);
+
+            sprites.put(unit, new Pair(tmp, hp));
+            decHeight += 64 + 10;
+        }
+    }
+
+    public void update(ConstTime time)
+    {
+        if (gameInput.isLeftPressed())
+        {
+            Vector2f mouse = gameInput.getMousePositionOnHUD();
+            for (HashMap.Entry<Unite, Pair<Sprite, Text>> entry : sprites.entrySet())
+            {
+                if (entry.getValue().fst.getBounds().contains(mouse.x, mouse.y))
+                {
+                    selectedUnit = entry.getKey().isDead() ? selectedUnit : entry.getKey();
+                    break;
+                }
+            }
+        }
+        for(Unite unit : player.getUnites())
+        {
+            Pair<Sprite, Text> value = sprites.get(unit);
+            if (unit.isDead())
+            {
+                value.snd.setString("X DEAD X");
+            } else
+            {
+                value.snd.setString("HP: " + unit.getHp());
+            }
+        }
+    }
+
+    public boolean isSelected()
+    {
+        return selected;
+    }
+
+    public Unite getSelectedUnit()
+    {
+        return selectedUnit;
+    }
+
+
+}
