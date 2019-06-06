@@ -10,7 +10,7 @@ public class BlastingProjectile extends Projectile {
     }
 
     @Override
-    public boolean isTerminated() {
+    public boolean hasFinishedHitting() {
         return false;
     }
 
