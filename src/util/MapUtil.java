@@ -29,19 +29,29 @@ public class MapUtil
      */
     public static List<Vector2i> getHidden(Unite unit, Map map)
     {
+        return getHidden(unit.getMapPosition(), unit.getFov(), map);
+    }
+
+    public static List<Vector2i> getVisibles(Unite unit, Map map)
+    {
+        return getVisibles(unit.getMapPosition(), unit.getFov(), map);
+    }
+
+    public static List<Vector2i> getHidden(Vector2i tile, int fov, Map map)
+    {
         ArrayList<Vector2i> hidden = new ArrayList<Vector2i>();
         LinkedHashMap<Vector2i, MyPair<Vector3f, Vector3f>> supLeft = new LinkedHashMap<>();
         LinkedHashMap<Vector2i, MyPair<Vector3f, Vector3f>> supRight = new LinkedHashMap<>();
         LinkedHashMap<Vector2i, MyPair<Vector3f, Vector3f>> lowLeft = new LinkedHashMap<>();
         LinkedHashMap<Vector2i, MyPair<Vector3f, Vector3f>> lowRight = new LinkedHashMap<>();
         Tile[][] world = map.getWorld();
-        Vector2i pos = unit.getMapPosition();
+        Vector2i pos = tile;
         Vector2f startOfLines = new Vector2f(pos.x + .5f, pos.y + .5f);
 
         //AJOUT DES OBSTACLES ET DE LEURS DROITES DANS LES HASHMAPS
-        for (int i = pos.x - unit.getFov(); i < pos.x + unit.getFov(); i++)
+        for (int i = pos.x - fov; i < pos.x + fov; i++)
         {
-            for (int j = pos.y - unit.getFov(); j < pos.y + unit.getFov(); j++)
+            for (int j = pos.y - fov; j < pos.y + fov; j++)
             {
                 Vector2i current = new Vector2i(i, j);
                 Vector2f coin1;
@@ -261,9 +271,9 @@ public class MapUtil
                 }
 
             }
-            for (int i = pos.x - unit.getFov(); i <= key.x; i++)
+            for (int i = pos.x - fov; i <= key.x; i++)
             {
-                for (int j = key.y; j <= pos.y + unit.getFov() /*todo : ou pos.y + fov ???*/; j++)
+                for (int j = key.y; j <= pos.y + fov /*todo : ou pos.y + fov ???*/; j++)
                 {
                     if (validIndex(world, i, j) && tileIsBetween2Lines(new Vector2i(i, j), value.getFst(), value.getSnd())
                             && !(i == key.x && j == key.y))
@@ -331,9 +341,9 @@ public class MapUtil
                 }
             }
             //todo ou utiliser pos.x/y - fov au lieu de 0
-            for (int i = unit.getMapPosition().x - unit.getFov(); i <= key.x; i++)
+            for (int i = pos.x - fov; i <= key.x; i++)
             {
-                for (int j = unit.getMapPosition().y - unit.getFov(); j <= key.y; j++)
+                for (int j = pos.y - fov; j <= key.y; j++)
                 {
                     if (validIndex(world, i, j) && tileIsBetween2Lines(new Vector2i(i, j), value.getFst(), value.getSnd())
                             && !(i == key.x && j == key.y))
@@ -396,9 +406,9 @@ public class MapUtil
                 }
             }
             //todo ou utiliser pos.x/y - fov au lieu de 0
-            for (int i = key.x; i <= unit.getMapPosition().x + unit.getFov(); i++)
+            for (int i = key.x; i <= pos.x + fov; i++)
             {
-                for (int j = key.y; j <= unit.getMapPosition().y + unit.getFov(); j++)
+                for (int j = key.y; j <= pos.y + fov; j++)
                 {
                     if (validIndex(world, i, j) && tileIsBetween2Lines(new Vector2i(i, j), value.getFst(), value.getSnd())
                             && !(i== key.x && j == key.y))
@@ -461,9 +471,9 @@ public class MapUtil
                 }
             }
             //todo change world.length / 0
-            for (int i = key.x; i <= unit.getMapPosition().x + unit.getFov(); i++)
+            for (int i = key.x; i <= pos.x + fov; i++)
             {
-                for (int j = unit.getMapPosition().y - unit.getFov(); j <= key.y; j++)
+                for (int j = pos.y - fov; j <= key.y; j++)
                 {
                     if (validIndex(world, i, j) && tileIsBetween2Lines(new Vector2i(i, j), value.getFst(), value.getSnd())
                             && !(i == key.x && j == key.y))
@@ -479,17 +489,17 @@ public class MapUtil
         return hidden;
     }
 
-    public static List<Vector2i> getVisibles(Unite unit, Map map)
+    public static List<Vector2i> getVisibles(Vector2i tile, int fov, Map map)
     {
-        Vector2i pos = unit.getMapPosition();
+        Vector2i pos = tile;
         ArrayList<Vector2i> ret = new ArrayList<>();
-        List<Vector2i> hidden = getHidden(unit, map);
+        List<Vector2i> hidden = getHidden(tile, fov, map);
         int var = 0;
-        for (int i = pos.x - unit.getFov(); i <= pos.x + unit.getFov(); i++)
+        for (int i = pos.x - fov; i <= pos.x + fov; i++)
         {
             if (i == pos.x)
             {
-                var = unit.getFov();
+                var = fov;
             }
             for (int j = pos.y - var; j <= pos.y + var; j++)
             {
