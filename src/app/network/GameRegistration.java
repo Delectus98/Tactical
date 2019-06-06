@@ -2,6 +2,7 @@ package app.network;
 
 import Graphics.Vector2f;
 import Graphics.Vector2i;
+import app.actions.Moving;
 import app.actions.Shooting;
 import app.weapon.BladeProjectile;
 import app.weapon.BulletProjectile;
@@ -20,6 +21,10 @@ public class GameRegistration extends PacketRegistration {
         //packets
         point.getKryo().register(PlayerPacket.class);
         point.getKryo().register(ActionPacket.class);
+        point.getKryo().register(ErrorPacket.class);
+        point.getKryo().register(FatalErrorPacket.class);
+        point.getKryo().register(TurnPacket.class);
+        point.getKryo().register(TeamPacket.class);
 
         //data
         point.getKryo().register(String.class);
@@ -32,5 +37,6 @@ public class GameRegistration extends PacketRegistration {
 
         //actions
         point.getKryo().register(Shooting.class);
+        point.getKryo().register(Moving.class);
     }
 }
