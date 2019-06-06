@@ -14,7 +14,6 @@ public abstract class Game
     protected Player[] players;
     protected Map map;
     protected Unite selected;
-    protected boolean initialisation;
 
     /**
      * Finish the current turn to let the next player play.
