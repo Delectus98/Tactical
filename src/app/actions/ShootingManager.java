@@ -216,7 +216,7 @@ public class ShootingManager extends ActionManager {
     public Action build()
     {
         //selectedWeapon.getImpactZone(p1, p2, super.game.getMap()).chance(0.5f);
-        return new Shooting(p1, p2, selectedWeapon.getImpactZone(p1, p2, super.game.getMap()), selectedWeapon.buildProjectile(), selectedWeapon.getCost());
+        return new Shooting(selectedWeapon.getImpactZone(p1, p2, super.game.getMap()), selectedWeapon.buildProjectile(), selectedWeapon.getCost());
     }
 
 }
