@@ -61,7 +61,7 @@ public class ClientImpl extends Listener{
     }
 
     public synchronized Packet received(){
-        return packets.peek();
+        return packets.remove();
     }
 
     @Override
@@ -80,19 +80,24 @@ public class ClientImpl extends Listener{
 
     @Override
     public void disconnected(Connection connection) {
-        System.out.println("Disconnexion success");
+        System.out.println("Disconnection success");
         this.close();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        ClientImpl c = new ClientImpl("localhost", 5002, 5003, GameRegistration.instance);
+        ClientImpl c = new ClientImpl("localhost", 5002, GameRegistration.instance);
 
         System.out.println("Try to receive msg!");
 
         while (c.isRunning()) {
             //c.c.update(0);
-            System.out.println("Client is running");
             Thread.sleep(100);
+            if (!c.isReceptionEmpty()) {
+                Packet p = c.received();
+                if (p instanceof PlayerPacket) {
+                    System.out.println(((PlayerPacket) p).name);
+                }
+            }
         }
     }
 }
