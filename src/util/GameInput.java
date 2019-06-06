@@ -116,12 +116,18 @@ public class GameInput
         return new FloatRect(viewport.getTopLeftCorner().x,  viewport.getTopLeftCorner().y, viewport.getDimension().x, viewport.getDimension().y);
     }
 
-
+    /**
+     * Reset inputs (released key can only be released once in a row)
+     */
     public void reset(){
         leftReleased = false;
         rightReleased = false;
     }
 
+    /**
+     * Updates some inputs as mouse
+     * @param event window event
+     */
     public void update(Event event) {
         if (event.type == Event.Type.BUTTONRELEASED) {
             if (Mouse.Button.Left.getButtonID() == event.keyReleased) {
