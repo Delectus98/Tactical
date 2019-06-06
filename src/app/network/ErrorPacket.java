@@ -9,6 +9,6 @@ public class ErrorPacket extends Packet {
 
     @Override
     public int getPriority() {
-        return Integer.MAX_VALUE - 1;
+        return 0;
     }
 }
