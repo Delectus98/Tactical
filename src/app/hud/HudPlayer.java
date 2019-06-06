@@ -21,6 +21,7 @@ public class HudPlayer
     HashMap<Unite, Pair<Sprite, Text>> sprites;
     boolean selected;
     Unite selectedUnit;
+    int test = 0;
 
     /*
     getBounds tu as le rectangle left top width height
@@ -49,12 +50,15 @@ puis setPositon(INPUT.getFrameRectangle().w/2,....)
 
     private void createSprites()
     {
+        //todo position adapté suivant la taille de la fenêtre
         float decLeft = 1;
         float decHeight = 10;
         for (Unite unit : player.getUnites())
         {
             Sprite tmp = new Sprite(unit.getSprite().getTexture());
+            //todo use right values for spritesheets
             tmp.setTextureRect(0,0,64,64);
+
             tmp.setPosition(decLeft, decHeight);
             Text hp = new Text(ResourceHandler.getFont("default"), "HP: " + unit.getHp());
             hp.setPosition(decLeft + 15, decHeight + 64);
@@ -66,7 +70,7 @@ puis setPositon(INPUT.getFrameRectangle().w/2,....)
 
     public void update(ConstTime time)
     {
-        if (gameInput.isLeftPressed())
+        if (gameInput.isLeftReleased())
         {
             Vector2f mouse = gameInput.getMousePositionOnHUD();
             for (HashMap.Entry<Unite, Pair<Sprite, Text>> entry : sprites.entrySet())
@@ -74,6 +78,7 @@ puis setPositon(INPUT.getFrameRectangle().w/2,....)
                 if (entry.getValue().fst.getBounds().contains(mouse.x, mouse.y))
                 {
                     selectedUnit = entry.getKey().isDead() ? selectedUnit : entry.getKey();
+                    System.out.println("SELECTED");
                     break;
                 }
             }
