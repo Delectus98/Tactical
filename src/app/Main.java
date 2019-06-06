@@ -72,6 +72,11 @@ public class Main
         }
 
         @Override
+        public short getMaximumPoints() {
+            return 0;
+        }
+
+        @Override
         public short getSparePoints()
         {
             return 0;
@@ -84,8 +89,7 @@ public class Main
         }
 
         @Override
-        public ConstTexture getSpritesheet()
-        {
+        public ConstTexture getSpriteSheet() {
             return null;
         }
 
