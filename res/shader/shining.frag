@@ -3,7 +3,7 @@
 uniform sampler2D texture;
 uniform float elapsed = 0;
 uniform int modulus = 30;
-uniform float shining = 0; // [0-1]
+uniform float shining = 1; // [0-1]
 
 int mod(int v, int modulus) {
     while (v >= modulus) v-=modulus;
