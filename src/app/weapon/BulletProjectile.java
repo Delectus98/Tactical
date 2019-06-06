@@ -12,8 +12,6 @@ public class BulletProjectile extends Projectile {
     private String texture;
     private FloatRect shape;
     private float radian;
-    private Vector2f firstPos;
-    private Vector2f lastPos;
     private float duration;
 
     //
@@ -23,11 +21,13 @@ public class BulletProjectile extends Projectile {
     public void init() {
         bullet = new Sprite(ResourceHandler.getTexture(texture));
         bullet.setTextureRect(shape.l, shape.t, shape.w, shape.h);
+        bullet.setPosition(firstPos.x, firstPos.y);
+        bullet.setOrigin(bullet.getBounds().w / 2.f, bullet.getBounds().h / 2.f);
         bullet.setRotation(radian);
     }
 
     @Override
-    public boolean isTerminated() {
+    public boolean hasFinishedHitting() {
         return advance >= duration;
     }
 
