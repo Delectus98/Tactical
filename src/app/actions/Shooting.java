@@ -5,6 +5,8 @@ import Graphics.*;
 import app.Game;
 import app.Unite;
 import app.weapon.Impact;
+import app.weapon.Projectile;
+import jdk.nashorn.internal.objects.annotations.Constructor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,39 +14,31 @@ import java.util.Arrays;
 //TODO Need weapon information (projectiles, animation, effect, ...)
 public class Shooting extends Action {
     // déroulement
-    private transient Sprite projectile;
-    private Vector2i firstPos;
-    private Vector2i lastPos;
-    private Vector2f trajectory;
     private Impact impact;
-    private float duration;
-    private float elapsed = 0;
-    private int damage;
+    private Projectile projectile;
     private int cost;
 
     public Shooting()
     {
-    }
-
-    public Shooting(Vector2i p1, Vector2i p2, int damage, int cost, ConstTime duration)
-    {
-        this.damage = damage;
-        this.cost = cost;
-
-        this.duration = (float)duration.asSeconds();
-
-        this.firstPos = p1;
-        this.lastPos = p2;
-
-        trajectory = new Vector2f(lastPos).sum(new Vector2f(firstPos).neg());
+        // kryo constructor required
     }
 
     @Override
-    public void build(Game context)
+    public void init(Game context)
     {
-        super.build(context);
-        projectile = new Sprite();
+        super.init(context);
+        projectile.init();
     }
+
+    public Shooting(Impact damage, Projectile projectile, int cost)
+    {
+        this.cost = cost;
+
+        this.impact = damage;
+        this.projectile = projectile;
+    }
+
+
 
     @Override
     public int getCost() {
@@ -53,7 +47,7 @@ public class Shooting extends Action {
 
     @Override
     public boolean isFinished() {
-        return elapsed >= duration;
+        return projectile.hasFinishedHitting();
     }
 
     @Override
@@ -63,7 +57,7 @@ public class Shooting extends Action {
 
     @Override
     public void drawAboveEntity(RenderTarget target) {
-        target.draw(projectile);
+        projectile.draw(target);
     }
 
     @Override
@@ -78,12 +72,10 @@ public class Shooting extends Action {
 
     @Override
     public void update(ConstTime time) {
-        elapsed += time.asSeconds();
-        float percent = Math.min(Math.min(elapsed, duration) / duration, 1);
-        projectile.setPosition(trajectory.mul(percent).x + firstPos.x * 64, trajectory.mul(percent).y + firstPos.y * 64);
+        projectile.update(time);
 
         // si c'est fini
-        if (isFinished()) {
+        if (projectile.hasFinishedHitting()) {
             //alors on doit mettre des dégats aux unités concernées
             //super.game.getPlayers().
             ArrayList<Unite> all = new ArrayList<>();
