@@ -7,7 +7,6 @@ import app.Game;
 import app.Unite;
 import app.Weapon;
 import util.GameInput;
-import util.Line;
 import util.MapUtil;
 import util.ResourceHandler;
 
@@ -210,13 +209,14 @@ public class ShootingManager extends ActionManager {
 
     @Override
     public boolean isAvailable() {
-        return selectedWeapon != null && selectedWeapon.getAmmunition() > 0 && p2 != null /*&& selectedWeapon.isInRange((int)(p2.sum(p1.neg())).length())*/;
+        return selectedWeapon != null && (selectedWeapon.getAmmunition() > 0 || selectedWeapon.getAmmunition() == -1) && p2 != null /*&& selectedWeapon.isInRange((int)(p2.sum(p1.neg())).length())*/;
     }
 
     @Override
     public Action build()
     {
-        return new Shooting(p1, p2, damage, selectedWeapon.getCost(), Time.seconds(2)/*selectedWeapon.getProjectile().getSpeed()*/);
+        //selectedWeapon.getImpactZone(p1, p2, super.game.getMap()).chance(0.5f);
+        return new Shooting(p1, p2, selectedWeapon.getImpactZone(p1, p2, super.game.getMap()), selectedWeapon.buildProjectile(), selectedWeapon.getCost());
     }
 
 }
