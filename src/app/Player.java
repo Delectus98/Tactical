@@ -28,9 +28,9 @@ public class Player
      */
     public void addUnite(Unite unite)
     {
-        this.unites.add(unite);
         unite.setId(unites.size());
         unite.setTeam(this.team);
+        this.unites.add(unite);
     }
 
     /**
