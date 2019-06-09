@@ -12,10 +12,32 @@ public class BulletProjectile extends Projectile {
     private String texture;
     private FloatRect shape;
     private float radian;
-    private float duration;
+    private float duration = 1.f;
 
     //
     private transient float advance = 0.f;
+
+    public BulletProjectile()
+    {
+
+    }
+
+    public BulletProjectile(String texture, FloatRect textureRect, Vector2f p1, Vector2f target){
+        this.texture = texture;
+        this.shape = textureRect;
+        super.firstPos = p1;
+        super.lastPos = target;
+
+        this.duration = 2.f;
+        Vector2f trajectory = p1.neg().sum(target).unit();
+        this.radian = (float)Math.atan2(-trajectory.y, trajectory.x);
+
+        bullet = new Sprite(ResourceHandler.getTexture(texture));
+        bullet.setTextureRect(shape.l, shape.t, shape.w, shape.h);
+        bullet.setPosition(firstPos.x, firstPos.y);
+        bullet.setOrigin(bullet.getBounds().w / 2.f, bullet.getBounds().h / 2.f);
+        bullet.setRotation(radian);
+    }
 
     @Override
     public void init() {
@@ -39,7 +61,10 @@ public class BulletProjectile extends Projectile {
     @Override
     public void update(ConstTime time) {
         advance += time.asSeconds();
-        Vector2f pos = lastPos.sum(firstPos.neg()).fact(advance / duration).add(firstPos);
-        bullet.setPosition(pos.x, pos.y);
+
+        if (advance <= duration) {
+            Vector2f pos = lastPos.sum(firstPos.neg()).fact(advance / duration).add(firstPos);
+            bullet.setPosition(pos.x, pos.y);
+        }
     }
 }
