@@ -1,12 +1,12 @@
 package app.play;
 
 
+import Graphics.FloatRect;
+import Graphics.Vector2f;
 import Graphics.Vector2i;
 import app.Game;
 import app.actions.Action;
-import app.network.ActionPacket;
-import app.network.Packet;
-import app.network.ServerImpl;
+import app.network.*;
 
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -14,7 +14,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import System.*;
-import app.network.TurnPacket;
+import util.GameInput;
 import util.MapUtil;
 
 public class ServerGame extends Game {
@@ -30,8 +30,25 @@ public class ServerGame extends Game {
 
     private Set<Vector2i> visibles = new HashSet<>();
 
-    public ServerGame(ServerImpl server){
+    private Camera2D mapCam;
+    private Camera2D hudCam;
+    private Viewport viewport;
+    private GameInput input;
+    private Mouse mouse;
+    private Keyboard keyboard;
+
+    public ServerGame(ServerImpl server, GLFWWindow context){
+        this.context = context;
         this.server = server;
+
+        mapCam = new Camera2D(new Vector2f(context.getDimension().x , context.getDimension().y));
+        hudCam = new Camera2D(new Vector2f(context.getDimension().x , context.getDimension().y));
+        viewport = new Viewport(new FloatRect(0, 0, mapCam.getDimension().x, mapCam.getDimension().y));
+
+        mouse = new Mouse(context);
+        keyboard = new Keyboard(context);
+
+        input = new GameInput(mapCam, hudCam, viewport, mouse, keyboard);
     }
 
     @Override
@@ -71,7 +88,14 @@ public class ServerGame extends Game {
 
                 } else if (packet instanceof ActionPacket) {
                     ActionPacket ap = (ActionPacket)packet;
+                    ap.action.init(this);
                     clientActions.add(ap.action);
+                } else if (packet instanceof ErrorPacket) {
+                    System.out.println(((ErrorPacket)packet).msg);
+                } else if (packet instanceof FatalErrorPacket) {
+                    System.out.println(((FatalErrorPacket)packet).msg);
+                    server.close();
+                    running = false;
                 }
             }
         }

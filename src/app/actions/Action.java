@@ -7,9 +7,12 @@ import app.Game;
  */
 public abstract class Action
 {
+    // game context
     protected transient Game game;
+    // unit context
+    protected int uniteId;
+    protected int playerId;
 
-    // définit un context de jeu pour pouvoir modifier certains paramètres
 
     /**
      * Initialise 'transient' attributes
@@ -17,7 +20,7 @@ public abstract class Action
      * Useful when Action is send to network to init 'transient' attributes.
      * @param gameContext context
      */
-    public void build(Game gameContext)
+    public void init(Game gameContext)
     {
         this.game = gameContext;
     }

@@ -4,10 +4,10 @@ import Graphics.*;
 import System.*;
 import System.IO.AZERTYLayout;
 import app.Game;
+import app.Player;
 import app.Unite;
 import app.Weapon;
 import util.GameInput;
-import util.Line;
 import util.MapUtil;
 import util.ResourceHandler;
 
@@ -36,8 +36,8 @@ public class ShootingManager extends ActionManager {
     private Text resume;
     private RectangleShape resumeBox;
 
-    public ShootingManager(Unite user, Game game, GameInput input) {
-        super(user, game);
+    public ShootingManager(Player p, Unite user, Game game, GameInput input) {
+        super(p, user, game);
         this.input = input;
 
         p1 = user.getMapPosition();
@@ -210,13 +210,14 @@ public class ShootingManager extends ActionManager {
 
     @Override
     public boolean isAvailable() {
-        return selectedWeapon != null && selectedWeapon.getAmmunition() > 0 && p2 != null /*&& selectedWeapon.isInRange((int)(p2.sum(p1.neg())).length())*/;
+        return selectedWeapon != null && (selectedWeapon.getAmmunition() > 0 || selectedWeapon.getAmmunition() == -1) && p2 != null /*&& selectedWeapon.isInRange((int)(p2.sum(p1.neg())).length())*/;
     }
 
     @Override
     public Action build()
     {
-        return new Shooting(p1, p2, damage, selectedWeapon.getCost(), Time.seconds(2)/*selectedWeapon.getProjectile().getSpeed()*/);
+        //selectedWeapon.getImpactZone(p1, p2, super.game.getMap()).chance(0.5f);
+        return new Shooting(selectedWeapon.getImpactZone(p1, p2, super.game.getMap()), selectedWeapon.buildProjectile(p1, p2), selectedWeapon.getCost());
     }
 
 }
