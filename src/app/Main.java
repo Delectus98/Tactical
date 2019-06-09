@@ -7,10 +7,13 @@ import app.map.MapImpl;
 import app.map.MapInfo;
 import app.map.MapList;
 import app.play.LocalhostGame;
+import app.weapon.*;
 import org.lwjgl.opengl.GL20;
 import util.ResourceHandler;
 
 import java.io.IOException;
+
+import static org.lwjgl.glfw.GLFW.glfwMaximizeWindow;
 
 public class Main
 {
@@ -73,13 +76,13 @@ public class Main
 
         @Override
         public short getMaximumPoints() {
-            return 0;
+            return 20;
         }
 
         @Override
         public short getSparePoints()
         {
-            return 0;
+            return 20;
         }
 
         @Override
@@ -117,6 +120,7 @@ public class Main
         ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
         ResourceHandler.loadTexture("res/wall.png", "res/wall.png");
         ResourceHandler.loadTexture("res/character.png", "character");
+        ResourceHandler.loadTexture("res/ammo.png", "ammo");
         ResourceHandler.loadFont("res/font.ttf", 20,"default");
 
         ConstShader shader = ResourceHandler.loadShader("res/shader/default.vert", "res/shader/grisant.frag", "grey");
@@ -131,16 +135,29 @@ public class Main
         //Map map = new MapImpl(mapInfo);
         Player p1 = new Player("P1");
         Unite unite = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
-        unite.setMapPosition(new Vector2i(1, 1));
-        unite.getSprite().setPosition(64, 64);
+        unite.setMapPosition(new Vector2i(13, 12));
+        unite.getSprite().setPosition(64*13, 64*12);
+        unite.setTeam(Team.MAN);
         p1.addUnite(unite);
         Player p2 = new Player("P2");
         Unite unite2 = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
         unite2.getSprite().setPosition(256, 128);
         unite2.setMapPosition(new Vector2i(4, 2));
+        unite2.setTeam(Team.APE);
         p2.addUnite(unite2);
         Game current = new LocalhostGame(window, p1, p2, map);
 
+
+        /*Weapon weapon = new Grenade();
+        Impact impactTest = weapon.getImpactZone(new Vector2i(), new Vector2i(1,1), map);
+        for (int i=0 ; i < impactTest.getTileCount() ; ++i) {
+            Vector2i v =impactTest.getTileCoord(i);
+            System.out.println(v);
+            if (map.getWorld()[v.x][v.y].getFloor() != null) map.getWorld()[v.x][v.y].getFloor().setFillColor(Color.Blue);
+            if (map.getWorld()[v.x][v.y].getStruct() != null) map.getWorld()[v.x][v.y].getStruct().setFillColor(Color.Blue);
+        }*/
+
+        Projectile projectile = new BulletProjectile("ammo", new FloatRect(32,0, 32,32), new Vector2f(400,850), new Vector2f(150,50));
         //start game
         current.start();
 
@@ -149,6 +166,7 @@ public class Main
         //float milliseconds = 0;
         while (window.isOpen())
         {
+            Time elapsed = clock.restart();
             /*milliseconds += clock.getElapsed().asMilliseconds();
             ResourceHandler.getShader("grey").bind();
             GL20.glUniform1f(ResourceHandler.getShader("grey").getUniformLocation("colorRatio"), ((int)(milliseconds) % 1000) / 1000.f);*/
@@ -165,14 +183,18 @@ public class Main
                     window.close();
                 }
             }
+
+            projectile.update(elapsed);
+
             window.clear();
             //Menu principal:
 
             //Game Menu:  game is running
             if (!current.isFinished())
             {
-                current.update(clock.restart());
+                current.update(elapsed);
                 current.draw(window);
+                projectile.draw(window);
             }
             window.display();
         }
