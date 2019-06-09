@@ -2,6 +2,7 @@ package app.actions;
 
 import System.*;
 import app.Game;
+import app.Player;
 import app.Unite;
 
 /**
@@ -10,6 +11,7 @@ import app.Unite;
 public abstract class ActionManager {
 
     protected Unite unite;
+    protected Player player;
     protected Game game;
 
     /**
@@ -17,8 +19,9 @@ public abstract class ActionManager {
      * @param user launcher
      * @param game context
      */
-    public ActionManager(Unite user, Game game)
+    public ActionManager(Player player, Unite user, Game game)
     {
+        this.player = player;
         this.unite = user;
         this.game = game;
     }
