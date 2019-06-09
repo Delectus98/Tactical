@@ -5,6 +5,9 @@ import System.*;
 
 public abstract class Unite
 {
+    //
+    private int id;
+    //
     protected short hp;
     protected short fov;
     protected short actionPoints;
@@ -17,6 +20,23 @@ public abstract class Unite
     protected Sprite sprite;
     protected ConstTexture spritesheet;
     protected Team team;
+
+    /**
+     * When unite is added to player unites we defines a unique id
+     * @param id specified id
+     */
+    public final void setId(int id)
+    {
+        this.id = id;
+    }
+
+    /**
+     * Gives the unique id of the unite
+     */
+    public final int getId()
+    {
+        return id;
+    }
 
     /**
      * Checks if unite is dead or not (hp <= 0)
