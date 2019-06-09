@@ -6,17 +6,12 @@ import System.IO.AZERTYLayout;
 import app.Game;
 import app.Player;
 import app.Unite;
-import app.actions.Action;
-import app.actions.ActionManager;
-import app.actions.ShootingManager;
+import app.actions.*;
 import app.map.Map;
 import util.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 public class LocalhostGame extends Game {
@@ -65,6 +60,8 @@ public class LocalhostGame extends Game {
         this.map = map;
 
         // set up players
+        p1.setId(0);
+        p2.setId(1);
         players = new Player[2];
         players[0] = p1;
         players[1] = p2;
@@ -88,7 +85,21 @@ public class LocalhostGame extends Game {
         inputs[0] = new GameInput(mapCam[0], hudCam[0], viewports[0], mouse, keyboard);
         inputs[1] = new GameInput(mapCam[1], hudCam[1], viewports[1], mouse, keyboard);
 
-        manager = new ShootingManager(p2.getUnites().get(0), this, inputs[1]);
+        /**ShootingManager*/
+        //manager = new ShootingManager(p2, p2.getUnites().get(0), this, inputs[1]);
+
+        /**MovingManager & Moving*/
+        manager = new MovingManager(p2, p2.getUnites().get(0), this, inputs[1]);
+        Pathfinder finder = new Pathfinder(this.getMap());
+        ArrayList<Unite> all = new ArrayList<>();
+        Arrays.stream(this.getPlayers()).map(Player::getUnites).forEach(all::addAll);
+        ArrayList<Unite> enemies = new ArrayList<>();
+        Arrays.stream(this.getPlayers()).filter(p -> p2 != p).map(Player::getUnites).forEach(enemies::addAll);
+        ArrayList<Vector2i> visibles = new ArrayList<>(this.getCurrentVisibles());
+        HashMap<Vector2i, Vector2i> possiblePaths = finder.possiblePath(p2.getUnites().get(0), enemies, visibles);
+        currentAction = new Moving(p2, finder, possiblePaths, p2.getUnites().get(0), all, enemies, new Vector2i(12, 12), 85);
+        currentAction.init(this);
+        inAction = true;
 
     }
 
@@ -174,7 +185,7 @@ public class LocalhostGame extends Game {
     }
 
     private void updateUserInput(ConstTime time) {
-        manager.updatePreparation(time);
+        if (manager != null) manager.updatePreparation(time);
 
         // la souris est dans le rectangle du jeu du bon joueur
         if (inputs[currentPlayer].isLeftPressed() && inputs[currentPlayer].getFrameRectangle().contains(inputs[currentPlayer].getMousePosition().x, inputs[currentPlayer].getMousePosition().y)) {
@@ -213,7 +224,7 @@ public class LocalhostGame extends Game {
 
 
         /// TEST EXPERIMENTAL
-        final int speed = 300;
+        /*final int speed = 300;
         if (keyboard.isKeyPressed(AZERTYLayout.PAD_8.getKeyID())) {
             players[currentPlayer].getUnites().forEach(u -> u.getSprite().move(0, -speed * (float) time.asSeconds()));
             updateFOG();
@@ -231,7 +242,7 @@ public class LocalhostGame extends Game {
             updateFOG();
         }
 
-        players[currentPlayer].getUnites().forEach(u -> u.setMapPosition(new Vector2i(u.getSprite().getPosition().mul(1.f / 64.f))));
+        players[currentPlayer].getUnites().forEach(u -> u.setMapPosition(new Vector2i(u.getSprite().getPosition().mul(1.f / 64.f))));*/
 
     }
 
@@ -243,13 +254,13 @@ public class LocalhostGame extends Game {
         //visibles[0] :
         for (Unite unit : players[0].getUnites())
         {
-            visibles[0].addAll(MapUtil.getVisibles(unit, map));
+            if (!unit.isDead()) visibles[0].addAll(MapUtil.getVisibles(unit, map));
         }
 
         //visibles[1] :
         for (Unite unit : players[1].getUnites())
         {
-            visibles[1].addAll(MapUtil.getVisibles(unit, map));
+            if (!unit.isDead()) visibles[1].addAll(MapUtil.getVisibles(unit, map));
         }
     }
 
