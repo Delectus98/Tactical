@@ -41,7 +41,7 @@ public abstract class Weapon
      * Creates a specific weapon projectile that will be drawn and updated.
      * @return a specific weapon projectile that will be drawn and updated.
      */
-    public abstract Projectile buildProjectile();
+    public abstract Projectile buildProjectile(Vector2i thrower, Vector2i target);
 
     /**
      * Gives an interface that describe the damages inflected on an world map.
