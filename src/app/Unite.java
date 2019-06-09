@@ -5,10 +5,10 @@ import System.*;
 
 public abstract class Unite
 {
-    protected short hp;
+    protected int hp;
     protected short fov;
-    protected short actionPoints;
-    protected short maxActionPoints;
+    protected int actionPoints;
+    protected int maxActionPoints;
     protected Vector2i position;
     protected Weapon primary;
     protected Weapon secondary;
@@ -24,7 +24,7 @@ public abstract class Unite
      * Heal points of this unite
      * @return current remaining heal points
      */
-    public abstract short getHp();
+    public abstract int getHp();
 
     /**
      * Field of view of this unite
@@ -66,7 +66,7 @@ public abstract class Unite
      */
     public abstract void takeDamages(int amount);
 
-    public abstract short getSparePoints();
+    public abstract int getSparePoints();
 
     /**
      * Reset all action points to maximum.
