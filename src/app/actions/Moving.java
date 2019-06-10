@@ -44,7 +44,7 @@ public class Moving extends Action {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return tilePath.isEmpty() ||(int)((elapsed / duration) * (speed)) >= tilePath.size();
     }
 
     @Override
