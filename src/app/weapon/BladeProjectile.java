@@ -16,7 +16,7 @@ public class BladeProjectile extends Projectile {
     }
 
     @Override
-    public boolean isTerminated() {
+    public boolean hasFinishedHitting() {
         return advance >= duration;
     }
 

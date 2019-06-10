@@ -20,8 +20,20 @@ public class ServerImpl extends Listener {
     protected final int tcpPort;
     protected final int udpPort;
 
-    public ServerImpl(String ip, int tcp, PacketRegistration registration) throws IOException {
-        this(tcp, -1, registration);
+    public ServerImpl(int tcp, PacketRegistration registration) throws IOException {
+        this.tcpPort = tcp;
+        this.udpPort = -1;
+
+        s = new Server();
+
+        registration.register(s);
+
+        s.start();
+        s.bind(tcp);
+
+        s.addListener(this);
+
+        running = true;
     }
 
     public ServerImpl(int tcp, int udp, PacketRegistration registration) throws IOException {
@@ -76,18 +88,19 @@ public class ServerImpl extends Listener {
     }
 
     public synchronized Packet received(){
-        return packets.peek();
+        return packets.remove();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        ServerImpl s = new ServerImpl(5002, 5003, GameRegistration.instance);
-
+        ServerImpl s = new ServerImpl(5002, GameRegistration.instance);
+        System.out.println(PlayerPacket.class);
         System.out.println("Try to send msg!");
         PlayerPacket p = new PlayerPacket();
-        p.name = "Player Name Test";
-
-        ActionPacket p2 = new ActionPacket();
-        p2.action = new Shooting(new Vector2i(0,0), new Vector2i(0,0), new Impact(),10, Time.seconds(0));
+        p.name = "Player Name Test\n";
+        PlayerPacket p2 = new PlayerPacket();
+        p2.name = "Player Pas Name Test\n";
+        //ActionPacket p2 = new ActionPacket();
+        //p2.action = new Shooting(new Vector2i(0,0), new Vector2i(0,0), new Impact(),10, Time.seconds(0));
 
         while (s.isRunning()) {
             s.send(p);

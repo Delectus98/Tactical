@@ -16,8 +16,8 @@ public class Pathfinder {
     private List<Vector2i> mapList = new ArrayList<>();
 
     public Pathfinder(Map m) {
-        this.width = m.getWorld().length;
-        this.height = m.getWorld()[0].length;
+        this.width = m.getWidth();
+        this.height = m.getHeight();
         convertMap(m);
     }
 
@@ -32,10 +32,6 @@ public class Pathfinder {
      */
     public HashMap<Vector2i, Vector2i> possiblePath(Unite u, List<Unite> ennemyunits, List<Vector2i> vectVisibles) {
 
-
-        //Checkunits
-//mapList => résultat de collision
-
         int cost = 1; //à changer si besoin
         int distmax = u.getSparePoints() * cost;
         ArrayList<Vector2i> tmpMapList = collisionVisible(ennemyunits, vectVisibles);
@@ -48,13 +44,22 @@ public class Pathfinder {
         }
 
         //depuis la position de l'unité
-        dist[tmpMapList.indexOf(inMap(u.getMapPosition()))] = 0;
+        int k=tmpMapList.indexOf(inMap(u.getMapPosition()));
+        if(k>=0 &&k<dist.length){
+            dist[k] = 0;}
+        else {
+            System.out.println("Erreur case de l'unité déja occupée ou inexdistante");
+            return new HashMap<>();
+        }
 
         for (int i = 0; i < dist.length; i++) {
             final int next = minVertex(dist, visited);
 
-            visited[next] = true;
-
+            if (next >= 0 && next <= visited.length) {
+                visited[next] = true;
+            } else {
+                continue;
+            }
             // Shortest path to next is dist[next] and via pred[next].
             //   Vector2i nil = new Vector2i(-1, -1);
             final ArrayList<Vector2i> n = parents(tmpMapList.get(next), tmpMapList);
@@ -140,8 +145,8 @@ public class Pathfinder {
      * @param lightzone   liste cases visibles par le joueur
      * @return Arraylist équivalente à la map, positions ennemies visibles sont "Bloquées"
      */
-    private ArrayList<Vector2i> collisionVisible(List<Unite> ennemyunits, List<Vector2i> lightzone) {//ici doit être placé la liste des unités ennemies et la zone de visibilité du joueur
-//clone la mapList
+    public ArrayList<Vector2i> collisionVisible(List<Unite> ennemyunits, List<Vector2i> lightzone) {
+        //ici doit être placé la liste des unités ennemies et la zone de visibilité du joueur. clone la mapList
         ArrayList<Vector2i> tmpMapList = new ArrayList<>(mapList);
 
         //intersection toRemove lightzine n units

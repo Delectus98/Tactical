@@ -14,7 +14,6 @@ public final class Impact
 {
     private List<MyPair<Vector2i, Integer>> impact;
 
-
     public Impact()
     {
         impact = new ArrayList<>();
@@ -37,6 +36,32 @@ public final class Impact
     public Impact(List<MyPair<Vector2i, Integer>> impact)
     {
         this.impact = impact;
+    }
+
+    /**
+     * Gives the total of tiles impacted
+     * @return total of tiles impacted
+     */
+    public int getTileCount() {
+        return impact.size();
+    }
+
+    /**
+     * Gives the coordinates of a tile using index
+     * @param i index
+     * @return coordinates of a tile using index
+     */
+    public Vector2i getTileCoord(int i) {
+        return impact.get(i).getFst();
+    }
+
+    /**
+     * Gives the damage associated to a tile using index
+     * @param i index
+     * @return damage associated to a tile using index
+     */
+    public int getTileDamage(int i) {
+        return impact.get(i).getSnd();
     }
 
     /**
