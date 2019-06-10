@@ -19,7 +19,6 @@ public class MovingManager extends ActionManager {
     private Vector2i target = null;
     private List<Shape> availableTiles;
     private RectangleShape touched;
-    private Vector2i selected = null;
     private GameInput input;
 
     private ArrayList<Unite> all;
@@ -41,11 +40,8 @@ public class MovingManager extends ActionManager {
         Arrays.stream(game.getPlayers()).map(Player::getUnites).forEach(all::addAll);
         enemies = new ArrayList<>();
         Arrays.stream(game.getPlayers()).filter(p2 -> p2 != p).map(Player::getUnites).forEach(enemies::addAll);
-        System.out.println("enemies:"+enemies.size());
         ArrayList<Vector2i> visibles = new ArrayList<>(game.getCurrentVisibles());
         possiblePaths = finder.possiblePath(user, enemies, visibles);
-        System.out.println("paths:"+possiblePaths.size());
-        System.out.println("paths:"+possiblePaths);
 
         availableTiles = new ArrayList<>();
 
@@ -65,9 +61,11 @@ public class MovingManager extends ActionManager {
             Vector2i tile = new Vector2i((int)(input.getMousePositionOnMap().x / 64), (int)(input.getMousePositionOnMap().y / 64));
             if (new ArrayList<>(possiblePaths.keySet()).contains(tile)) {
                 touched.setPosition(tile.x * 64, tile.y * 64);
-            }
-            if (input.isLeftReleased()) {
-                selected = tile;
+
+                if (input.isLeftReleased()) {
+                    target = tile;
+                    System.out.println(tile);
+                }
             }
         }
     }
@@ -100,11 +98,13 @@ public class MovingManager extends ActionManager {
 
     @Override
     public boolean isAvailable() {
-        return false;
+        return target != null;
     }
 
     @Override
     public Action build() {
-        return new Moving(super.player, finder, possiblePaths, super.unite, all, enemies, target, 85.f);
+        Action action = new Moving(super.player, finder, possiblePaths, super.unite, all, enemies, target, 85.f);
+        action.init(game);
+        return action;
     }
 }
