@@ -1,8 +1,5 @@
 package app.network;
 
-import Graphics.Vector2f;
-import Graphics.Vector2i;
-import app.actions.Shooting;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
