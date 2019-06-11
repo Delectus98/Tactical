@@ -80,10 +80,10 @@ public class HudUnite
             tirer1.setPosition(hp.getPosition().x + 64, hp.getPosition().y);
 
             tirer2 = new Text(ResourceHandler.getFont("default"), "2:TIRER");
-            tirer2.setPosition(tirer1.getPosition().x, tirer1.getPosition().y + 64);
+            tirer2.setPosition(tirer1.getPosition().x, tirer1.getPosition().y + 25);
 
             tirer3 = new Text(ResourceHandler.getFont("default"), "3:TIRER");
-            tirer3.setPosition(tirer2.getPosition().x, tirer2.getPosition().y + 64);
+            tirer3.setPosition(tirer2.getPosition().x, tirer2.getPosition().y + 25);
 
         } catch (IOException e0)
         {
@@ -183,7 +183,7 @@ public class HudUnite
         this.selectedAction = null; //or MovingManager
     }
 
-    public boolean isClicker()
+    public boolean isClicked()
     {
         return clicked;
     }

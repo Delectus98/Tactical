@@ -78,7 +78,7 @@ puis setPositon(INPUT.getFrameRectangle().w/2,....)
                 if (entry.getValue().getFst().getBounds().contains(mouse.x, mouse.y))
                 {
                     selectedUnit = entry.getKey().isDead() ? selectedUnit : entry.getKey();
-                    System.out.println("SELECTED");
+                    selected = true;
                     break;
                 }
             }
