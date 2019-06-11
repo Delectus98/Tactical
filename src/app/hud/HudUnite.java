@@ -7,6 +7,7 @@ import app.Player;
 import app.Unite;
 import System.*;
 import app.actions.ActionManager;
+import app.actions.MovingManager;
 import app.actions.ShootingManager;
 import util.GameInput;
 import util.ResourceHandler;
@@ -16,22 +17,22 @@ import java.io.IOException;
 
 public class HudUnite
 {
-    Unite selected;
-    Player player;
-    GameInput input;
-    Game game;
+    private Unite selected;
+    private Player player;
+    private GameInput input;
+    private Game game;
 
-    Sprite imgUnit;
-    Sprite back;
-    Text hp;
-    Text pa;
-    boolean lowered;
-    Sprite lower;
+    private Sprite imgUnit;
+    private Sprite back;
+    private Text hp;
+    private Text pa;
+    private boolean lowered;
+    private Sprite lower;
 
     //todo more actions for later
     //better graphics
-    Text tirer;
-    ActionManager selectedAction;
+    private Text tirer;
+    private ActionManager selectedAction;
 
     private ActionManager tir;
     private ActionManager move;
@@ -43,7 +44,10 @@ public class HudUnite
         this.input = input;
         this.game = game;
 
-        tir = new ShootingManager(selected, game, input);
+        tir = new ShootingManager(player, selected, game, input);
+        move = new MovingManager(player, selected, game, input);
+        selectedAction = move;
+
         try
         {
             lower = new Sprite(ResourceHandler.loadTexture("res/hud/lower3232.png", "lower"));
