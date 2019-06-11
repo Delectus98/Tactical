@@ -4,7 +4,6 @@ import Graphics.*;
 import System.*;
 import app.map.Map;
 import app.map.MapImpl;
-import app.map.MapInfo;
 import app.map.MapList;
 import app.play.LocalhostGame;
 import app.weapon.*;
@@ -114,8 +113,9 @@ public class Main
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         GLFWWindow window = new GLFWWindow(VideoMode.getDesktopMode(), "Tactical", WindowStyle.DEFAULT);
+        glfwMaximizeWindow(window.getGlId());
 
         ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
         ResourceHandler.loadTexture("res/wall.png", "res/wall.png");
