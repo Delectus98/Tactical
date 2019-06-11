@@ -2,6 +2,7 @@ package util;
 
 
 import Graphics.*;
+import app.sounds.Sound;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ public final class ResourceHandler {
     private static Map<String, Texture> textures = new HashMap<>();
     private static Map<String, FontFamily> fonts = new HashMap<>();
     private static Map<String, Shader> shaders = new HashMap<>();
-    //private static Map<String, Sound> sounds = new HashMap<>();
+    private static Map<String, Sound> sounds = new HashMap<>();
 
     /**
      * Releases all assets from GRAM and RAM.
@@ -107,9 +108,15 @@ public final class ResourceHandler {
     public static FontFamily getFont(String name) {
         return fonts.get(name);
     }
-/*
-    public static ConstSound loadSound(String sound) throws IOException {}
 
-    public static ConstSound getSound(String name) {}
-*/
+    public static Sound loadSound(String file, String name) throws IOException {
+        Sound s = new Sound(file);
+        sounds.put(name, s);
+        return s;
+    }
+
+    public static Sound getSound(String name) {
+        return sounds.get(name);
+    }
+
 }

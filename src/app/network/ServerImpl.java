@@ -9,6 +9,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.PriorityQueue;
 
 
@@ -65,6 +66,20 @@ public class ServerImpl extends Listener {
         s.sendToAllTCP(o);
     }
 
+    public synchronized void send(Object o, int index) {
+        if (0 <= index && index < this.getClientCount()) s.sendToTCP(index, o);
+    }
+
+    public synchronized int getClientCount(){
+        return s.getConnections().length;
+    }
+
+    public synchronized Connection getClient(int i) {
+        Connection[] t = s.getConnections();
+        if (0<= i && i < t.length) return t[i];
+        else return null;
+    }
+
     @Override
     public void connected(Connection connection) {
         System.out.println("connection:"+connection.getRemoteAddressTCP());
@@ -105,6 +120,7 @@ public class ServerImpl extends Listener {
         while (s.isRunning()) {
             s.send(p);
             s.send(p2);
+
             Thread.sleep(1000);
         }
     }

@@ -7,6 +7,8 @@ import app.Game;
 import app.Player;
 import app.Unite;
 import app.actions.*;
+import app.hud.HudPlayer;
+import app.hud.HudUnite;
 import app.map.Map;
 import util.*;
 
@@ -31,7 +33,9 @@ public class LocalhostGame extends Game {
     private Keyboard keyboard;
     private Mouse mouse;
 
-    private GameInput inputs[];
+    private HudPlayer[] hudPlayer;
+    private GameInput[] inputs;
+    private HudUnite hudUnite = null;
 
     private Set<Vector2i>[] visibles;
 
@@ -85,11 +89,15 @@ public class LocalhostGame extends Game {
         inputs[0] = new GameInput(mapCam[0], hudCam[0], viewports[0], mouse, keyboard);
         inputs[1] = new GameInput(mapCam[1], hudCam[1], viewports[1], mouse, keyboard);
 
+        hudPlayer = new HudPlayer[2];
+        hudPlayer[0] = new HudPlayer(this, p1, inputs[0]);
+        hudPlayer[1] = new HudPlayer(this, p2, inputs[1]);
+
         /**ShootingManager*/
         //manager = new ShootingManager(p2, p2.getUnites().get(0), this, inputs[1]);
 
         /**MovingManager & Moving*/
-        manager = new MovingManager(p2, p2.getUnites().get(0), this, inputs[1]);
+        /*manager = new MovingManager(p2, p2.getUnites().get(0), this, inputs[1]);
         Pathfinder finder = new Pathfinder(this.getMap());
         ArrayList<Unite> all = new ArrayList<>();
         Arrays.stream(this.getPlayers()).map(Player::getUnites).forEach(all::addAll);
@@ -99,13 +107,17 @@ public class LocalhostGame extends Game {
         HashMap<Vector2i, Vector2i> possiblePaths = finder.possiblePath(p2.getUnites().get(0), enemies, visibles);
         currentAction = new Moving(p2, finder, possiblePaths, p2.getUnites().get(0), all, enemies, new Vector2i(12, 12), 85);
         currentAction.init(this);
-        inAction = true;
+        inAction = true;*/
 
     }
 
     @Override
     public void endTurn() {
         currentPlayer = (currentPlayer + 1) % 2;
+
+        inAction = false;
+        manager = null;
+        currentAction = null;
 
         players[currentPlayer].getUnites().forEach(Unite::resetTurn);
     }
@@ -128,7 +140,9 @@ public class LocalhostGame extends Game {
             // il n'y a plus d'action alors on arrete la phase déroulement des actions
             inAction = false;
             currentAction = null;
-            endTurn();
+            hudUnite.resetSelectedAction();
+            manager = hudUnite.getSelectedAction();
+            //endTurn();
         }
     }
 
@@ -168,82 +182,41 @@ public class LocalhostGame extends Game {
             //map is too small for x-coordinates
             mapCam[currentPlayer].setCenter(new Vector2f(map.getWidth() * 64 / 2, mapCam[0].getCenter().y));
         }
-
-        /*//player 2 camera control
-        if (keyboard.isKeyPressed(AZERTYLayout.Z.getKeyID())) {
-            mapCam[1].move(new Vector2f(0, -300 * (float) time.asSeconds()));
-        }
-        if (keyboard.isKeyPressed(AZERTYLayout.S.getKeyID())) {
-            mapCam[1].move(new Vector2f(0, 300 * (float) time.asSeconds()));
-        }
-        if (keyboard.isKeyPressed(AZERTYLayout.Q.getKeyID())) {
-            mapCam[1].move(new Vector2f(-300 * (float) time.asSeconds(), 0));
-        }
-        if (keyboard.isKeyPressed(AZERTYLayout.D.getKeyID())) {
-            mapCam[1].move(new Vector2f(300 * (float) time.asSeconds(), 0));
-        }*/
     }
 
     private void updateUserInput(ConstTime time) {
-        if (manager != null) manager.updatePreparation(time);
+        if (manager != null) {
+            manager.updatePreparation(time);
+            if (manager.isAvailable()) {
+                currentAction = manager.build();
+                inAction = true;
+                manager = null;
+            }
+        }
+
+        if (hudUnite != null && !inAction) {
+            hudUnite.update(time);
+            if (hudUnite.getSelectedAction() != manager) {
+                manager = hudUnite.getSelectedAction();
+            }
+        }
 
         // la souris est dans le rectangle du jeu du bon joueur
-        if (inputs[currentPlayer].isLeftPressed() && inputs[currentPlayer].getFrameRectangle().contains(inputs[currentPlayer].getMousePosition().x, inputs[currentPlayer].getMousePosition().y)) {
-            // rien n'est en cours d'éxecution
-            if (!inAction) {
-                // selection d'unité sur le HUD
+        if (inputs[currentPlayer].isLeftReleased() && inputs[currentPlayer].getFrameRectangle().contains(inputs[currentPlayer].getMousePosition().x, inputs[currentPlayer].getMousePosition().y)) {
+            // selection d'unité sur le HUD
 
-                // selection d'unité sur la map
-                players[currentPlayer].getUnites().forEach(u -> {
-                    if (u.getSprite().getBounds().contains(inputs[currentPlayer].getMousePosition().x, inputs[currentPlayer].getMousePosition().y)) {
-                        selectedUnite = u;
-                        //reset player HUD
-                        //reset action manager
-                    }
-                });
-                // selection sur le HUD du joueur
-                if (selectedUnite != null) {
-                    //BigUniteHUD
+            // selection d'unité sur la map
+            players[currentPlayer].getUnites().forEach(u -> {
+                if (u.getSprite().getBounds().contains(inputs[currentPlayer].getMousePositionOnMap().x, inputs[currentPlayer].getMousePositionOnMap().y)) {
+                    selectedUnite = u;
+                    //reset player HUD
+                    // selection sur le HUD du joueur
+                    hudUnite = new HudUnite(players[currentPlayer], selectedUnite, inputs[currentPlayer], this);
+                    //reset action manager
+                    manager = hudUnite.getSelectedAction();
                 }
-            }
-
-            /// TEST EXPERIMENTAL
-            Vector2f pos = inputs[currentPlayer].getMousePositionOnMap();//WindowUtils.mapCoordToPixel(mouse.getRelativePosition(), viewports[currentPlayer], mapCam[currentPlayer]);
-            System.out.println(pos.x + ":" + pos.y);
-
-            int x = (int) (pos.x / 64.F);
-            int y = (int) (pos.y / 64.F);
-
-            if (x >= 0 && x < map.getWidth() && y >= 0 && y < map.getHeight()) {
-                if (super.map.getWorld()[x][y].getFloor() != null && super.map.getWorld()[x][y].getFloor().getBounds().contains(pos.x, pos.y))
-                    super.map.getWorld()[x][y].getFloor().setFillColor(new Color((float) time.asSeconds(), (float) (Math.random()), (float) (Math.random())));
-            }
+            });
         }
-
-
-
-
-        /// TEST EXPERIMENTAL
-        /*final int speed = 300;
-        if (keyboard.isKeyPressed(AZERTYLayout.PAD_8.getKeyID())) {
-            players[currentPlayer].getUnites().forEach(u -> u.getSprite().move(0, -speed * (float) time.asSeconds()));
-            updateFOG();
-        }
-        if (keyboard.isKeyPressed(AZERTYLayout.PAD_5.getKeyID())) {
-            players[currentPlayer].getUnites().forEach(u -> u.getSprite().move(0, speed * (float) time.asSeconds()));
-            updateFOG();
-        }
-        if (keyboard.isKeyPressed(AZERTYLayout.PAD_4.getKeyID())) {
-            players[currentPlayer].getUnites().forEach(u -> u.getSprite().move(-speed * (float) time.asSeconds(), 0));
-            updateFOG();
-        }
-        if (keyboard.isKeyPressed(AZERTYLayout.PAD_6.getKeyID())) {
-            players[currentPlayer].getUnites().forEach(u -> u.getSprite().move(speed * (float) time.asSeconds(), 0));
-            updateFOG();
-        }
-
-        players[currentPlayer].getUnites().forEach(u -> u.setMapPosition(new Vector2i(u.getSprite().getPosition().mul(1.f / 64.f))));*/
-
     }
 
     @Override
@@ -269,8 +242,10 @@ public class LocalhostGame extends Game {
         updateCamera(time);
 
         if (inAction) {
+            System.out.println("action" + Math.random());
             updateActionProgress(time);
         } else {
+            System.out.println("user input" + Math.random());
             updateUserInput(time);
         }
 
@@ -377,6 +352,11 @@ public class LocalhostGame extends Game {
                 currentAction.drawAboveHUD(target);
             if (currentPlayer == 0 && manager != null)
                 manager.drawAboveHUD(target);
+
+            hudPlayer[0].draw(target);
+            if (!inAction && manager == null && hudUnite != null && currentPlayer == 0) {
+                hudUnite.draw(target);
+            }
         }
 
         ///draw second player screen
@@ -421,6 +401,11 @@ public class LocalhostGame extends Game {
                 currentAction.drawAboveHUD(target);
             if (currentPlayer == 1 && manager != null)
                 manager.drawAboveHUD(target);
+
+            hudPlayer[1].draw(target);
+            if (!inAction && manager == null && hudUnite != null && currentPlayer == 1) {
+                hudUnite.draw(target);
+            }
         }
 
         // on remet l'ancienne view

@@ -7,8 +7,8 @@ import app.Game;
 import app.Player;
 import System.*;
 import app.Unite;
-import com.sun.tools.javac.util.Pair;
 import util.GameInput;
+import util.MyPair;
 import util.ResourceHandler;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -18,7 +18,7 @@ public class HudPlayer
     Game game;
     Player player;
     GameInput gameInput;
-    HashMap<Unite, Pair<Sprite, Text>> sprites;
+    HashMap<Unite, MyPair<Sprite, Text>> sprites;
     boolean selected;
     Unite selectedUnit;
     int test = 0;
@@ -41,10 +41,10 @@ puis setPositon(INPUT.getFrameRectangle().w/2,....)
 
     public void draw(RenderTarget target)
     {
-        for(HashMap.Entry<Unite, Pair<Sprite, Text>> entry : sprites.entrySet())
+        for(HashMap.Entry<Unite, MyPair<Sprite, Text>> entry : sprites.entrySet())
         {
-            target.draw(entry.getValue().fst);
-            target.draw(entry.getValue().snd);
+            target.draw(entry.getValue().getFst());
+            target.draw(entry.getValue().getSnd());
         }
     }
 
@@ -63,7 +63,7 @@ puis setPositon(INPUT.getFrameRectangle().w/2,....)
             Text hp = new Text(ResourceHandler.getFont("default"), "HP: " + unit.getHp());
             hp.setPosition(decLeft + 15, decHeight + 64);
 
-            sprites.put(unit, new Pair(tmp, hp));
+            sprites.put(unit, new MyPair<>(tmp, hp));
             decHeight += 64 + 10;
         }
     }
@@ -73,9 +73,9 @@ puis setPositon(INPUT.getFrameRectangle().w/2,....)
         if (gameInput.isLeftReleased())
         {
             Vector2f mouse = gameInput.getMousePositionOnHUD();
-            for (HashMap.Entry<Unite, Pair<Sprite, Text>> entry : sprites.entrySet())
+            for (HashMap.Entry<Unite, MyPair<Sprite, Text>> entry : sprites.entrySet())
             {
-                if (entry.getValue().fst.getBounds().contains(mouse.x, mouse.y))
+                if (entry.getValue().getFst().getBounds().contains(mouse.x, mouse.y))
                 {
                     selectedUnit = entry.getKey().isDead() ? selectedUnit : entry.getKey();
                     System.out.println("SELECTED");
@@ -85,13 +85,13 @@ puis setPositon(INPUT.getFrameRectangle().w/2,....)
         }
         for(Unite unit : player.getUnites())
         {
-            Pair<Sprite, Text> value = sprites.get(unit);
+            MyPair<Sprite, Text> value = sprites.get(unit);
             if (unit.isDead())
             {
-                value.snd.setString("X DEAD X");
+                value.getSnd().setString("X DEAD X");
             } else
             {
-                value.snd.setString("HP: " + unit.getHp());
+                value.getSnd().setString("HP: " + unit.getHp());
             }
         }
     }
