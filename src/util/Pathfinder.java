@@ -106,7 +106,7 @@ public class Pathfinder {
         Vector2i startInMap = inMap(start);
         Vector2i goalInMap = inMap(goal);
         for (Unite v : allyunits)
-            if (inMap(v.getMapPosition()).equals(inMap(goal))) {
+            if (Objects.equals(inMap(v.getMapPosition()), inMap(goal))) {
 
                 System.out.println("Case occupée par un allié");
                 return path;
