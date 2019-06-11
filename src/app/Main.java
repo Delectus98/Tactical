@@ -127,10 +127,6 @@ public class Main
         shader.bind();
         GL20.glUniform1f(shader.getUniformLocation("colorRatio"), 0.2f);
 
-        /*MapInfo mapInfo = MapInfo.loadFromFile("Small Battlefield.build");
-        MapInfo mapInfo = MapInfo.loadFromFile("Medium Battlefield.build");*/
-        //MapInfo mapInfo = MapInfo.loadFromFile("Huge Battlefield.build");
-
         Map map = new MapImpl(MapList.Battlefield3);
         //Map map = new MapImpl(mapInfo);
         Player p1 = new Player("P1");
@@ -147,16 +143,6 @@ public class Main
         p2.addUnite(unite2);
         Game current = new LocalhostGame(window, p1, p2, map);
 
-
-        /*Weapon weapon = new Grenade();
-        Impact impactTest = weapon.getImpactZone(new Vector2i(), new Vector2i(1,1), map);
-        for (int i=0 ; i < impactTest.getTileCount() ; ++i) {
-            Vector2i v =impactTest.getTileCoord(i);
-            System.out.println(v);
-            if (map.getWorld()[v.x][v.y].getFloor() != null) map.getWorld()[v.x][v.y].getFloor().setFillColor(Color.Blue);
-            if (map.getWorld()[v.x][v.y].getStruct() != null) map.getWorld()[v.x][v.y].getStruct().setFillColor(Color.Blue);
-        }*/
-
         Projectile projectile = new BulletProjectile("ammo", new FloatRect(32,0, 32,32), new Vector2f(400,850), new Vector2f(150,50));
         //start game
         current.start();
@@ -167,9 +153,6 @@ public class Main
         while (window.isOpen())
         {
             Time elapsed = clock.restart();
-            /*milliseconds += clock.getElapsed().asMilliseconds();
-            ResourceHandler.getShader("grey").bind();
-            GL20.glUniform1f(ResourceHandler.getShader("grey").getUniformLocation("colorRatio"), ((int)(milliseconds) % 1000) / 1000.f);*/
 
             Event event;
             while ((event = window.pollEvents()) != null)
