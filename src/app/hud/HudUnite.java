@@ -83,7 +83,7 @@ public class HudUnite
             tirer1.setPosition(hp.getPosition().x + 64, hp.getPosition().y);
 
             tirer2 = new Text(ResourceHandler.getFont("default"), "2:TIRER");
-            tirer1.setPosition(hp.getPosition().x + 64, hp.getPosition().y);
+            tirer2.setPosition(tirer1.getPosition().x, tirer1.getPosition().y + 25);
 
             tirer3 = new Text(ResourceHandler.getFont("default"), "3:TIRER");
             tirer3.setPosition(tirer2.getPosition().x, tirer2.getPosition().y + 25);
@@ -107,21 +107,21 @@ public class HudUnite
                 target.draw(pa);
                 if (player.getUnites().contains(selected))
                 {
-                    if (tir1.isAvailable())
+                    if (tir1.isPossible())
                     {
                         target.draw(tirer1);
                     } else
                     {
                         target.draw(tirer1, ResourceHandler.getShader("grey"));
                     }
-                    if (tir2.isAvailable())
+                    if (tir2.isPossible())
                     {
                         target.draw(tirer2);
                     } else
                     {
                         target.draw(tirer2, ResourceHandler.getShader("grey"));
                     }
-                    if (tir3.isAvailable())
+                    if (tir3.isPossible())
                     {
                         target.draw(tirer3);
                     } else
