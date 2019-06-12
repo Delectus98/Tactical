@@ -28,8 +28,8 @@ public class BulletProjectile extends Projectile {
         super.firstPos = p1;
         super.lastPos = target;
 
-        this.duration = 2.f;
         Vector2f trajectory = p1.neg().sum(target).unit();
+        this.duration = 0.085f * p1.neg().sum(target).length() / 64;
         this.radian = (float)Math.atan2(-trajectory.y, trajectory.x);
 
         bullet = new Sprite(ResourceHandler.getTexture(texture));

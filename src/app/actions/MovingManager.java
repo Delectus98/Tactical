@@ -103,6 +103,7 @@ public class MovingManager extends ActionManager {
 
     @Override
     public Action build() {
+        //TODO unite.removePA(this.getCost());
         Action action = new Moving(super.player, finder, possiblePaths, super.unite, all, enemies, target, 85.f);
         action.init(game);
         return action;
