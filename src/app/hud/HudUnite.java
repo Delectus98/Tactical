@@ -29,6 +29,7 @@ public class HudUnite
     private Text pa;
     private boolean lowered;
     private Sprite lower;
+    private Sprite cancelAction;
 
     private boolean clicked;
 
@@ -63,14 +64,16 @@ public class HudUnite
 
         try
         {
-            lower = new Sprite(ResourceHandler.loadTexture("res/hud/lower3232.png", "lower"));
+            cancelAction = new Sprite(ResourceHandler.loadTexture("res/hud/lower3232.png", "cancel"));
+            lower = new Sprite(ResourceHandler.loadTexture("Sprites/UI/arr.png", "lower"));
+            lower.setTextureRect(32, 0, 32, 32);
             back = new Sprite(ResourceHandler.loadTexture("res/hud/fondHudUnite.png", "spriteeeee"));
 
             lower.setPosition(64, input.getFrameRectangle().h - 32);
             back.setPosition(lower.getPosition().x, input.getFrameRectangle().h - 128);
+            cancelAction.setPosition(lower.getPosition().x + back.getBounds().w, input.getFrameRectangle().h - 32);
 
             imgUnit = new Sprite(unite.getSprite().getTexture());
-            imgUnit.setTextureRect(rect.h, rect.w, rect.l, rect.t);
             imgUnit.setTextureRect(rect.l, rect.t, rect.w, rect.h);
             imgUnit.setPosition(back.getPosition().x + 10, back.getPosition().y + 10);
 
@@ -131,6 +134,11 @@ public class HudUnite
                 }
             }
             target.draw(lower);
+            if (!(selectedAction instanceof MovingManager))
+            {
+                target.draw(cancelAction);
+            }
+
         }
     }
 
@@ -153,26 +161,45 @@ public class HudUnite
         pa.setString("PA: " + selected.getSparePoints());
         hp.setString("HP: " + selected.getHp());
         //we check if the unit is part of the player's units
-        if (input.isLeftReleased()) {
+        if (input.isLeftReleased())
+        {
             clicked = back.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y) && !lowered;
 
-            if (lower.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)) {
+            if (lower.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y))
+            {
                 this.lowered = !this.lowered;
+                if (lowered)
+                {
+                    lower.setTextureRect(0,0,32,32);
+                }else
+                {
+                    lower.setTextureRect(32,0,32,32);
+                }
                 clicked = true;
-            } else if (tirer1.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y) && !lowered) {
+            } else if (tirer1.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y) && !lowered)
+            {
                 //on passe en action de tire
                 selectedAction = tir1;
                 //on reduit le hud
                 this.lowered = true;
-                System.out.println("SELECTED TIR1");
+                lower.setTextureRect(0,0,32,32);
                 clicked = true;
-            } else if (tirer2.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y) && !lowered) {
+            } else if (tirer2.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y) && !lowered)
+            {
                 selectedAction = tir2;
                 this.lowered = true;
+                lower.setTextureRect(0,0,32,32);
                 clicked = true;
-            } else if (tirer3.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y) && !lowered) {
+            } else if (tirer3.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y) && !lowered)
+            {
                 selectedAction = tir3;
                 this.lowered = true;
+                lower.setTextureRect(0,0,32,32);
+                clicked = true;
+            } else if (cancelAction.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)
+            )
+            {
+                resetSelectedAction();
                 clicked = true;
             }
         }
@@ -182,6 +209,8 @@ public class HudUnite
     {
         this.selected = unit;
         imgUnit.setTexture(unit.getSprite().getTexture(), false);
+        FloatRect r = unit.getSprite().getTextureRect();
+        imgUnit.setTextureRect(r.l, r.t, r.w, r.h);
     }
 
     public ActionManager getSelectedAction()
@@ -197,7 +226,7 @@ public class HudUnite
         tir2 = new ShootingManager(player, selected, game, input, selected.getSecondary());
         tir3 = new ShootingManager(player, selected, game, input, selected.getMelee());
         move = new MovingManager(player, selected, game, input);
-        selectedAction = null;
+        selectedAction = move;
     }
 
     public boolean isClicked()
