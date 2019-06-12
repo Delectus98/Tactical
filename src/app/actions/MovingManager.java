@@ -48,10 +48,11 @@ public class MovingManager extends ActionManager {
         possiblePaths.forEach((v1, v2) -> {
             Shape s = new RectangleShape(v1.x*64, v1.y*64, 64, 64);
             s.setFillColor(new Color(0.3f,1.0f,1.f,0.5f));
-            availableTiles.add(s);
+            if (!v1.equals(user.getMapPosition())) availableTiles.add(s);
         });
 
         touched = new RectangleShape(user.getMapPosition().x*64,user.getMapPosition().x*64,64,64);
+        touched.setFillColor(new Color(1.f, 0.f, 0.5f, 0.5f));
     }
 
 
@@ -64,7 +65,6 @@ public class MovingManager extends ActionManager {
 
                 if (input.isLeftReleased()) {
                     target = tile;
-                    System.out.println(tile);
                 }
             }
         }
