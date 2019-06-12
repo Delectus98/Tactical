@@ -17,7 +17,8 @@ import static org.lwjgl.glfw.GLFW.glfwMaximizeWindow;
 public class Main
 {
 
-    private static class UniteTest extends Unite {
+    public static class UniteTest extends Unite {
+        private short pa = getMaximumPoints();
 
         public UniteTest(ConstTexture t, FloatRect rect){
             sprite = new Sprite(t);
@@ -77,9 +78,11 @@ public class Main
 
         @Override
         public void takeDamages(int amount) {
-            System.out.println("hp:"+hp);
             hp = (short)Math.max(0, hp - amount);
-            System.out.println("hp:"+hp);
+        }
+
+        public void removePA(short cost) {
+            pa = (short)Math.max(0, pa - cost);
         }
 
         @Override
@@ -90,13 +93,13 @@ public class Main
         @Override
         public short getSparePoints()
         {
-            return 20;
+            return pa;
         }
 
         @Override
         public void resetTurn()
         {
-
+            pa = getMaximumPoints();
         }
 
         @Override
@@ -107,13 +110,13 @@ public class Main
         @Override
         public void setTeam(Team team)
         {
-
+            this.team = team;
         }
 
         @Override
         public Team getTeam()
         {
-            return null;
+            return team;
         }
 
         @Override

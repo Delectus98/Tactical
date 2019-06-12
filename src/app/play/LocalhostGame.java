@@ -39,6 +39,8 @@ public class LocalhostGame extends Game {
 
     private Set<Vector2i>[] visibles;
 
+    private Text nextTurn;
+
     public Set<Vector2i> getCurrentVisibles() {
         return visibles[currentPlayer];
     }
@@ -93,22 +95,9 @@ public class LocalhostGame extends Game {
         hudPlayer[0] = new HudPlayer(this, p1, inputs[0]);
         hudPlayer[1] = new HudPlayer(this, p2, inputs[1]);
 
-        /**ShootingManager*/
-        //manager = new ShootingManager(p2, p2.getUnites().get(0), this, inputs[1]);
-
-        /**MovingManager & Moving*/
-        /*manager = new MovingManager(p2, p2.getUnites().get(0), this, inputs[1]);
-        Pathfinder finder = new Pathfinder(this.getMap());
-        ArrayList<Unite> all = new ArrayList<>();
-        Arrays.stream(this.getPlayers()).map(Player::getUnites).forEach(all::addAll);
-        ArrayList<Unite> enemies = new ArrayList<>();
-        Arrays.stream(this.getPlayers()).filter(p -> p2 != p).map(Player::getUnites).forEach(enemies::addAll);
-        ArrayList<Vector2i> visibles = new ArrayList<>(this.getCurrentVisibles());
-        HashMap<Vector2i, Vector2i> possiblePaths = finder.possiblePath(p2.getUnites().get(0), enemies, visibles);
-        currentAction = new Moving(p2, finder, possiblePaths, p2.getUnites().get(0), all, enemies, new Vector2i(12, 12), 85);
-        currentAction.init(this);
-        inAction = true;*/
-
+        // ui
+        nextTurn = new Text(ResourceHandler.getFont("default"), "Next Turn");
+        nextTurn.setPosition(inputs[currentPlayer].getFrameRectangle().w - nextTurn.getBounds().w - 10, 0);
     }
 
     @Override
@@ -185,6 +174,14 @@ public class LocalhostGame extends Game {
     }
 
     private void updateUserInput(ConstTime time) {
+        nextTurn.setPosition(inputs[currentPlayer].getFrameRectangle().w - nextTurn.getBounds().w - 10, 0);
+
+        Vector2f mouseHud = inputs[currentPlayer].getMousePositionOnHUD();
+
+        if (inputs[currentPlayer].isLeftReleased() && nextTurn.getBounds().contains(mouseHud.x, mouseHud.y)) {
+            endTurn();
+        }
+
         if (hudPlayer[currentPlayer].isSelected()) {
             selectedUnite = hudPlayer[currentPlayer].getSelectedUnit();
             //reset player HUD
@@ -207,6 +204,7 @@ public class LocalhostGame extends Game {
                 if (manager.isAvailable()) {
                     currentAction = manager.build();
                     currentAction.init(this);
+                    selectedUnite.removePA((short)currentAction.getCost());
                     inAction = true;
                     manager = null;
                 }
@@ -369,8 +367,11 @@ public class LocalhostGame extends Game {
                 manager.drawAboveHUD(target);
 
             hudPlayer[0].draw(target);
-            if (!inAction && hudUnite != null && currentPlayer == 0) {
+            if (/*!inAction && */hudUnite != null && currentPlayer == 0) {
                 hudUnite.draw(target);
+            }
+            if (currentPlayer == 0) {
+                target.draw(nextTurn);
             }
         }
 
@@ -418,8 +419,12 @@ public class LocalhostGame extends Game {
                 manager.drawAboveHUD(target);
 
             hudPlayer[1].draw(target);
-            if (!inAction && hudUnite != null && currentPlayer == 1) {
+            if (/*!inAction && */hudUnite != null && currentPlayer == 1) {
                 hudUnite.draw(target);
+            }
+
+            if (currentPlayer == 1) {
+                target.draw(nextTurn);
             }
         }
 

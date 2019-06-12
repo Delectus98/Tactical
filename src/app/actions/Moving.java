@@ -39,7 +39,7 @@ public class Moving extends Action {
 
     @Override
     public int getCost() {
-        return 0;
+        return tilePath.size() + 2;
     }
 
     @Override

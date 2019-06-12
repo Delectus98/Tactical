@@ -13,6 +13,8 @@ import util.ResourceHandler;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static app.Main.*;
+
 public class MainMENU {
     private static int WIDTH = 1280;
     private static int HEIGHT = 720;
@@ -38,6 +40,11 @@ public class MainMENU {
     /*RectangleShape shape = new RectangleShape(245,245, 10,10);
     shape.setFillColor(Color.Red);
     */
+        ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
+        ResourceHandler.loadTexture("res/wall.png", "res/wall.png");
+        ResourceHandler.loadTexture("res/character.png", "res/character.png");
+        ResourceHandler.loadFont("res/font.ttf",20, "default");
+
         Mouse mousse = new Mouse(window);
         Menu.init(menulist, WIDTH, HEIGHT);
 
@@ -97,20 +104,18 @@ public class MainMENU {
 
     //TODO VIRER CETTE MERDE (tests) à refaire avec le système de lobby
     private static Game bleh(GLFWWindow window) throws IOException {
-        ResourceHandler.loadTexture("res/floor.png");
-        ResourceHandler.loadTexture("res/wall.png");
-        ResourceHandler.loadTexture("res/character.png");
+
 
         Map map = new MapImpl(MapList.Battlefield3);
         Player p1 = new Player("P1");
-        Unite unite = new Main.UniteTest(ResourceHandler.getTexture("res/character.png"), new FloatRect(0, 0, 64, 64));
-        unite.seMapPosition(new Vector2i(1, 1));
+        Unite unite = new UniteTest(ResourceHandler.getTexture("res/character.png"), new FloatRect(0, 0, 64, 64));
+        unite.setMapPosition(new Vector2i(1, 1));
         unite.getSprite().setPosition(64, 64);
         p1.addUnite(unite);
         Player p2 = new Player("P2");
-        Unite unite2 = new Main.UniteTest(ResourceHandler.getTexture("res/character.png"), new FloatRect(64, 0, 64, 64));
+        Unite unite2 = new UniteTest(ResourceHandler.getTexture("res/character.png"), new FloatRect(64, 0, 64, 64));
         unite2.getSprite().setPosition(256, 128);
-        unite2.seMapPosition(new Vector2i(4, 2));
+        unite2.setMapPosition(new Vector2i(4, 2));
         p2.addUnite(unite2);
         Game current = new LocalhostGame(window, p1, p2, map);
 
