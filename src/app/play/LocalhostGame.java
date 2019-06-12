@@ -107,6 +107,7 @@ public class LocalhostGame extends Game {
         inAction = false;
         manager = null;
         currentAction = null;
+        hudUnite = null;
 
         players[currentPlayer].getUnites().forEach(Unite::resetTurn);
     }
@@ -204,7 +205,7 @@ public class LocalhostGame extends Game {
                 if (manager.isAvailable()) {
                     currentAction = manager.build();
                     currentAction.init(this);
-                    selectedUnite.removePA((short)currentAction.getCost());
+                    selectedUnite.removePA((short) currentAction.getCost());
                     inAction = true;
                     manager = null;
                 }
@@ -212,9 +213,8 @@ public class LocalhostGame extends Game {
         }
 
 
-
-        // la souris est dans le rectangle du jeu du bon joueur
-        if (inputs[currentPlayer].isLeftReleased() && inputs[currentPlayer].getFrameRectangle().contains(inputs[currentPlayer].getMousePosition().x, inputs[currentPlayer].getMousePosition().y)) {
+        // la souris est dans le rectangle du jeu du bon joueur && qu'aucune action ne va se dérouler après alors on peut cliquer sur une unité
+        if (inAction != true && inputs[currentPlayer].isLeftReleased() && inputs[currentPlayer].getFrameRectangle().contains(inputs[currentPlayer].getMousePosition().x, inputs[currentPlayer].getMousePosition().y)) {
             // selection d'unité sur le HUD
 
             // selection d'unité sur la map
@@ -229,6 +229,7 @@ public class LocalhostGame extends Game {
                 }
             });
         }
+
     }
 
     @Override
