@@ -105,6 +105,12 @@ public abstract class Unite
     public abstract void takeDamages(int amount);
 
     /**
+     * Remove action points
+     * @param cost action points cost
+     */
+    public abstract void removePA(short cost);
+
+    /**
      * Gives count of maximum actions points of the unite
      * @return maximum action points
      */
