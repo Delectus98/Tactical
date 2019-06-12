@@ -83,7 +83,7 @@ public class HudUnite
             tirer1.setPosition(hp.getPosition().x + 64, hp.getPosition().y);
 
             tirer2 = new Text(ResourceHandler.getFont("default"), "2:TIRER");
-            tirer2.setPosition(tirer1.getPosition().x, tirer1.getPosition().y + 25);
+            tirer1.setPosition(hp.getPosition().x + 64, hp.getPosition().y);
 
             tirer3 = new Text(ResourceHandler.getFont("default"), "3:TIRER");
             tirer3.setPosition(tirer2.getPosition().x, tirer2.getPosition().y + 25);
@@ -138,9 +138,22 @@ public class HudUnite
     //todo voir setSelectedUnite si ca convient
     public void update(ConstTime time)
     {
+        lower.setPosition(64, input.getFrameRectangle().h - 32);
+        back.setPosition(lower.getPosition().x, input.getFrameRectangle().h - 128);
+        imgUnit.setPosition(back.getPosition().x + 10, back.getPosition().y + 10);
+        hp.setPosition(imgUnit.getPosition().x + 64 + 10, imgUnit.getPosition().y + 10);
+        pa.setPosition(hp.getPosition().x, hp.getPosition().y + 25);
+
+        tirer1.setPosition(hp.getPosition().x + 64, hp.getPosition().y);
+        tirer2.setPosition(tirer1.getPosition().x, tirer1.getPosition().y + 25);
+        tirer3.setPosition(tirer2.getPosition().x, tirer2.getPosition().y + 25);
+
+
+
         pa.setString("PA: " + selected.getSparePoints());
         hp.setString("HP: " + selected.getHp());
-        if (input.isLeftReleased())
+        //we check if the unit is part of the player's units
+        if (input.isLeftReleased() && player.getUnites().contains(selected))
         {
             if (lower.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y))
             {
