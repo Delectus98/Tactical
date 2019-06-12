@@ -73,6 +73,7 @@ puis setPositon(INPUT.getFrameRectangle().w/2,....)
 
     public void update(ConstTime time)
     {
+        selected = false;
         if (gameInput.isLeftReleased())
         {
             Vector2f mouse = gameInput.getMousePositionOnHUD();
