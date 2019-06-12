@@ -1,5 +1,6 @@
 package app.hud;
 
+import Graphics.FloatRect;
 import Graphics.Sprite;
 import Graphics.Text;
 import app.Game;
@@ -49,6 +50,7 @@ public class HudUnite
         this.selected = unite;
         this.input = input;
         this.game = game;
+        FloatRect rect = unite.getSprite().getTextureRect();
 
         if (player.getUnites().contains(selected))
         {
@@ -68,7 +70,8 @@ public class HudUnite
             back.setPosition(lower.getPosition().x, input.getFrameRectangle().h - 128);
 
             imgUnit = new Sprite(unite.getSprite().getTexture());
-            imgUnit.setTextureRect(0, 0, 64, 64);
+            imgUnit.setTextureRect(rect.h, rect.w, rect.l, rect.t);
+            imgUnit.setTextureRect(rect.l, rect.t, rect.w, rect.h);
             imgUnit.setPosition(back.getPosition().x + 10, back.getPosition().y + 10);
 
             hp = new Text(ResourceHandler.getFont("default"), "HP: " + unite.getHp());
@@ -135,6 +138,8 @@ public class HudUnite
     //todo voir setSelectedUnite si ca convient
     public void update(ConstTime time)
     {
+        pa.setString("PA: " + selected.getSparePoints());
+        hp.setString("HP: " + selected.getHp());
         if (input.isLeftReleased())
         {
             if (lower.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y))

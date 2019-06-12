@@ -1,5 +1,6 @@
 package app.hud;
 
+import Graphics.FloatRect;
 import Graphics.Sprite;
 import Graphics.Text;
 import Graphics.Vector2f;
@@ -57,7 +58,9 @@ puis setPositon(INPUT.getFrameRectangle().w/2,....)
         {
             Sprite tmp = new Sprite(unit.getSprite().getTexture());
             //todo use right values for spritesheets
-            tmp.setTextureRect(0,0,64,64);
+            FloatRect r = unit.getSprite().getTextureRect();
+            tmp.setTextureRect(r.l, r.t, r.w, r.h);
+            //            imgUnit.setTextureRect(rect.l, rect.t, rect.w, rect.h);
 
             tmp.setPosition(decLeft, decHeight);
             Text hp = new Text(ResourceHandler.getFont("default"), "HP: " + unit.getHp());
