@@ -185,13 +185,13 @@ public class LocalhostGame extends Game {
     }
 
     private void updateUserInput(ConstTime time) {
-        if (manager != null) {
-            manager.updatePreparation(time);
-            if (manager.isAvailable()) {
-                currentAction = manager.build();
-                inAction = true;
-                manager = null;
-            }
+        if (hudPlayer[currentPlayer].isSelected()) {
+            selectedUnite = hudPlayer[currentPlayer].getSelectedUnit();
+            //reset player HUD
+            // selection sur le HUD du joueur
+            hudUnite = new HudUnite(players[currentPlayer], selectedUnite, inputs[currentPlayer], this);
+            //reset action manager
+            manager = hudUnite.getSelectedAction();
         }
 
         if (hudUnite != null && !inAction) {
@@ -200,6 +200,20 @@ public class LocalhostGame extends Game {
                 manager = hudUnite.getSelectedAction();
             }
         }
+
+        if (manager != null) {
+            if (hudUnite == null || !hudUnite.isClicked()) {
+                manager.updatePreparation(time);
+                if (manager.isAvailable()) {
+                    currentAction = manager.build();
+                    currentAction.init(this);
+                    inAction = true;
+                    manager = null;
+                }
+            }
+        }
+
+
 
         // la souris est dans le rectangle du jeu du bon joueur
         if (inputs[currentPlayer].isLeftReleased() && inputs[currentPlayer].getFrameRectangle().contains(inputs[currentPlayer].getMousePosition().x, inputs[currentPlayer].getMousePosition().y)) {
@@ -241,11 +255,12 @@ public class LocalhostGame extends Game {
     public void update(ConstTime time) {
         updateCamera(time);
 
+        hudPlayer[0].update(time);
+        hudPlayer[1].update(time);
+
         if (inAction) {
-            System.out.println("action" + Math.random());
             updateActionProgress(time);
         } else {
-            System.out.println("user input" + Math.random());
             updateUserInput(time);
         }
 
@@ -354,7 +369,7 @@ public class LocalhostGame extends Game {
                 manager.drawAboveHUD(target);
 
             hudPlayer[0].draw(target);
-            if (!inAction && manager == null && hudUnite != null && currentPlayer == 0) {
+            if (!inAction && hudUnite != null && currentPlayer == 0) {
                 hudUnite.draw(target);
             }
         }
@@ -403,7 +418,7 @@ public class LocalhostGame extends Game {
                 manager.drawAboveHUD(target);
 
             hudPlayer[1].draw(target);
-            if (!inAction && manager == null && hudUnite != null && currentPlayer == 1) {
+            if (!inAction && hudUnite != null && currentPlayer == 1) {
                 hudUnite.draw(target);
             }
         }

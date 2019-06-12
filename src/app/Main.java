@@ -18,9 +18,16 @@ public class Main
 {
 
     private static class UniteTest extends Unite {
+
         public UniteTest(ConstTexture t, FloatRect rect){
             sprite = new Sprite(t);
             sprite.setTextureRect(rect.l, rect.t, rect.w, rect.h);
+
+            super.primary = new CombatRifle();
+            super.secondary = new CombatRifle();
+            super.melee = new CombatRifle();
+
+            super.hp = 50;
         }
 
         @Override
@@ -30,7 +37,7 @@ public class Main
 
         @Override
         public short getHp() {
-            return 0;
+            return hp;
         }
 
         @Override
@@ -40,17 +47,17 @@ public class Main
 
         @Override
         public Weapon getPrimary() {
-            return null;
+            return primary;
         }
 
         @Override
         public Weapon getSecondary() {
-            return null;
+            return secondary;
         }
 
         @Override
         public Weapon getMelee() {
-            return null;
+            return melee;
         }
 
         @Override
@@ -70,7 +77,9 @@ public class Main
 
         @Override
         public void takeDamages(int amount) {
+            System.out.println("hp:"+hp);
             hp = (short)Math.max(0, hp - amount);
+            System.out.println("hp:"+hp);
         }
 
         @Override
@@ -135,15 +144,24 @@ public class Main
         unite.getSprite().setPosition(64*13, 64*12);
         unite.setTeam(Team.MAN);
         p1.addUnite(unite);
+        Unite unite1 = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
+        unite1.setMapPosition(new Vector2i(16, 12));
+        unite1.getSprite().setPosition(64*16, 64*12);
+        unite1.setTeam(Team.MAN);
+        p1.addUnite(unite1);
         Player p2 = new Player("P2");
         Unite unite2 = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
         unite2.getSprite().setPosition(256, 128);
         unite2.setMapPosition(new Vector2i(4, 2));
         unite2.setTeam(Team.APE);
         p2.addUnite(unite2);
+        Unite unite3 = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
+        unite3.setMapPosition(new Vector2i(1, 12));
+        unite3.getSprite().setPosition(64*1, 64*12);
+        unite3.setTeam(Team.MAN);
+        p2.addUnite(unite3);
         Game current = new LocalhostGame(window, p1, p2, map);
 
-        Projectile projectile = new BulletProjectile("ammo", new FloatRect(32,0, 32,32), new Vector2f(400,850), new Vector2f(150,50));
         //start game
         current.start();
 
@@ -167,8 +185,6 @@ public class Main
                 }
             }
 
-            projectile.update(elapsed);
-
             window.clear();
             //Menu principal:
 
@@ -177,7 +193,6 @@ public class Main
             {
                 current.update(elapsed);
                 current.draw(window);
-                projectile.draw(window);
             }
             window.display();
         }

@@ -37,6 +37,8 @@ public class HudUnite
     private ActionManager tir;
     private ActionManager move;
 
+    private boolean clicked = false;
+
     public HudUnite(Player player, Unite unite, GameInput input, Game game)
     {
         this.player = player;
@@ -44,7 +46,7 @@ public class HudUnite
         this.input = input;
         this.game = game;
 
-        tir = new ShootingManager(player, selected, game, input);
+        tir = new ShootingManager(player, selected, game, input, unite.getPrimary());
         move = new MovingManager(player, selected, game, input);
         selectedAction = move;
 
@@ -104,13 +106,16 @@ public class HudUnite
     //todo voir setSelectedUnite si ca convient
     public void update(ConstTime time)
     {
+        clicked = false;
         if (input.isLeftReleased())
         {
+            clicked = back.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y);
+
             if (lower.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y))
             {
+                clicked = true;
                 this.lowered = !this.lowered;
-            } else if (tirer.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)
-                    && !lowered && tir.isAvailable())
+            } else if (tirer.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y) && !lowered)
             {
                 //on passe en action de tire
                 selectedAction = tir;
@@ -118,6 +123,10 @@ public class HudUnite
                 this.lowered = true;
             }
         }
+    }
+
+    public boolean isClicked() {
+        return clicked;
     }
 
     public void setSelectedUnite(Unite unit)
@@ -134,6 +143,8 @@ public class HudUnite
     //Si on annule/fini l'action de tir, on reset la value de selectedAction
     public void resetSelectedAction()
     {
+        tir = new ShootingManager(player, selected, game, input, selected.getPrimary());
+        move = new MovingManager(player, selected, game, input);
         this.selectedAction = null; //or MovingManager
     }
 }
