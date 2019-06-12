@@ -9,8 +9,8 @@ import app.map.Map;
 
 
 public class CombatRifle extends Weapon {
-    private static String weaponSprite = "";
-    private static FloatRect weaponRect;
+    private static String weaponSprite = "ammo";
+    private static FloatRect weaponRect = new FloatRect(32,0,32,32);
 
     private Sprite sprite;
 
@@ -36,7 +36,7 @@ public class CombatRifle extends Weapon {
 
     @Override
     public Projectile buildProjectile(Vector2i thrower, Vector2i target) {
-        return new BulletProjectile(weaponSprite, weaponRect, new Vector2f(thrower.x*64.f, thrower.y*64.f), new Vector2f(target.x*64.f, target.y*64.f));
+        return new BulletProjectile(weaponSprite, weaponRect, new Vector2f(thrower.x*64.f + 32, thrower.y*64.f + 32), new Vector2f(target.x*64.f + 32, target.y*64.f + 32));
     }
 
     @Override
