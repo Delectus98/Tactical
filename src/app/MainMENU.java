@@ -1,6 +1,9 @@
 package app;
 
-import Graphics.*;
+import Graphics.Color;
+import Graphics.ConstShader;
+import Graphics.FloatRect;
+import Graphics.Vector2i;
 import System.*;
 import app.map.Map;
 import app.map.MapImpl;
@@ -9,12 +12,12 @@ import app.menu.Buttons.MenuButton;
 import app.menu.Buttons.SpecialButton;
 import app.menu.Menu;
 import app.play.LocalhostGame;
-import app.weapon.BulletProjectile;
-import app.weapon.Projectile;
 import org.lwjgl.opengl.GL20;
 import util.ResourceHandler;
 
 import java.io.IOException;
+
+import static org.lwjgl.glfw.GLFW.glfwMaximizeWindow;
 
 public class MainMENU {
     public static Map[] availableMaps;
@@ -33,26 +36,27 @@ public class MainMENU {
         MENU,
         GAME
     }
-    public static int LOBBY=LOCAL;
+
+    public static int LOBBY = LOCAL;
     public static Menu[] menulist = new Menu[15];
     public static STATE state = STATE.MENU;
     public static int currentMenu = START;//parmi la liste au dessus
     public static Game currentGame;
-    public static  GLFWWindow window;
+    public static GLFWWindow window;
 
     public static void main(String[] args) throws IOException {
-       window = new GLFWWindow(new VideoMode(WIDTH, HEIGHT), "IsticLWJGL", WindowStyle.DEFAULT);
-        ResourceHandler.loadFont("res/font.ttf", 20, "default");
-        Mouse mousse = new Mouse(window);
+        window = new GLFWWindow(VideoMode.getDesktopMode(), "Tactical", WindowStyle.DEFAULT);
+        glfwMaximizeWindow(window.getGlId());
 
-//TODO WHAAZHUIEZvgfraqz!ebg
-        ConstShader shader = ResourceHandler.loadShader("res/shader/default.vert", "res/shader/grisant.frag", "grey");
-        shader.bind();
-        GL20.glUniform1f(shader.getUniformLocation("colorRatio"), 0.2f);
         ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
         ResourceHandler.loadTexture("res/wall.png", "res/wall.png");
         ResourceHandler.loadTexture("res/character.png", "character");
         ResourceHandler.loadTexture("res/ammo.png", "ammo");
+        ResourceHandler.loadFont("res/font.ttf", 20, "default");
+
+        ConstShader shader = ResourceHandler.loadShader("res/shader/default.vert", "res/shader/grisant.frag", "grey");
+        shader.bind();
+        GL20.glUniform1f(shader.getUniformLocation("colorRatio"), 0.2f);
 
         availableMaps = new Map[]{
                 new MapImpl(MapList.Battlefield1),
@@ -61,29 +65,39 @@ public class MainMENU {
                 new MapImpl(MapList.Example1)
         };
 
-
+        Mouse mousse = new Mouse(window);
         Menu.init(menulist, window);
 
-       // currentGame = bleh(window);
+        currentGame = bleh(window);
         Clock clock = new Clock();
-        boolean isClicking = false;
-        while (window.isOpen()) {
-            Event event;
 
+
+        boolean isClicking = false;
+
+
+        while (window.isOpen()) {
+            Time elapsed = clock.restart();
+
+            Event event;
             while ((event = window.pollEvents()) != null) {
+                // updates window events (resize, keyboard text input, ...)
+                currentGame.handle(event);
+
                 if (event.type == Event.Type.CLOSE) {
+                    ResourceHandler.free();
                     window.close();
-                    System.exit(0);
                 }
             }
-            ///affichage menu
+
             window.clear(Color.Cyan);
+
+
             if (state == STATE.MENU) {
                 window.draw(getCurrentMenu().getTitle());//TODO Getbackground
                 //System.out.println(menulist.get(currentMenu).getTitle());
 //DRAW BUTTONS
                 for (MenuButton b : getCurrentMenu().getButtons()) {
-                    if (b instanceof SpecialButton){
+                    if (b instanceof SpecialButton) {
                         ((SpecialButton) b).checkIfButtonReady();
                     }
                     window.draw(b.getShape());
@@ -96,14 +110,14 @@ public class MainMENU {
                     for (MenuButton b : getCurrentMenu().getButtons()) {//éléments à afficher du menu getcurrentmenu
                         if (b.collide(mousse.getRelativePosition())) {
                             b.clicked();
-                           // System.out.println("Menu: " +getCurrentMenu().getTitle().getString());
+                            // System.out.println("Menu: " +getCurrentMenu().getTitle().getString());
                         }
                     }
                 }
                 isClicking = mousse.isButtonPressed(Mouse.Button.Left);//TODO améliorer vers: clicker sur un élément et y aller si relache sur le même
             } else {//STATE = GAME
                 if (!currentGame.isFinished()) {
-                    currentGame.update(clock.restart());
+                    currentGame.update(elapsed);
                     currentGame.draw(window);
                 }
             }
@@ -124,7 +138,6 @@ public class MainMENU {
     //TODO VIRER CETTE MERDE (tests) à refaire avec le système de lobby
     private static Game bleh(GLFWWindow window) throws IOException {
 
-
         Map map = new MapImpl(MapList.Battlefield3);
         //Map map = new MapImpl(mapInfo);
         Player p1 = new Player("P1");
@@ -133,15 +146,25 @@ public class MainMENU {
         unite.getSprite().setPosition(64 * 13, 64 * 12);
         unite.setTeam(Team.MAN);
         p1.addUnite(unite);
+        Unite unite1 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0, 0, 64, 64));
+        unite1.setMapPosition(new Vector2i(16, 12));
+        unite1.getSprite().setPosition(64 * 16, 64 * 12);
+        unite1.setTeam(Team.MAN);
+        p1.addUnite(unite1);
+
         Player p2 = new Player("P2");
         Unite unite2 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64, 0, 64, 64));
         unite2.getSprite().setPosition(256, 128);
         unite2.setMapPosition(new Vector2i(4, 2));
         unite2.setTeam(Team.APE);
         p2.addUnite(unite2);
-        Game current = new LocalhostGame(window, p1, p2, map);
-        Projectile projectile = new BulletProjectile("ammo", new FloatRect(32, 0, 32, 32), new Vector2f(400, 850), new Vector2f(150, 50));
+        Unite unite3 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64, 0, 64, 64));
+        unite3.setMapPosition(new Vector2i(1, 12));
+        unite3.getSprite().setPosition(64 * 1, 64 * 12);
+        unite3.setTeam(Team.MAN);
+        p2.addUnite(unite3);
 
+        Game current = new LocalhostGame(window, p1, p2, map);
         return current;
     }
 }
