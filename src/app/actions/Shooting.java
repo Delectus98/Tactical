@@ -76,12 +76,12 @@ public class Shooting extends Action {
 
         // si c'est fini
         if (projectile.hasFinishedHitting()) {
-            System.out.println("hit");
             //alors on doit mettre des dégats aux unités concernées
             //super.game.getPlayers().
             ArrayList<Unite> all = new ArrayList<>();
             Arrays.stream(super.game.getPlayers()).forEach(p -> all.addAll(p.getUnites()));
             impact.apply(all);
+            super.game.updateFOG();
         }
     }
 

@@ -7,6 +7,7 @@ import app.Player;
 import app.Unite;
 import util.GameInput;
 import util.Pathfinder;
+import util.ResourceHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,9 +20,11 @@ public class MovingManager extends ActionManager {
     private Vector2i target = null;
     private List<Shape> availableTiles;
     private RectangleShape touched;
+    private Text costMsg;
     private GameInput input;
+    private List<Vector2i> tilePath = new ArrayList<>();
 
-    private ArrayList<Unite> all;
+    private ArrayList<Unite> allies;
     private ArrayList<Unite> enemies;
 
     /**
@@ -36,12 +39,12 @@ public class MovingManager extends ActionManager {
         this.input = input;
 
         finder = new Pathfinder(game.getMap());
-        all = new ArrayList<>();
-        Arrays.stream(game.getPlayers()).map(Player::getUnites).forEach(all::addAll);
+        allies = new ArrayList<>();
+        Arrays.stream(game.getPlayers()).filter(p2 -> p2 == p).map(Player::getUnites).forEach(allies::addAll);
         enemies = new ArrayList<>();
         Arrays.stream(game.getPlayers()).filter(p2 -> p2 != p).map(Player::getUnites).forEach(enemies::addAll);
         ArrayList<Vector2i> visibles = new ArrayList<>(game.getCurrentVisibles());
-        possiblePaths = finder.possiblePath(user, enemies, visibles);
+        possiblePaths = finder.possiblePath(user, user.getSparePoints(), enemies, visibles);
 
         availableTiles = new ArrayList<>();
 
@@ -51,8 +54,12 @@ public class MovingManager extends ActionManager {
             if (!v1.equals(user.getMapPosition())) availableTiles.add(s);
         });
 
-        touched = new RectangleShape(user.getMapPosition().x*64,user.getMapPosition().x*64,64,64);
+        touched = new RectangleShape(user.getMapPosition().x*64,user.getMapPosition().y*64,64,64);
         touched.setFillColor(new Color(1.f, 0.f, 0.5f, 0.5f));
+
+        costMsg = new Text(ResourceHandler.getFont("default"), "0");
+        costMsg.setPosition(user.getMapPosition().x*64,user.getMapPosition().y*64);
+        costMsg.setFillColor(Color.Green);
     }
 
 
@@ -62,6 +69,11 @@ public class MovingManager extends ActionManager {
             Vector2i tile = new Vector2i((int)(input.getMousePositionOnMap().x / 64), (int)(input.getMousePositionOnMap().y / 64));
             if (new ArrayList<>(possiblePaths.keySet()).contains(tile)) {
                 touched.setPosition(tile.x * 64, tile.y * 64);
+                costMsg.setPosition(tile.x * 64, tile.y * 64);
+                if (!possiblePaths.isEmpty()) {
+                    tilePath = finder.pathfind(possiblePaths, enemies, allies, unite.getMapPosition(), new Vector2i(touched.getPosition().mul(1.f/64.f)));
+                }
+                costMsg.setString(this.getCost()+"");
 
                 if (input.isLeftReleased()) {
                     target = tile;
@@ -79,6 +91,7 @@ public class MovingManager extends ActionManager {
     public void drawAboveStruct(RenderTarget target) {
         availableTiles.forEach(target::draw);
         target.draw(touched);
+        target.draw(costMsg);
     }
 
     @Override
@@ -93,7 +106,7 @@ public class MovingManager extends ActionManager {
 
     @Override
     public int getCost() {
-        return 0;
+        return Math.max(0,tilePath.size()-2) + (tilePath.isEmpty() ? (0):(2));
     }
 
     @Override
@@ -104,7 +117,7 @@ public class MovingManager extends ActionManager {
     @Override
     public Action build() {
         //TODO unite.removePA(this.getCost());
-        Action action = new Moving(super.player, finder, possiblePaths, super.unite, all, enemies, target, 85.f);
+        Action action = new Moving(super.player, finder, possiblePaths, super.unite, allies, enemies, target, 85.f);
         action.init(game);
         return action;
     }

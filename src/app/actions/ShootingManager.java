@@ -33,9 +33,12 @@ public class ShootingManager extends ActionManager {
 
         p1 = user.getMapPosition();
 
-        selectable = MapUtil.getVisibles(user, game.getMap());
-        ;
-        selectable = selectable.stream().filter(v2i -> (!game.getCurrentVisibles().contains(v2i) && weapon.isInRange(new Vector2f(user.getMapPosition()).neg().sum(new Vector2f(v2i)).length()))).collect(Collectors.toList());
+        if (weapon.getAmmunition() != 0) {
+            selectable = MapUtil.getVisibles(user, game.getMap());
+            selectable = selectable.stream().filter(v2i -> (!game.getCurrentVisibles().contains(v2i) && weapon.isInRange(new Vector2f(user.getMapPosition()).neg().sum(new Vector2f(v2i)).length()))).collect(Collectors.toList());
+        } else {
+            selectable = new ArrayList<>();
+        }
 
         rectangles = new ArrayList<>();
         selectable.forEach(s -> {
@@ -92,6 +95,8 @@ public class ShootingManager extends ActionManager {
         for (Shape shape : rectangles) {
             target.draw(shape);
         }
+
+        target.draw(touched);
     }
 
     @Override
