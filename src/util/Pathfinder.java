@@ -25,15 +25,16 @@ public class Pathfinder {
 
     /**
      * Sert à afficher la zone pù il est possible de se déplacer
-     * @param u L'unité à déplacer
-     * @param ennemyunits Liste des unités ennemies (gestion collisions)
+     *
+     * @param u            L'unité à déplacer
+     * @param ennemyunits  Liste des unités ennemies (gestion collisions)
      * @param vectVisibles Liste des positions visibles
      * @return Map<Position, position pour y accéder> de cases où il est possible de se déplacer.
      */
-    public HashMap<Vector2i, Vector2i> possiblePath(Unite u, List<Unite> ennemyunits, List<Vector2i> vectVisibles) {
+    public HashMap<Vector2i, Vector2i> possiblePath(Unite u, int distmax, List<Unite> ennemyunits, List<Vector2i> vectVisibles) {
 
-        int cost = 1; //à changer si besoin
-        int distmax = u.getSparePoints() * cost;
+        //  int cost = 1; //à changer si besoin
+        // int distmax = u.getSparePoints() * cost;
         ArrayList<Vector2i> tmpMapList = collisionVisible(ennemyunits, vectVisibles);
         //Tableau des distances
         int[] dist = new int[tmpMapList.size()];
@@ -44,10 +45,10 @@ public class Pathfinder {
         }
 
         //depuis la position de l'unité
-        int k=tmpMapList.indexOf(inMap(u.getMapPosition()));
-        if(k>=0 &&k<dist.length){
-            dist[k] = 0;}
-        else {
+        int k = tmpMapList.indexOf(inMap(u.getMapPosition()));
+        if (k >= 0 && k < dist.length) {
+            dist[k] = 0;
+        } else {
             System.out.println("Erreur case de l'unité déja occupée ou inexdistante");
             return new HashMap<>();
         }
@@ -145,7 +146,7 @@ public class Pathfinder {
      * @param lightzone   liste cases visibles par le joueur
      * @return Arraylist équivalente à la map, positions ennemies visibles sont "Bloquées"
      */
-    public ArrayList<Vector2i> collisionVisible(List<Unite> ennemyunits, List<Vector2i> lightzone) {
+    private ArrayList<Vector2i> collisionVisible(List<Unite> ennemyunits, List<Vector2i> lightzone) {
         //ici doit être placé la liste des unités ennemies et la zone de visibilité du joueur. clone la mapList
         ArrayList<Vector2i> tmpMapList = new ArrayList<>(mapList);
 
@@ -156,7 +157,14 @@ public class Pathfinder {
                     tmpMapList.remove(inMap(v));
         //tmpMapList.remove(mapList.indexOf(inMap(v)));
 
+        /* // version plus légère si fonctionne
+        for (Unite ennemyunit : ennemyunits)
+            if (lightzone.contains(inMap(ennemyunit.getMapPosition())))
+                tmpMapList.remove(inMap(ennemyunit.getMapPosition()));
+*/
+
         return tmpMapList;
+
     }
 
     /**
