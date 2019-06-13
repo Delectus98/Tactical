@@ -4,27 +4,45 @@ import Graphics.Shape;
 import app.MainMENU;
 import app.Player;
 import app.Unite;
+import app.play.LocalhostGame;
+
+import java.io.IOException;
 
 public class ReadyButton extends SpecialButton {
     public ReadyButton(Shape shape) {
         super("Ready", shape);
-    }
+    }//TODO WARNING TEST NEED CONDITIONS
 
-    public ReadyButton(String txt, Shape shape) {
-        super(txt, shape);//TODO WARNING TEST NEED CONDITIONS
-    }
 
     @Override
     protected void clickedIfReady() {
-        System.out.println(this.textZone.getString());
+      //  System.out.println(this.textZone.getString());
         MainMENU.currentGame.start();
         MainMENU.state = MainMENU.STATE.GAME;
 
-
+/*
         for (Player p : MainMENU.currentGame.getPlayers())
             for (Unite u : p.getUnites())
-                System.out.println(p.getName()+" // "+u.getMapPosition().toString());
+                System.out.println(p.getName() + " // " + u.getMapPosition().toString());
+*/
+
+
+
+            //TODO MODE DEGEU AS FUCK mais marche
+        try {
+            MainMENU.currentGame=new LocalhostGame(MainMENU.window,MainMENU.currentGame.getPlayers()[0],MainMENU.currentGame.getPlayers()[1],MainMENU.currentGame.getMap());
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("wazah ta race");
+        }
     }
+
+
+
+
+
+
+
 
     private boolean isMapReady() {
         if (MainMENU.currentGame.getMap() != null) {

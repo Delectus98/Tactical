@@ -25,7 +25,7 @@ public class Moving extends Action {
 
     public Moving(Player p, Pathfinder finder, HashMap<Vector2i, Vector2i> possiblePaths, Unite unite, ArrayList<Unite> allUnites, ArrayList<Unite> enemyUnites, Vector2i target, float speed)
     {
-        tilePath = finder.pathfind(possiblePaths, enemyUnites, allUnites, unite.getMapPosition(), target);
+        tilePath = finder.pathfind(possiblePaths, enemyUnites, (ArrayList)p.getUnites(), unite.getMapPosition(), target);
 
         duration = tilePath.size() * (1.f / speed);
         super.uniteId = unite.getId();

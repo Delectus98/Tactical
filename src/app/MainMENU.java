@@ -17,8 +17,6 @@ import util.ResourceHandler;
 
 import java.io.IOException;
 
-import static org.lwjgl.glfw.GLFW.glfwMaximizeWindow;
-
 public class MainMENU {
     public static Map[] availableMaps;
 
@@ -45,8 +43,8 @@ public class MainMENU {
     public static GLFWWindow window;
 
     public static void main(String[] args) throws IOException {
-        window = new GLFWWindow(VideoMode.getDesktopMode(), "Tactical", WindowStyle.DEFAULT);
-        glfwMaximizeWindow(window.getGlId());
+        window = new GLFWWindow(new VideoMode(WIDTH,HEIGHT), "Tactical", WindowStyle.DEFAULT);
+     //   glfwMaximizeWindow(window.getGlId());
 
         ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
         ResourceHandler.loadTexture("res/wall.png", "res/wall.png");
@@ -66,13 +64,14 @@ public class MainMENU {
         };
 
         Mouse mousse = new Mouse(window);
+        Clock clock = new Clock();
+        boolean isClicking = false;
         Menu.init(menulist, window);
 
-        currentGame = bleh(window);
-        Clock clock = new Clock();
+        //BLEH: TEST ONLY: PLAYER.ADDUNIT(NEW UNIT) et trucs dans le genre
+    //    currentGame = bleh(window);
 
 
-        boolean isClicking = false;
 
 
         while (window.isOpen()) {
@@ -91,10 +90,10 @@ public class MainMENU {
 
             window.clear(Color.Cyan);
 
-
+//If STATE=MENU
             if (state == STATE.MENU) {
                 window.draw(getCurrentMenu().getTitle());//TODO Getbackground
-                //System.out.println(menulist.get(currentMenu).getTitle());
+
 //DRAW BUTTONS
                 for (MenuButton b : getCurrentMenu().getButtons()) {
                     if (b instanceof SpecialButton) {
@@ -115,7 +114,8 @@ public class MainMENU {
                     }
                 }
                 isClicking = mousse.isButtonPressed(Mouse.Button.Left);//TODO améliorer vers: clicker sur un élément et y aller si relache sur le même
-            } else {//STATE = GAME
+//STATE = GAME
+            } else {
                 if (!currentGame.isFinished()) {
                     currentGame.update(elapsed);
                     currentGame.draw(window);

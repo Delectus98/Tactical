@@ -26,7 +26,7 @@ public class LocalLobby extends Lobby {
     public LocalLobby(int width, int height, int buttonWidth, int buttonHeight) throws IOException {
         super(width, height, "Game Local: Lobby", MainMENU.GAMEMODE, buttonWidth, buttonHeight, new Vector2f(), new HashMap<>(), true);
         //Ajoute le bouton de lancement de jeu
-        this.getButtons().add(new ReadyButton("Ready", new RectangleShape(width - buttonWidth, height - buttonHeight, buttonWidth, buttonHeight)));
+        this.getButtons().add(new ReadyButton(new RectangleShape(width - buttonWidth, height - buttonHeight, buttonWidth, buttonHeight)));
         this.getButtons().add(new toMapButton());
 
 
