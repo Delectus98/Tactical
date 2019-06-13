@@ -14,6 +14,7 @@ public abstract class Game
     protected Player[] players;
     protected Map map;
     protected Unite selected;
+    private int squadCreationPoints=Integer.MAX_VALUE;
 
     /**
      * Finish the current turn to let the next player play.
@@ -77,5 +78,17 @@ public abstract class Game
      */
     public final Player[] getPlayers(){
         return players;
+    }
+
+    public void setMap(Map map) {
+        this.map=map;
+    }
+
+    public int getSquadCreationPoints() {
+        return squadCreationPoints;
+    }
+
+    public void setSquadCreationPoints(int squadCreationPoints) {
+        this.squadCreationPoints = squadCreationPoints;
     }
 }

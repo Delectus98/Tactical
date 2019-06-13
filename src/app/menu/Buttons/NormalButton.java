@@ -1,4 +1,4 @@
-package app.menu;
+package app.menu.Buttons;
 
 import Graphics.Shape;
 import Graphics.Vector2f;
@@ -22,7 +22,7 @@ public class NormalButton extends MenuButton {
     }
 
     public void clicked() {
-        System.out.println("Button: " + this.text);
+        //System.out.println("Button: " + this.textZone.getString());
         MainMENU.currentMenu = goTOMenuNumber;
     }
 

@@ -87,4 +87,7 @@ public class Player
         this.team = team;
     }
 
+    public void setName(String s) {
+        this.name=s;
+    }
 }

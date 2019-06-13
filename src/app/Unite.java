@@ -48,7 +48,9 @@ public abstract class Unite
      * Heal points of this unite
      * @return current remaining heal points
      */
-    public abstract short getHp();
+    public short getHp(){
+        return this.hp;
+    }
 
     /**
      * Field of view of this unite
@@ -146,4 +148,7 @@ public abstract class Unite
      */
     public abstract Team getTeam();
 
+    public int getCreationCost() {
+        return 0;
+    }
 }

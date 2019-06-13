@@ -41,7 +41,7 @@ public class MovingManager extends ActionManager {
         enemies = new ArrayList<>();
         Arrays.stream(game.getPlayers()).filter(p2 -> p2 != p).map(Player::getUnites).forEach(enemies::addAll);
         ArrayList<Vector2i> visibles = new ArrayList<>(game.getCurrentVisibles());
-        possiblePaths = finder.possiblePath(user, enemies, visibles);
+        possiblePaths = finder.possiblePath(user,10, enemies, visibles);
 
         availableTiles = new ArrayList<>();
 
