@@ -9,6 +9,7 @@ import app.Weapon;
 import System.*;
 import app.weapon.CombatRifle;
 import app.weapon.Grenade;
+import app.weapon.MachineGun;
 import util.ResourceHandler;
 
 
@@ -20,7 +21,7 @@ public class SoldierUnit extends Unite
         this.fov = 10;
         this.maxActionPoints = 12;
         this.actionPoints = maxActionPoints;
-        this.primary = new CombatRifle();
+        this.primary = new MachineGun();
         this.secondary = new Grenade();
         //TODO : Créer une arme de melee et la mettre
         this.melee = this.primary;

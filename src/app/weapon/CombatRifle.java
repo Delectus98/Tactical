@@ -16,7 +16,7 @@ public class CombatRifle extends Weapon {
 
     @Override
     public boolean isInRange(float distance) {
-        return 1.5f < distance && distance <= 8;
+        return .5f < distance && distance <= 6;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class CombatRifle extends Weapon {
     @Override
     public Impact getImpactZone(Vector2i thrower, Vector2i target, Map map) {
         Impact i = new Impact();
-        i.add(target, 30);
+        i.add(target, 4);
         return i;
     }
 
