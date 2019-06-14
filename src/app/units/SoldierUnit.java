@@ -8,6 +8,7 @@ import app.Unite;
 import app.Weapon;
 import System.*;
 import app.weapon.CombatRifle;
+import app.weapon.Grenade;
 import util.ResourceHandler;
 
 
@@ -15,12 +16,14 @@ public class SoldierUnit extends Unite
 {
     public SoldierUnit(Team team)
     {
-        this.hp = 12;
+        this.hp = 25;
         this.fov = 10;
-        this.maxActionPoints = 10;
+        this.maxActionPoints = 12;
         this.actionPoints = maxActionPoints;
         this.primary = new CombatRifle();
-        this.secondary = this.melee = this.primary;
+        this.secondary = new Grenade();
+        //TODO : Créer une arme de melee et la mettre
+        this.melee = this.primary;
         //todo dans le Main:    +   change Texture texture to ConstTexture texture;
         //ResourceHandler.loadTexture("Sprites/Characterrs/Walk/gurl.png", "gurl");
         //ResourceHandler.loadTexture("Sprites/Characterrs/Walk/bigDude.png", "bigDude");
@@ -30,13 +33,11 @@ public class SoldierUnit extends Unite
             case APE:
                 this.spritesheet = ResourceHandler.getTexture("gurl");
                 this.sprite = new Sprite(spritesheet);
-                //todo : match spriteSheets
                 sprite.setTextureRect(0,0, 64, 64);
                 break;
             case MAN :
                 this.spritesheet = ResourceHandler.getTexture("bigDude");
                 this.sprite = new Sprite(spritesheet);
-                //todo : match spriteSheets
                 sprite.setTextureRect(0,0, 64, 64);
                 break;
         }
@@ -102,13 +103,13 @@ public class SoldierUnit extends Unite
 
     @Override
     public short getMaximumPoints() {
-        return 0;
+        return maxActionPoints;
     }
 
     @Override
     public short getSparePoints()
     {
-        return (short) (this.maxActionPoints - this.actionPoints);
+        return this.actionPoints;
     }
 
     @Override
@@ -119,7 +120,7 @@ public class SoldierUnit extends Unite
 
     @Override
     public ConstTexture getSpriteSheet() {
-        return null;
+        return this.spritesheet;
     }
 
     @Override
