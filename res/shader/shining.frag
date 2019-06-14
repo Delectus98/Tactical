@@ -18,6 +18,6 @@ int tmod(int v, int pike) {
 }
 
 void main() {
-    float shine = (shining + (tmod(int(gl_TexCoord[0].s*modulus + elapsed), modulus) / float(modulus))) / (1.0 + shining);
+    float shine = (shining + (tmod(int((gl_TexCoord[0].t*gl_TexCoord[0].s)*modulus + elapsed), modulus) / float(modulus))) / (1.0 + shining);
     gl_FragColor = gl_Color * vec4(shine*shine, shine*shine, shine*shine, 1) * texture2D(texture, gl_TexCoord[0].st);
 }
