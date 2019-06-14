@@ -9,14 +9,14 @@ import app.map.Map;
 
 
 public class CombatRifle extends Weapon {
-    private static String weaponSprite = "ammo";
-    private static FloatRect weaponRect = new FloatRect(32,0,32,32);
+    private static final String projectileSprite = "ammo";
+    private static final FloatRect projectileRect = new FloatRect(32,0,32,32);
 
     private Sprite sprite;
 
     @Override
     public boolean isInRange(float distance) {
-        return 0 < distance && distance <= 8;
+        return 1.5f < distance && distance <= 8;
     }
 
     @Override
@@ -36,13 +36,13 @@ public class CombatRifle extends Weapon {
 
     @Override
     public Projectile buildProjectile(Vector2i thrower, Vector2i target) {
-        return new BulletProjectile(weaponSprite, weaponRect, new Vector2f(thrower.x*64.f + 32, thrower.y*64.f + 32), new Vector2f(target.x*64.f + 32, target.y*64.f + 32));
+        return new BulletProjectile(projectileSprite, projectileRect, new Vector2f(thrower.x*64.f + 32, thrower.y*64.f + 32), new Vector2f(target.x*64.f + 32, target.y*64.f + 32));
     }
 
     @Override
     public Impact getImpactZone(Vector2i thrower, Vector2i target, Map map) {
         Impact i = new Impact();
-        i.add(target, 5);
+        i.add(target, 30);
         return i;
     }
 

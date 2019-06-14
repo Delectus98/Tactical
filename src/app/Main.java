@@ -25,7 +25,7 @@ public class Main
             sprite.setTextureRect(rect.l, rect.t, rect.w, rect.h);
 
             super.primary = new CombatRifle();
-            super.secondary = new CombatRifle();
+            super.secondary = new Grenade();
             super.melee = new CombatRifle();
 
             super.hp = 50;
@@ -33,7 +33,7 @@ public class Main
 
         @Override
         public boolean isDead() {
-            return false;
+            return hp <= 0;
         }
 
         @Override
@@ -135,6 +135,7 @@ public class Main
         ResourceHandler.loadTexture("res/ammo.png", "ammo");
         ResourceHandler.loadFont("res/font.ttf", 20,"default");
 
+        ResourceHandler.loadShader("res/shader/default.vert", "res/shader/shining.frag", "shining");
         ConstShader shader = ResourceHandler.loadShader("res/shader/default.vert", "res/shader/grisant.frag", "grey");
         shader.bind();
         GL20.glUniform1f(shader.getUniformLocation("colorRatio"), 0.2f);

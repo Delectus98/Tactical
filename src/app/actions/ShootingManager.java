@@ -7,6 +7,7 @@ import app.Game;
 import app.Player;
 import app.Unite;
 import app.Weapon;
+import org.lwjgl.opengl.GL20;
 import util.GameInput;
 import util.MapUtil;
 import util.ResourceHandler;
@@ -25,6 +26,7 @@ public class ShootingManager extends ActionManager {
     private Vector2i p1 = null;
     private Vector2i p2 = null;
     private GameInput input = null;
+    private float totalElapsed = 0;
 
     public ShootingManager(Player p, Unite user, Game game, GameInput input, Weapon weapon) {
         super(p, user, game);
@@ -43,7 +45,7 @@ public class ShootingManager extends ActionManager {
         rectangles = new ArrayList<>();
         selectable.forEach(s -> {
             RectangleShape shape = new RectangleShape(s.x*64, s.y*64, 64, 64);
-            shape.setFillColor(new Color(0.1f,0.5f, 1.f, 0.6f));
+            shape.setFillColor(new Color(0.5f,0.1f, 1.f, 0.6f));
             rectangles.add(shape);
         });
 
@@ -58,6 +60,8 @@ public class ShootingManager extends ActionManager {
     @Override
     public void updatePreparation(ConstTime time) {
         Vector2f mouse = input.getMousePosition();
+
+        totalElapsed += time.asSeconds();
 
         // la souris est dans la fenetre et viewport du joueur
         if (input.getFrameRectangle().contains(mouse.x, mouse.y)) {
@@ -74,9 +78,9 @@ public class ShootingManager extends ActionManager {
             }
 
             if (selectable.contains(tile) && !tile.equals(p1)) {
-                touched.setFillColor(new Color(0.9f, 0.01f, 0.01f, 0.8f));
+                touched.setFillColor(new Color(0.9f, 0.01f, 0.01f, 0.6f));
             } else {
-                touched.setFillColor(new Color(0.09f, 0.1f, 0.9f, 0.8f));
+                touched.setFillColor(new Color(0.09f, 0.1f, 0.9f, 0.6f));
             }
 
             touched.setPosition(tile.x * 64, tile.y * 64);
@@ -92,11 +96,16 @@ public class ShootingManager extends ActionManager {
     @Override
     public void drawAboveStruct(RenderTarget target)
     {
+        ConstShader shining = ResourceHandler.getShader("shining");
+        shining.bind();
+        GL20.glUniform1f(shining.getUniformLocation("elapsed"), totalElapsed*70);
+        GL20.glUniform1i(shining.getUniformLocation("modulus"), 64);
+        GL20.glUniform1f(shining.getUniformLocation("shining"), 8);
         for (Shape shape : rectangles) {
-            target.draw(shape);
+            target.draw(shape, shining);
         }
 
-        target.draw(touched);
+        target.draw(touched, shining);
     }
 
     @Override

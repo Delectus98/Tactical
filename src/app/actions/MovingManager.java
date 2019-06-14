@@ -5,6 +5,7 @@ import System.*;
 import app.Game;
 import app.Player;
 import app.Unite;
+import org.lwjgl.opengl.GL20;
 import util.GameInput;
 import util.Pathfinder;
 import util.ResourceHandler;
@@ -27,6 +28,8 @@ public class MovingManager extends ActionManager {
     private ArrayList<Unite> allies;
     private ArrayList<Unite> enemies;
 
+    private float totalElapsed = 0;
+
     /**
      * Creates an Action Manager
      *
@@ -44,13 +47,13 @@ public class MovingManager extends ActionManager {
         enemies = new ArrayList<>();
         Arrays.stream(game.getPlayers()).filter(p2 -> p2 != p).map(Player::getUnites).forEach(enemies::addAll);
         ArrayList<Vector2i> visibles = new ArrayList<>(game.getCurrentVisibles());
-        possiblePaths = finder.possiblePath(user, user.getSparePoints(), enemies, visibles);
+        possiblePaths = finder.possiblePath(user, Math.max(0, user.getSparePoints() - 1), enemies, visibles);
 
         availableTiles = new ArrayList<>();
 
         possiblePaths.forEach((v1, v2) -> {
             Shape s = new RectangleShape(v1.x*64, v1.y*64, 64, 64);
-            s.setFillColor(new Color(0.3f,1.0f,1.f,0.5f));
+            s.setFillColor(new Color(0.5f,0.5f,0.5f,0.3f));
             if (!v1.equals(user.getMapPosition())) availableTiles.add(s);
         });
 
@@ -62,17 +65,25 @@ public class MovingManager extends ActionManager {
         costMsg.setFillColor(Color.Green);
     }
 
-
     @Override
     public void updatePreparation(ConstTime time) {
+        totalElapsed += time.asSeconds();
+
         if (input.getFrameRectangle().contains(input.getMousePosition().x, input.getMousePosition().y)) {
             Vector2i tile = new Vector2i((int)(input.getMousePositionOnMap().x / 64), (int)(input.getMousePositionOnMap().y / 64));
             if (new ArrayList<>(possiblePaths.keySet()).contains(tile)) {
                 touched.setPosition(tile.x * 64, tile.y * 64);
                 costMsg.setPosition(tile.x * 64, tile.y * 64);
                 if (!possiblePaths.isEmpty()) {
-                    tilePath = finder.pathfind(possiblePaths, enemies, allies, unite.getMapPosition(), new Vector2i(touched.getPosition().mul(1.f/64.f)));
+                    tilePath = finder.pathfindFullList(possiblePaths, allies, unite.getMapPosition(), new Vector2i(touched.getPosition().mul(1.f/64.f)));
+                    availableTiles.forEach(t -> {
+                        if (!tilePath.contains(new Vector2i(t.getPosition().mul(1.f/64.f))))
+                            t.setFillColor(new Color(0.5f,0.5f,0.5f,0.3f));
+                        else
+                            t.setFillColor(new Color(0.5f,1.f,0.5f,0.4f));
+                    });
                 }
+
                 costMsg.setString(this.getCost()+"");
 
                 if (input.isLeftReleased()) {
@@ -89,8 +100,13 @@ public class MovingManager extends ActionManager {
 
     @Override
     public void drawAboveStruct(RenderTarget target) {
-        availableTiles.forEach(target::draw);
-        target.draw(touched);
+        ConstShader shining = ResourceHandler.getShader("shining");
+        shining.bind();
+        GL20.glUniform1f(shining.getUniformLocation("elapsed"), totalElapsed*70);
+        GL20.glUniform1i(shining.getUniformLocation("modulus"), 64);
+        GL20.glUniform1f(shining.getUniformLocation("shining"), 5);
+        availableTiles.forEach(s -> target.draw(s, shining));
+        target.draw(touched, shining);
         target.draw(costMsg);
     }
 
