@@ -1,7 +1,7 @@
 package app.menu;
 
-import System.Event;
 import System.ConstTime;
+import System.Event;
 import System.RenderTarget;
 
 /**

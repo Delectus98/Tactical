@@ -1,74 +1,106 @@
 package app;
 
+import Graphics.Color;
+import Graphics.ConstShader;
+import Graphics.FloatRect;
+import Graphics.Vector2i;
+import System.*;
 import app.map.Map;
 import app.map.MapImpl;
 import app.map.MapList;
+import app.menu.Buttons.MenuButton;
+import app.menu.Buttons.SpecialButton;
 import app.menu.Menu;
-import System.*;
-import Graphics.*;
-import app.menu.MenuButton;
 import app.play.LocalhostGame;
+import org.lwjgl.opengl.GL20;
 import util.ResourceHandler;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
-import static app.Main.*;
 
 public class MainMENU {
-    private static int WIDTH = 1280;
-    private static int HEIGHT = 720;
+    public static Map[] availableMaps;
+
+    public static int WIDTH = 1280;
+    public static int HEIGHT = 720;
     public static final int START = 0,
             GAMEMODE = 1, LOCAL = 2, ONLINE = 3,
             HOST = 4, JOIN = 5, MAKESQUAD = 6,
-            LOBBY = 7, MAPCHOICE = 8, SCORE = 9,
+            MAPCHOICE = 7, SCORE = 9,
             QUIT = 10, GAME = 11, LOADING = 12;
 
-    //Warning; online host et join doivent rester à coté dans cet ordre, à coté. sinon bug au niveau de Lobby.
+    //public static int  LOBBY = 4;
+    //Warning; online host et join doivent rester à coté dans cet ordre, à coté. sinon bug au niveau de LocalLobby.
     public enum STATE {
         MENU,
         GAME
     }
 
-    private static ArrayList<Menu> menulist = new ArrayList<>();
+    public static int LOBBY = LOCAL;
+    public static Menu[] menulist = new Menu[15];
     public static STATE state = STATE.MENU;
     public static int currentMenu = START;//parmi la liste au dessus
     public static Game currentGame;
+    public static GLFWWindow window;
 
     public static void main(String[] args) throws IOException {
-        GLFWWindow window = new GLFWWindow(new VideoMode(WIDTH, HEIGHT), "IsticLWJGL", WindowStyle.DEFAULT);
-    /*RectangleShape shape = new RectangleShape(245,245, 10,10);
-    shape.setFillColor(Color.Red);
-    */
+        window = new GLFWWindow(new VideoMode(WIDTH,HEIGHT), "Tactical", WindowStyle.DEFAULT);
+     //   glfwMaximizeWindow(window.getGlId());
+
         ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
         ResourceHandler.loadTexture("res/wall.png", "res/wall.png");
-        ResourceHandler.loadTexture("res/character.png", "res/character.png");
-        ResourceHandler.loadFont("res/font.ttf",20, "default");
+        ResourceHandler.loadTexture("res/character.png", "character");
+        ResourceHandler.loadTexture("res/ammo.png", "ammo");
+        ResourceHandler.loadFont("res/font.ttf", 20, "default");
+
+        ConstShader shader = ResourceHandler.loadShader("res/shader/default.vert", "res/shader/grisant.frag", "grey");
+        shader.bind();
+        GL20.glUniform1f(shader.getUniformLocation("colorRatio"), 0.2f);
+
+        availableMaps = new Map[]{
+                new MapImpl(MapList.Battlefield1),
+                new MapImpl(MapList.Battlefield2),
+                new MapImpl(MapList.Battlefield3),
+                new MapImpl(MapList.Example1)
+        };
 
         Mouse mousse = new Mouse(window);
-        Menu.init(menulist, WIDTH, HEIGHT);
-
-        currentGame = bleh(window);
         Clock clock = new Clock();
         boolean isClicking = false;
-        while (window.isOpen()) {
-            ///gestion des évenements
-            Event event;
+        Menu.init(menulist, window);
 
+        //BLEH: TEST ONLY: PLAYER.ADDUNIT(NEW UNIT) et trucs dans le genre
+    //    currentGame = bleh(window);
+
+
+
+
+        while (window.isOpen()) {
+            Time elapsed = clock.restart();
+
+            Event event;
             while ((event = window.pollEvents()) != null) {
+                // updates window events (resize, keyboard text input, ...)
+                currentGame.handle(event);
+
                 if (event.type == Event.Type.CLOSE) {
+                    ResourceHandler.free();
                     window.close();
-                    System.exit(0);
                 }
             }
-            ///affichage menu
+
             window.clear(Color.Cyan);
+
+//If STATE=MENU
             if (state == STATE.MENU) {
-                //System.out.println(menulist.get(currentMenu).getTitle());
+                window.draw(getCurrentMenu().getTitle());//TODO Getbackground
+
 //DRAW BUTTONS
                 for (MenuButton b : getCurrentMenu().getButtons()) {
+                    if (b instanceof SpecialButton) {
+                        ((SpecialButton) b).checkIfButtonReady();
+                    }
                     window.draw(b.getShape());
-                    //  window.draw(b.getText());
+                    window.draw(b.getText());
                 }
 
 //CHECK BUTTON CLICKED
@@ -77,14 +109,15 @@ public class MainMENU {
                     for (MenuButton b : getCurrentMenu().getButtons()) {//éléments à afficher du menu getcurrentmenu
                         if (b.collide(mousse.getRelativePosition())) {
                             b.clicked();
-                            System.out.println("Menu: " + menulist.get(currentMenu).getTitle());
+                            // System.out.println("Menu: " +getCurrentMenu().getTitle().getString());
                         }
                     }
                 }
                 isClicking = mousse.isButtonPressed(Mouse.Button.Left);//TODO améliorer vers: clicker sur un élément et y aller si relache sur le même
-            } else {//STATE = GAME
+//STATE = GAME
+            } else {
                 if (!currentGame.isFinished()) {
-                    currentGame.update(clock.restart());
+                    currentGame.update(elapsed);
                     currentGame.draw(window);
                 }
             }
@@ -98,30 +131,40 @@ public class MainMENU {
 
 
     private static Menu getCurrentMenu() {
-        return menulist.get(currentMenu);
+        return menulist[currentMenu];
     }
 
 
     //TODO VIRER CETTE MERDE (tests) à refaire avec le système de lobby
     private static Game bleh(GLFWWindow window) throws IOException {
 
-
         Map map = new MapImpl(MapList.Battlefield3);
+        //Map map = new MapImpl(mapInfo);
         Player p1 = new Player("P1");
-        Unite unite = new UniteTest(ResourceHandler.getTexture("res/character.png"), new FloatRect(0, 0, 64, 64));
-        unite.setMapPosition(new Vector2i(1, 1));
-        unite.getSprite().setPosition(64, 64);
+        Unite unite = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0, 0, 64, 64));
+        unite.setMapPosition(new Vector2i(13, 12));
+        unite.getSprite().setPosition(64 * 13, 64 * 12);
+        unite.setTeam(Team.MAN);
         p1.addUnite(unite);
+        Unite unite1 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0, 0, 64, 64));
+        unite1.setMapPosition(new Vector2i(16, 12));
+        unite1.getSprite().setPosition(64 * 16, 64 * 12);
+        unite1.setTeam(Team.MAN);
+        p1.addUnite(unite1);
+
         Player p2 = new Player("P2");
-        Unite unite2 = new UniteTest(ResourceHandler.getTexture("res/character.png"), new FloatRect(64, 0, 64, 64));
+        Unite unite2 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64, 0, 64, 64));
         unite2.getSprite().setPosition(256, 128);
         unite2.setMapPosition(new Vector2i(4, 2));
+        unite2.setTeam(Team.APE);
         p2.addUnite(unite2);
+        Unite unite3 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64, 0, 64, 64));
+        unite3.setMapPosition(new Vector2i(1, 12));
+        unite3.getSprite().setPosition(64 * 1, 64 * 12);
+        unite3.setTeam(Team.MAN);
+        p2.addUnite(unite3);
+
         Game current = new LocalhostGame(window, p1, p2, map);
-
-        //start game
-        current.start();
-
         return current;
     }
 }

@@ -99,7 +99,10 @@ public class Pathfinder {
      * @return Arraylist des cases à traverser. la première est la case start.
      */
     public ArrayList<Vector2i> pathfind(HashMap<Vector2i, Vector2i> correspondance, ArrayList<Unite> ennemyunits, ArrayList<Unite> allyunits, Vector2i start, Vector2i goal) {
+        return collisionInvisible(ennemyunits, pathfindFullList(correspondance, allyunits,start,goal));// path;
+    }
 
+    public ArrayList<Vector2i> pathfindFullList(HashMap<Vector2i, Vector2i> correspondance, ArrayList<Unite> allyunits, Vector2i start, Vector2i goal){
         final ArrayList<Vector2i> path = new ArrayList<>();
 
 
@@ -131,7 +134,7 @@ public class Pathfinder {
             path.add(0, startInMap);
         }
 
-        return collisionInvisible(ennemyunits, path);// path;
+        return path;
     }
 
     //ANNEXES
