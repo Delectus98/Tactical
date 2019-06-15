@@ -6,9 +6,11 @@ import app.Weapon;
 import app.map.Map;
 
 public class Blade extends Weapon {
+    public Blade(){}
+
     @Override
     public boolean isInRange(float distance) {
-        return false;
+        return 0 < distance && distance <= 1.5;
     }
 
     @Override
@@ -18,22 +20,24 @@ public class Blade extends Weapon {
 
     @Override
     public int getAmmunition() {
-        return 0;
+        return -1;
     }
 
     @Override
     public float getAccuracy(float distance) {
-        return 0;
+        return 1;
     }
 
     @Override
     public Projectile buildProjectile(Vector2i thrower, Vector2i target) {
-        return new BladeProjectile("");
+        return new BladeProjectile("explosion", new FloatRect(0,0,192,192), new Vector2f(thrower).mul(64.f), new Vector2f(target).mul(64.f));
     }
 
     @Override
     public Impact getImpactZone(Vector2i thrower, Vector2i target, Map map) {
-        return null;
+        Impact i = new Impact();
+        i.add(target, 30);
+        return i;
     }
 
     @Override

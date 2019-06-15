@@ -11,7 +11,9 @@ import util.MapUtil;
 
 public class Grenade extends Weapon {
     private static final String projectileSprite = "ammo";
+    private static final String explosionSprite = "explosion";
     private static final FloatRect projectileRect = new FloatRect(0,0,32,32);
+    private static final FloatRect explosionRect = new FloatRect(0,0,192,192);
 
     private int ammunition = 3;
     private Sprite sprite;
@@ -40,7 +42,7 @@ public class Grenade extends Weapon {
     @Override
     public Projectile buildProjectile(Vector2i thrower, Vector2i target) {
         ammunition--;
-        return new BlastingProjectile(projectileSprite, projectileRect, new Vector2f(thrower.x*64.f + 32, thrower.y*64.f + 32), new Vector2f(target.x*64.f + 32, target.y*64.f + 32), 1);
+        return new BlastingProjectile(projectileSprite, projectileRect, explosionSprite, explosionRect, new Vector2f(thrower.x*64.f + 32, thrower.y*64.f + 32), new Vector2f(target.x*64.f + 32, target.y*64.f + 32), 1);
     }
 
     @Override

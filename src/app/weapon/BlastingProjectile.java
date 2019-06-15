@@ -2,16 +2,20 @@ package app.weapon;
 
 import System.*;
 import Graphics.*;
+import app.animations.SpriteAnimation;
 import util.ResourceHandler;
 
 public class BlastingProjectile extends Projectile {
     // graphics
     private transient Sprite sprite;
-    private transient Sprite explosion;
+    private transient Sprite explosionSprite;
+    private transient SpriteAnimation animation;
 
     //network
-    private String texture;
-    private FloatRect rect;
+    private String projectile;
+    private String explosion;
+    private FloatRect projectileRect;
+    private FloatRect explosionRect;
     private float torque;
     private float duration;
 
@@ -25,37 +29,54 @@ public class BlastingProjectile extends Projectile {
 
     }
 
-    public BlastingProjectile(String texture, FloatRect textureRect, Vector2f p1, Vector2f target, float seconds){
-        this.texture = texture;
-        this.rect = textureRect;
+    public BlastingProjectile(String projectile, FloatRect projectileRect, String explosion, FloatRect explosionRect, Vector2f p1, Vector2f target, float seconds){
+        this.projectile = projectile;
+        this.projectileRect = projectileRect;
+        this.explosion = explosion;
+        this.explosionRect = explosionRect;
         super.firstPos = p1;
         super.lastPos = target;
 
         this.duration = seconds;
         this.torque = 5.f;
 
-        this.sprite = new Sprite(ResourceHandler.getTexture(texture));
-        sprite.setTextureRect(rect.l, rect.t, rect.w, rect.h);
+        this.sprite = new Sprite(ResourceHandler.getTexture(projectile));
+        sprite.setTextureRect(projectileRect.l, projectileRect.t, projectileRect.w, projectileRect.h);
         sprite.setPosition(firstPos.x, firstPos.y);
         sprite.setOrigin(sprite.getBounds().w / 2.f, sprite.getBounds().h / 2.f);
+
+        explosionSprite = new Sprite();
+        explosionSprite.setPosition(firstPos.x, firstPos.y);
+        explosionSprite.setOrigin(explosionRect.w / 2.f, explosionRect.h / 2.f);
+
+        animation = new SpriteAnimation(ResourceHandler.getTexture(explosion), explosionRect, Time.seconds(1), 0, 15);
     }
 
     @Override
     public void init() {
-        sprite = new Sprite(ResourceHandler.getTexture(texture));
-        sprite.setTextureRect(rect.l, rect.t, rect.w, rect.h);
+        sprite = new Sprite(ResourceHandler.getTexture(projectile));
+        sprite.setTextureRect(projectileRect.l, projectileRect.t, projectileRect.w, projectileRect.h);
         sprite.setPosition(firstPos.x, firstPos.y);
         sprite.setOrigin(sprite.getBounds().w / 2.f, sprite.getBounds().h / 2.f);
+
+        explosionSprite = new Sprite();
+        explosionSprite.setPosition(super.lastPos.x, lastPos.y);
+        explosionSprite.setOrigin(explosionRect.w / 2.f, explosionRect.h / 2.f);
+
+        animation = new SpriteAnimation(ResourceHandler.getTexture(explosion), explosionRect, Time.seconds(1), 0, 15);
     }
 
     @Override
     public boolean hasFinishedHitting() {
-        return advance >= duration;
+        return advance >= duration && advanceExplosion >= 1;
     }
 
     @Override
     public void draw(RenderTarget target) {
-        target.draw(sprite);
+        if (advance < duration)
+            target.draw(sprite);
+        else
+            target.draw(explosionSprite);
     }
 
     @Override
@@ -67,7 +88,8 @@ public class BlastingProjectile extends Projectile {
             sprite.rotate(torque * (float) time.asSeconds());
         } else {
             advanceExplosion += time.asSeconds();
-            //explosion.setTexture(explosions[0]);
+            animation.update(time);
+            animation.apply(explosionSprite);
         }
     }
 }

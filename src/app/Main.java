@@ -2,6 +2,7 @@ package app;
 
 import Graphics.*;
 import System.*;
+import app.animations.SpriteAnimation;
 import app.map.Map;
 import app.map.MapImpl;
 import app.map.MapList;
@@ -26,7 +27,7 @@ public class Main
 
             super.primary = new CombatRifle();
             super.secondary = new Grenade();
-            super.melee = new CombatRifle();
+            super.melee = new Blade();
 
             super.hp = 50;
         }
@@ -133,6 +134,7 @@ public class Main
         ResourceHandler.loadTexture("res/wall.png", "res/wall.png");
         ResourceHandler.loadTexture("res/character.png", "character");
         ResourceHandler.loadTexture("res/ammo.png", "ammo");
+        ResourceHandler.loadTexture("Sprites/FX/Explosion.png", "explosion");
         ResourceHandler.loadFont("res/font.ttf", 20,"default");
 
         ResourceHandler.loadShader("res/shader/default.vert", "res/shader/shining.frag", "shining");
@@ -164,6 +166,11 @@ public class Main
         unite3.getSprite().setPosition(64*1, 64*12);
         unite3.setTeam(Team.MAN);
         p2.addUnite(unite3);
+
+        SpriteAnimation animation = new SpriteAnimation(ResourceHandler.getTexture("explosion"), new FloatRect(0,0,192,192), Time.seconds(1), 0, 15);
+        Sprite sprite = new Sprite();
+        animation.apply(sprite);
+
         Game current = new LocalhostGame(window, p1, p2, map);
 
         //start game
@@ -176,6 +183,12 @@ public class Main
         {
             Time elapsed = clock.restart();
 
+            animation.update(elapsed);
+            animation.apply(sprite);
+
+            sprite.rotate((float)elapsed.asSeconds());
+            sprite.setOrigin(sprite.getBounds().w / 2.f, sprite.getBounds().h / 2.f);
+            sprite.setPosition(192,192);
             Event event;
             while ((event = window.pollEvents()) != null)
             {
@@ -189,7 +202,10 @@ public class Main
                 }
             }
 
-            window.clear();
+            if (animation.isLastImage())
+                window.clear();
+            else
+                window.clear(Color.Red);
             //Menu principal:
 
             //Game Menu:  game is running
@@ -198,6 +214,7 @@ public class Main
                 current.update(elapsed);
                 current.draw(window);
             }
+            window.draw(sprite);
             window.display();
         }
     }
