@@ -8,12 +8,8 @@ import app.Unite;
 import app.Weapon;
 import System.*;
 import app.weapon.Blade;
-import app.weapon.CombatRifle;
 import app.weapon.Grenade;
-<<<<<<< HEAD
-=======
 import app.weapon.MachineGun;
->>>>>>> unitsAndWeapon
 import util.ResourceHandler;
 
 
