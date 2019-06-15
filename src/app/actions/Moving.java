@@ -23,9 +23,9 @@ public class Moving extends Action {
         // kryo constructor required
     }
 
-    public Moving(Player p, Pathfinder finder, HashMap<Vector2i, Vector2i> possiblePaths, Unite unite, ArrayList<Unite> allUnites, ArrayList<Unite> enemyUnites, Vector2i target, float speed)
+    public Moving(Player p, Pathfinder finder, HashMap<Vector2i, Vector2i> possiblePaths, Unite unite, ArrayList<Unite> alliesUnites, ArrayList<Unite> enemyUnites, Vector2i target, float speed)
     {
-        tilePath = finder.pathfind(possiblePaths, enemyUnites, (ArrayList)p.getUnites(), unite.getMapPosition(), target);
+        tilePath = finder.pathfind(possiblePaths, enemyUnites, alliesUnites, unite.getMapPosition(), target);
 
         duration = tilePath.size() * (1.f / speed);
         super.uniteId = unite.getId();
@@ -39,7 +39,7 @@ public class Moving extends Action {
 
     @Override
     public int getCost() {
-        return tilePath.size() + (tilePath.isEmpty() ? (0):(2));
+        return tilePath.size() + (tilePath.isEmpty() ? (0):(1));
     }
 
     @Override

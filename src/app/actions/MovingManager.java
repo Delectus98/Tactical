@@ -43,11 +43,17 @@ public class MovingManager extends ActionManager {
 
         finder = new Pathfinder(game.getMap());
         allies = new ArrayList<>();
-        Arrays.stream(game.getPlayers()).filter(p2 -> p2 == p).map(Player::getUnites).forEach(allies::addAll);
+        Arrays.stream(game.getPlayers()).filter(p2 -> p2 == p).map(Player::getUnites).forEach((c) -> {
+            allies.addAll(c);
+            allies.removeIf(Unite::isDead);
+        });
         enemies = new ArrayList<>();
-        Arrays.stream(game.getPlayers()).filter(p2 -> p2 != p).map(Player::getUnites).forEach(enemies::addAll);
+        Arrays.stream(game.getPlayers()).filter(p2 -> p2 != p).map(Player::getUnites).forEach((c) -> {
+            enemies.addAll(c);
+            enemies.removeIf(Unite::isDead);
+        });
         ArrayList<Vector2i> visibles = new ArrayList<>(game.getCurrentVisibles());
-        possiblePaths = finder.possiblePath(user, Math.max(0, user.getSparePoints() - 1), enemies, visibles);
+        possiblePaths = finder.possiblePath(user, Math.max(0, user.getSparePoints() - 2), enemies, visibles);
 
         availableTiles = new ArrayList<>();
 
@@ -58,9 +64,10 @@ public class MovingManager extends ActionManager {
         });
 
         touched = new RectangleShape(user.getMapPosition().x*64,user.getMapPosition().y*64,64,64);
-        touched.setFillColor(new Color(1.f, 0.f, 0.5f, 0.5f));
+        touched.setFillColor(new Color(0.f, 1.f, 0.2f, 0.5f));
 
         costMsg = new Text(ResourceHandler.getFont("default"), "0");
+        costMsg.setScale(1.4f, 1.f);
         costMsg.setPosition(user.getMapPosition().x*64,user.getMapPosition().y*64);
         costMsg.setFillColor(Color.Green);
     }
@@ -85,6 +92,7 @@ public class MovingManager extends ActionManager {
                 }
 
                 costMsg.setString(this.getCost()+"");
+                costMsg.setFillColor(new Color((float)Math.exp(1.f - (float)this.getCost() / (float)unite.getSparePoints()), 0.5f - ((float)this.getCost() / (float)unite.getSparePoints()), 0.F, 1.f));
 
                 if (input.isLeftReleased()) {
                     target = tile;
@@ -107,7 +115,7 @@ public class MovingManager extends ActionManager {
         GL20.glUniform1f(shining.getUniformLocation("shining"), 5);
         availableTiles.forEach(s -> target.draw(s, shining));
         target.draw(touched, shining);
-        target.draw(costMsg);
+        target.draw(costMsg, shining);
     }
 
     @Override
@@ -122,12 +130,12 @@ public class MovingManager extends ActionManager {
 
     @Override
     public int getCost() {
-        return Math.max(0,tilePath.size()-2) + (tilePath.isEmpty() ? (0):(2));
+        return Math.max(0,tilePath.size()) + (tilePath.isEmpty() ? (0):(1));
     }
 
     @Override
     public boolean isAvailable() {
-        return target != null;
+        return target != null && (target == null || !target.equals(unite.getMapPosition()));
     }
 
     @Override
