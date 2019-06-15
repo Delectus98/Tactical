@@ -1,22 +1,16 @@
 package app.animations;
 
+import Graphics.*;
+import System.*;
 import Graphics.Sprite;
 import Graphics.Texture;
 import Graphics.Vector2f;
 import Graphics.Vector2i;
-import javafx.util.Pair;
+import java.util.ArrayList;
+
 
 public class TileToTileAnimation {
 
-    public static void main(String[] args){
-        //For tests
-        Vector2i start = new Vector2i(5, 5);
-        Vector2i end = new Vector2i(10, 10);
-        TileToTileAnimation test = new TileToTileAnimation(start, end, 10, null, 0);
-        System.out.println(test.xCoef);
-        System.out.println(test.yCoef);
-
-    }
 
     private double overallDistance;
     //these coordinates are map coordinates, 0 0 being the top left
@@ -31,62 +25,37 @@ public class TileToTileAnimation {
     //These are the coeffisiants that go in front of a distance traveled to return the corresponding x and y distances.
     private double xCoef;
     private double yCoef;
-    private Pair<Sprite, Float>[] images;
-    private long startOfLastLoop;
-    private long startOfLastCycle;
-    private int loopTime;
+    private Sprite image;
+
+    //list des anim
+    public static ArrayList<TileToTileAnimation> allAnims = new ArrayList<TileToTileAnimation>();
 
 
-    public TileToTileAnimation(Vector2i startOnMap, Vector2i endOnMap, double tilesPerMili, Pair<Sprite, Float>[] images, int loopTime){
+    public TileToTileAnimation(Vector2i startOnMap, Vector2i endOnMap, double tilesPerMili, Sprite image){
         this.tilesPerMili = tilesPerMili;
         alpha = new Angle();
         setAlpha(startOnMap, endOnMap);
         setCoefs();
         actif = true;
-        this.images = images;
+        this.image = image;
         currentX = (double)(startOnMap.x);
         currentY = (double)(endOnMap.y);
-        this.loopTime = loopTime;
-        startOfLastLoop = System.currentTimeMillis();
-        startOfLastCycle = startOfLastLoop;
         this.distanceTravelled = 0.0;
         endDistance = calculateDistance(startOnMap, endOnMap);
+        allAnims.add(this);
 
     }
 
-    public void advanceAndDraw(){
-        long currentTime = System.currentTimeMillis();
-        advanceCoords(currentTime);
-        Sprite currentImage = getCurrentSprite(currentTime);
-        draw(currentImage);
-    }
-    private void draw(Sprite image){
-        //image.setPosition();
+
+    public void draw(RenderTarget target){
+        image.setPosition((float)(currentX*64.0), (float)(currentY*64.0));
+        target.draw(image);
 
     }
-    private Sprite getCurrentSprite(long currentTime){
-        if(images.length>1) {
-            int timeSinceLoopStart = (int) (currentTime - startOfLastLoop);
-            if(timeSinceLoopStart >= this.loopTime){
-                startOfLastLoop = System.currentTimeMillis();
-                return images[0].getKey();
-            }
-            else{
-                double loopProgression = ((double)(timeSinceLoopStart)) / ((double)(loopTime)) ;
-                int index = 0;
-                while(loopProgression>=images[index].getValue()){
-                    index++;
-                }
-                return images[index].getKey();
-            }
-        }
-        else{
-            return images[0].getKey();
-        }
-    }
-    private void advanceCoords(long currentTime){
-        int cycleDuration =(int)(currentTime - startOfLastCycle);
-        double distance = ((double)(cycleDuration))*tilesPerMili;
+
+    public void advanceCoords(ConstTime time){
+        double cycleDuration = time.asMilliseconds();
+        double distance = cycleDuration*tilesPerMili;
         distanceTravelled += distance;
         if(distanceTravelled>=endDistance){
             terminateAnimation();
@@ -101,6 +70,7 @@ public class TileToTileAnimation {
     }
     private void terminateAnimation(){
         actif = false;
+        allAnims.remove(this);
     }
 
     //Tested!
