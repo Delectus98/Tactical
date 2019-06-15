@@ -114,7 +114,7 @@ public class LocalhostGame extends Game {
 
     @Override
     public boolean isFinished() {
-        return !isRunning && Arrays.stream(super.players).map(Player::getUnites).anyMatch(l -> l.stream().allMatch(Unite::isDead));
+        return !isRunning || Arrays.stream(super.players).map(Player::getUnites).anyMatch(l -> l.stream().allMatch(Unite::isDead));
     }
 
     @Override
@@ -183,16 +183,22 @@ public class LocalhostGame extends Game {
             endTurn();
         }
 
+        hudPlayer[currentPlayer].update(time);
+        hudPlayer[(currentPlayer+1)%2].update(time);
+
         if (hudPlayer[currentPlayer].isSelected()) {
-            selectedUnite = hudPlayer[currentPlayer].getSelectedUnit();
-            //reset player HUD
-            // selection sur le HUD du joueur
-            hudUnite = new HudUnite(players[currentPlayer], selectedUnite, inputs[currentPlayer], this);
-            //reset action manager
-            manager = hudUnite.getSelectedAction();
+            if (selectedUnite != hudPlayer[currentPlayer].getSelectedUnit() && !hudPlayer[currentPlayer].getSelectedUnit().isDead()) {
+                selectedUnite = hudPlayer[currentPlayer].getSelectedUnit();
+                //reset player HUD
+                // selection sur le HUD du joueur
+                hudUnite = new HudUnite(players[currentPlayer], selectedUnite, inputs[currentPlayer], this);
+                //hudUnite.setSelectedUnite(selectedUnite);
+                //reset action manager
+                manager = hudUnite.getSelectedAction();
+            }
         }
 
-        if (hudUnite != null && !inAction) {
+        if (hudUnite != null) {
             hudUnite.update(time);
             if (hudUnite.getSelectedAction() != manager) {
                 manager = hudUnite.getSelectedAction();
@@ -200,7 +206,7 @@ public class LocalhostGame extends Game {
         }
 
         if (manager != null) {
-            if (hudUnite == null || !hudUnite.isClicked()) {
+            if ((hudUnite == null || !hudUnite.isClicked()) && (hudPlayer[currentPlayer] == null || !hudPlayer[currentPlayer].isSelected())) {
                 manager.updatePreparation(time);
                 if (manager.isAvailable()) {
                     currentAction = manager.build();
@@ -214,20 +220,27 @@ public class LocalhostGame extends Game {
 
 
         // la souris est dans le rectangle du jeu du bon joueur && qu'aucune action ne va se dérouler après alors on peut cliquer sur une unité
-        if (inAction != true && inputs[currentPlayer].isLeftReleased() && inputs[currentPlayer].getFrameRectangle().contains(inputs[currentPlayer].getMousePosition().x, inputs[currentPlayer].getMousePosition().y)) {
+        if (inputs[currentPlayer].isLeftReleased() && inputs[currentPlayer].getFrameRectangle().contains(inputs[currentPlayer].getMousePosition().x, inputs[currentPlayer].getMousePosition().y)) {
             // selection d'unité sur le HUD
 
             // selection d'unité sur la map
             players[currentPlayer].getUnites().forEach(u -> {
-                if (u.getSprite().getBounds().contains(inputs[currentPlayer].getMousePositionOnMap().x, inputs[currentPlayer].getMousePositionOnMap().y)) {
+                if (!u.isDead() && u.getSprite().getBounds().contains(inputs[currentPlayer].getMousePositionOnMap().x, inputs[currentPlayer].getMousePositionOnMap().y)) {
                     selectedUnite = u;
                     //reset player HUD
                     // selection sur le HUD du joueur
                     hudUnite = new HudUnite(players[currentPlayer], selectedUnite, inputs[currentPlayer], this);
+                    //hudUnite.setSelectedUnite(selectedUnite);
                     //reset action manager
                     manager = hudUnite.getSelectedAction();
                 }
             });
+        }
+
+        if (selectedUnite != null && selectedUnite.isDead()) {
+            selectedUnite = null;
+            hudUnite = null;
+            manager = null;
         }
 
     }
@@ -253,9 +266,6 @@ public class LocalhostGame extends Game {
     @Override
     public void update(ConstTime time) {
         updateCamera(time);
-
-        hudPlayer[0].update(time);
-        hudPlayer[1].update(time);
 
         if (inAction) {
             updateActionProgress(time);
@@ -289,15 +299,20 @@ public class LocalhostGame extends Game {
     private void drawUnite(RenderTarget target, int player) {
         //Arrays.stream(players).forEach(p -> {if (p != null && !p.getUnites().isEmpty()) p.getUnites().get(0).draw(target);});
         players[player].getUnites().forEach(u -> {
-            if (u.isDead())
-                target.draw(u.getSprite(), ResourceHandler.getShader("grey"));
-            else target.draw(u.getSprite());
+            if (u.isDead()) target.draw(u.getSprite(), ResourceHandler.getShader("grey"));
         });
         players[(player + 1) % 2].getUnites().forEach(u -> {
             if (visibles[player].stream().anyMatch(v -> u.getMapPosition().equals(v))) {
-                if (u.isDead())
-                    target.draw(u.getSprite(), ResourceHandler.getShader("grey"));
-                else target.draw(u.getSprite());
+                if (u.isDead()) target.draw(u.getSprite(), ResourceHandler.getShader("grey"));
+            }
+        });
+
+        players[player].getUnites().forEach(u -> {
+            if (!u.isDead()) target.draw(u.getSprite());
+        });
+        players[(player + 1) % 2].getUnites().forEach(u -> {
+            if (visibles[player].stream().anyMatch(v -> u.getMapPosition().equals(v))) {
+                if (!u.isDead()) target.draw(u.getSprite());
             }
         });
     }
