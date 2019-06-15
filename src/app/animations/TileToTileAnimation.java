@@ -6,6 +6,7 @@ import Graphics.Sprite;
 import Graphics.Texture;
 import Graphics.Vector2f;
 import Graphics.Vector2i;
+import java.util.ArrayList;
 import javafx.util.Pair;
 
 public class TileToTileAnimation {
@@ -26,6 +27,9 @@ public class TileToTileAnimation {
     private double yCoef;
     private Sprite image;
 
+    //list des anim
+    public static ArrayList<TileToTileAnimation> allAnims = new ArrayList<TileToTileAnimation>();
+
 
     public TileToTileAnimation(Vector2i startOnMap, Vector2i endOnMap, double tilesPerMili, Sprite image){
         this.tilesPerMili = tilesPerMili;
@@ -38,11 +42,13 @@ public class TileToTileAnimation {
         currentY = (double)(endOnMap.y);
         this.distanceTravelled = 0.0;
         endDistance = calculateDistance(startOnMap, endOnMap);
+        allAnims.add(this);
 
     }
 
 
-    private void draw(RenderTarget target){
+    public void draw(RenderTarget target){
+        image.setPosition((float)(currentX*64.0), (float)(currentY*64.0));
         target.draw(image);
 
     }
@@ -64,6 +70,7 @@ public class TileToTileAnimation {
     }
     private void terminateAnimation(){
         actif = false;
+        allAnims.remove(this);
     }
 
     //Tested!
