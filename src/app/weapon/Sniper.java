@@ -7,8 +7,8 @@ import Graphics.Vector2i;
 import app.Weapon;
 import app.map.Map;
 
-
-public class CombatRifle extends Weapon {
+public class Sniper extends Weapon
+{
     private static final String projectileSprite = "ammo";
     private static final FloatRect projectileRect = new FloatRect(32,0,32,32);
 
@@ -16,22 +16,22 @@ public class CombatRifle extends Weapon {
 
     @Override
     public boolean isInRange(float distance) {
-        return .5f < distance && distance <= 6;
+        return 5.5f < distance && distance <= 17.5f;
     }
 
     @Override
     public int getCost() {
-        return 4;
+        return -8;
     }
 
     @Override
     public int getAmmunition() {
-        return -1;
+        return 4;
     }
 
     @Override
     public float getAccuracy(float distance) {
-        return (float)Math.log(distance) / distance;
+        return 1 - (distance - 6) * .5f;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class CombatRifle extends Weapon {
     @Override
     public Impact getImpactZone(Vector2i thrower, Vector2i target, Map map) {
         Impact i = new Impact();
-        i.add(target, 4);
+        i.add(target, 10);
         return i;
     }
 
@@ -51,3 +51,4 @@ public class CombatRifle extends Weapon {
         return sprite;
     }
 }
+

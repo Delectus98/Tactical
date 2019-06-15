@@ -124,14 +124,24 @@ public class ShootingManager extends ActionManager {
     public int getCost() {
         int cost = selectedWeapon.getCost();
         if (cost < 0)
-            cost = super.unite.getSparePoints();
+        {
+            if (unite.getSparePoints() != unite.getMaximumPoints())
+            {
+                cost = super.unite.getSparePoints();
+            } else
+            {
+                cost = -cost;
+            }
+        }
 
         return cost;
     }
 
     @Override
     public boolean isAvailable() {
-        return selectedWeapon != null && (selectedWeapon.getAmmunition() > 0 || selectedWeapon.getAmmunition() == -1) && p2 != null /*&& selectedWeapon.isInRange((int)(p2.sum(p1.neg())).length())*/;
+        int cost = selectedWeapon.getCost();
+        return selectedWeapon != null && (selectedWeapon.getAmmunition() > 0 || selectedWeapon.getAmmunition() == -1) && p2 != null /*&& selectedWeapon.isInRange((int)(p2.sum(p1.neg())).length())*/
+                && unite.getSparePoints() >= Math.abs(selectedWeapon.getCost());
     }
 
     @Override
@@ -139,7 +149,7 @@ public class ShootingManager extends ActionManager {
     {
         //TODO unite.removePA(this.getCost());
         //selectedWeapon.getImpactZone(p1, p2, super.game.getMap()).chance(0.5f);
-        return new Shooting(selectedWeapon.getImpactZone(p1, p2, super.game.getMap()), selectedWeapon.buildProjectile(p1, p2), selectedWeapon.getCost());
+        return new Shooting(selectedWeapon.getImpactZone(p1, p2, super.game.getMap()), selectedWeapon.buildProjectile(p1, p2), getCost());
     }
 
 }
