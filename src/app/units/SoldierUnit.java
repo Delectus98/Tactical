@@ -7,7 +7,9 @@ import app.Team;
 import app.Unite;
 import app.Weapon;
 import System.*;
+import app.weapon.Blade;
 import app.weapon.CombatRifle;
+import app.weapon.Grenade;
 import util.ResourceHandler;
 
 
@@ -20,7 +22,8 @@ public class SoldierUnit extends Unite
         this.maxActionPoints = 10;
         this.actionPoints = maxActionPoints;
         this.primary = new CombatRifle();
-        this.secondary = this.melee = this.primary;
+        this.secondary = new Grenade();
+        this.melee = new Blade();
         //todo dans le Main:    +   change Texture texture to ConstTexture texture;
         //ResourceHandler.loadTexture("Sprites/Characterrs/Walk/gurl.png", "gurl");
         //ResourceHandler.loadTexture("Sprites/Characterrs/Walk/bigDude.png", "bigDude");
