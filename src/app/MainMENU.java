@@ -17,6 +17,8 @@ import util.ResourceHandler;
 
 import java.io.IOException;
 
+import static org.lwjgl.glfw.GLFW.glfwMaximizeWindow;
+
 public class MainMENU {
     public static Map[] availableMaps;
 
@@ -43,18 +45,20 @@ public class MainMENU {
     public static GLFWWindow window;
 
     public static void main(String[] args) throws IOException {
-        window = new GLFWWindow(new VideoMode(WIDTH,HEIGHT), "Tactical", WindowStyle.DEFAULT);
-     //   glfwMaximizeWindow(window.getGlId());
-
+        window = new GLFWWindow(VideoMode.getDesktopMode(), "Tactical", WindowStyle.DEFAULT);
+        glfwMaximizeWindow(window.getGlId());
         ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
         ResourceHandler.loadTexture("res/wall.png", "res/wall.png");
         ResourceHandler.loadTexture("res/character.png", "character");
         ResourceHandler.loadTexture("res/ammo.png", "ammo");
-        ResourceHandler.loadFont("res/font.ttf", 20, "default");
+        ResourceHandler.loadTexture("Sprites/FX/Explosion.png", "explosion");
+        ResourceHandler.loadFont("res/font.ttf", 20,"default");
 
+        ResourceHandler.loadShader("res/shader/default.vert", "res/shader/shining.frag", "shining");
         ConstShader shader = ResourceHandler.loadShader("res/shader/default.vert", "res/shader/grisant.frag", "grey");
         shader.bind();
         GL20.glUniform1f(shader.getUniformLocation("colorRatio"), 0.2f);
+
 
         availableMaps = new Map[]{
                 new MapImpl(MapList.Battlefield1),
@@ -68,14 +72,10 @@ public class MainMENU {
         boolean isClicking = false;
         Menu.init(menulist, window);
 
-        //BLEH: TEST ONLY: PLAYER.ADDUNIT(NEW UNIT) et trucs dans le genre
-    //    currentGame = bleh(window);
-
-
-
 
         while (window.isOpen()) {
             Time elapsed = clock.restart();
+
 
             Event event;
             while ((event = window.pollEvents()) != null) {
@@ -116,7 +116,8 @@ public class MainMENU {
                 isClicking = mousse.isButtonPressed(Mouse.Button.Left);//TODO améliorer vers: clicker sur un élément et y aller si relache sur le même
 //STATE = GAME
             } else {
-                if (!currentGame.isFinished()) {
+                if (!currentGame.isFinished())
+                {
                     currentGame.update(elapsed);
                     currentGame.draw(window);
                 }
@@ -136,35 +137,33 @@ public class MainMENU {
 
 
     //TODO VIRER CETTE MERDE (tests) à refaire avec le système de lobby
-    private static Game bleh(GLFWWindow window) throws IOException {
+    public static Game demo(GLFWWindow window) throws IOException {
 
         Map map = new MapImpl(MapList.Battlefield3);
         //Map map = new MapImpl(mapInfo);
         Player p1 = new Player("P1");
-        Unite unite = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0, 0, 64, 64));
+        Unite unite = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
         unite.setMapPosition(new Vector2i(13, 12));
-        unite.getSprite().setPosition(64 * 13, 64 * 12);
+        unite.getSprite().setPosition(64*13, 64*12);
         unite.setTeam(Team.MAN);
         p1.addUnite(unite);
-        Unite unite1 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0, 0, 64, 64));
+        Unite unite1 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
         unite1.setMapPosition(new Vector2i(16, 12));
-        unite1.getSprite().setPosition(64 * 16, 64 * 12);
+        unite1.getSprite().setPosition(64*16, 64*12);
         unite1.setTeam(Team.MAN);
         p1.addUnite(unite1);
-
         Player p2 = new Player("P2");
-        Unite unite2 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64, 0, 64, 64));
+        Unite unite2 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
         unite2.getSprite().setPosition(256, 128);
         unite2.setMapPosition(new Vector2i(4, 2));
         unite2.setTeam(Team.APE);
         p2.addUnite(unite2);
-        Unite unite3 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64, 0, 64, 64));
+        Unite unite3 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
         unite3.setMapPosition(new Vector2i(1, 12));
-        unite3.getSprite().setPosition(64 * 1, 64 * 12);
+        unite3.getSprite().setPosition(64*1, 64*12);
         unite3.setTeam(Team.MAN);
         p2.addUnite(unite3);
 
-        Game current = new LocalhostGame(window, p1, p2, map);
-        return current;
+        return  new LocalhostGame(window, p1, p2, map);
     }
 }
