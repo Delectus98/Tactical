@@ -16,8 +16,7 @@ public class ReadyButton extends SpecialButton {
 
     @Override
     protected void clickedIfReady() {
-      //  System.out.println(this.textZone.getString());
-        MainMENU.currentGame.start();
+
         MainMENU.state = MainMENU.STATE.GAME;
 
 /*
@@ -31,9 +30,11 @@ public class ReadyButton extends SpecialButton {
             //TODO MODE DEGEU AS FUCK mais marche
         try {
             MainMENU.currentGame=new LocalhostGame(MainMENU.window,MainMENU.currentGame.getPlayers()[0],MainMENU.currentGame.getPlayers()[1],MainMENU.currentGame.getMap());
+       //MainMENU.currentGame=MainMENU.demo(MainMENU.window);
+       MainMENU.currentGame.start();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("wazah ta race");
+            System.out.println("Echec démmarage partie");
         }
     }
 

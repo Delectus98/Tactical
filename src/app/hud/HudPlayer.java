@@ -51,7 +51,6 @@ puis setPositon(INPUT.getFrameRectangle().w/2,....)
 
     private void createSprites()
     {
-        System.out.println("Making sprite list");
         //todo position adapté suivant la taille de la fenêtre
         float decLeft = 1;
         float decHeight = 10;

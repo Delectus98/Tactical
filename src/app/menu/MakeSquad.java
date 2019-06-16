@@ -32,7 +32,6 @@ public class MakeSquad extends Menu {
                 u.getSprite().setPosition(64*v.x,64*v.y);
                 u.setTeam((player.getTeam()==null)? Team.MAN :player.getTeam());
             }
-            System.out.println(player.getUnites().toString());
             MainMENU.currentMenu=MainMENU.LOBBY;
 
         }
