@@ -64,7 +64,8 @@ public class MainMENU {
                 new MapImpl(MapList.Battlefield1),
                 new MapImpl(MapList.Battlefield2),
                 new MapImpl(MapList.Battlefield3),
-                new MapImpl(MapList.Example1)
+                new MapImpl(MapList.Example1),
+                new MapImpl(MapList.DemoField)
         };
 
         Mouse mousse = new Mouse(window);
@@ -136,33 +137,43 @@ public class MainMENU {
     }
 
 
-    //TODO VIRER CETTE MERDE (tests) à refaire avec le système de lobby
     public static Game demo(GLFWWindow window) throws IOException {
 
-        Map map = new MapImpl(MapList.Battlefield3);
+        Map map = new MapImpl(MapList.DemoField);
         //Map map = new MapImpl(mapInfo);
         Player p1 = new Player("P1");
         Unite unite = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
-        unite.setMapPosition(new Vector2i(13, 12));
-        unite.getSprite().setPosition(64*13, 64*12);
+        unite.setMapPosition(new Vector2i(1, 8));
+        unite.getSprite().setPosition(64*1, 64*8);
         unite.setTeam(Team.MAN);
         p1.addUnite(unite);
+        Unite unite0 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
+        unite0.setMapPosition(new Vector2i(0, 8));
+        unite0.getSprite().setPosition(64*0, 64*8);
+        unite0.setTeam(Team.MAN);
+        p1.addUnite(unite0);
+        //player2
         Unite unite1 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
-        unite1.setMapPosition(new Vector2i(16, 12));
-        unite1.getSprite().setPosition(64*16, 64*12);
+        unite1.setMapPosition(new Vector2i(1, 9));
+        unite1.getSprite().setPosition(64*1, 64*9);
         unite1.setTeam(Team.MAN);
         p1.addUnite(unite1);
         Player p2 = new Player("P2");
         Unite unite2 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
-        unite2.getSprite().setPosition(256, 128);
-        unite2.setMapPosition(new Vector2i(4, 2));
+        unite2.setMapPosition(new Vector2i(22, 8));
+        unite2.getSprite().setPosition(64*22, 64*8);
         unite2.setTeam(Team.APE);
         p2.addUnite(unite2);
         Unite unite3 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
-        unite3.setMapPosition(new Vector2i(1, 12));
-        unite3.getSprite().setPosition(64*1, 64*12);
-        unite3.setTeam(Team.MAN);
+        unite3.setMapPosition(new Vector2i(22, 9));
+        unite3.getSprite().setPosition(64*22, 64*9);
+        unite3.setTeam(Team.APE);
         p2.addUnite(unite3);
+        Unite unite4 = new Main.UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
+        unite4.setMapPosition(new Vector2i(21, 8));
+        unite4.getSprite().setPosition(64*21, 64*8);
+        unite4.setTeam(Team.APE);
+        p2.addUnite(unite4);
 
         return  new LocalhostGame(window, p1, p2, map);
     }
