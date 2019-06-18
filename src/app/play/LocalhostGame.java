@@ -137,15 +137,17 @@ public class LocalhostGame extends Game {
     }
 
     private void updateCamera(ConstTime time) {
+        float seconds = (float)time.asSeconds();
+
         //player 1 camera control
         Vector2f tlCorner0 = mapCam[currentPlayer].getCenter().sum(mapCam[currentPlayer].getDimension().mul(-0.5f));
         Vector2f brCorner0 = mapCam[currentPlayer].getCenter().sum(mapCam[currentPlayer].getDimension().mul(0.5f));
         if (mapCam[currentPlayer].getDimension().y < map.getHeight() * 64) {
             if (keyboard.isKeyPressed(AZERTYLayout.UP_ARROW.getKeyID())) {
-                mapCam[currentPlayer].move(new Vector2f(0, -300 * (float) time.asSeconds()));
+                mapCam[currentPlayer].move(new Vector2f(0, -300 * seconds));
             }
             if (keyboard.isKeyPressed(AZERTYLayout.DOWN_ARROW.getKeyID())) {
-                mapCam[currentPlayer].move(new Vector2f(0, 300 * (float) time.asSeconds()));
+                mapCam[currentPlayer].move(new Vector2f(0, 300 * seconds));
             }
             //y correction
             if (tlCorner0.y < 0)
@@ -154,14 +156,14 @@ public class LocalhostGame extends Game {
                 mapCam[currentPlayer].move(new Vector2f(0, -(brCorner0.y - map.getHeight() * 64)));
         } else {
             //map is too small for y-coordinates
-            mapCam[currentPlayer].setCenter(new Vector2f(mapCam[0].getCenter().x, map.getHeight() * 64 / 2));
+            mapCam[currentPlayer].setCenter(new Vector2f(mapCam[currentPlayer].getCenter().x, map.getHeight() * 64 / 2));
         }
         if (mapCam[currentPlayer].getDimension().x < map.getWidth() * 64) {
             if (keyboard.isKeyPressed(AZERTYLayout.LEFT_ARROW.getKeyID())) {
-                mapCam[currentPlayer].move(new Vector2f(-300 * (float) time.asSeconds(), 0));
+                mapCam[currentPlayer].move(new Vector2f(-300 * seconds, 0));
             }
             if (keyboard.isKeyPressed(AZERTYLayout.RIGHT_ARROW.getKeyID())) {
-                mapCam[currentPlayer].move(new Vector2f(300 * (float) time.asSeconds(), 0));
+                mapCam[currentPlayer].move(new Vector2f(300 * seconds, 0));
             }
             //x correction
             if (tlCorner0.x < 0)
@@ -170,7 +172,7 @@ public class LocalhostGame extends Game {
                 mapCam[currentPlayer].move(new Vector2f(-(brCorner0.x - map.getWidth() * 64), 0));
         } else {
             //map is too small for x-coordinates
-            mapCam[currentPlayer].setCenter(new Vector2f(map.getWidth() * 64 / 2, mapCam[0].getCenter().y));
+            mapCam[currentPlayer].setCenter(new Vector2f(map.getWidth() * 64 / 2, mapCam[currentPlayer].getCenter().y));
         }
     }
 
@@ -461,6 +463,7 @@ public class LocalhostGame extends Game {
             mapCam[0].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
             hudCam[0].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
             hudCam[0].setCenter(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT / 2.f, event.resizeY * MAP_HEIGHT_PERCENT / 2.f));
+            viewports[0].setTopLeftCorner(new Vector2f(0.f, 0.f));
             viewports[0].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
 
             mapCam[1].setDimension(new Vector2f(event.resizeX * MAP_WIDTH_PERCENT, event.resizeY * MAP_HEIGHT_PERCENT));
