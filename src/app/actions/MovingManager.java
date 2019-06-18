@@ -135,7 +135,7 @@ public class MovingManager extends ActionManager {
 
     @Override
     public boolean isAvailable() {
-        return target != null && (target == null || !target.equals(unite.getMapPosition()));
+        return target != null && (target == null || !player.getUnites().stream().anyMatch(u -> u.getMapPosition().equals(target)));
     }
 
     @Override
