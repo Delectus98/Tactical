@@ -161,7 +161,7 @@ public class HudUnite
         pa.setString("PA: " + selected.getSparePoints());
         hp.setString("HP: " + selected.getHp());
         //we check if the unit is part of the player's units
-        if (input.isLeftReleased())
+        if (input.isLeftReleased() && player.getUnites().contains(selected))
         {
             clicked = back.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y) && !lowered;
 
@@ -201,6 +201,7 @@ public class HudUnite
             {
                 resetSelectedAction();
                 clicked = true;
+                this.lowered = false;
             }
         }
     }
