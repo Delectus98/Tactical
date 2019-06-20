@@ -13,12 +13,10 @@ import app.hud.HudUnite;
 import app.map.Map;
 import app.network.*;
 
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 import System.*;
+import org.lwjgl.opengl.GL20;
 import util.GameInput;
 import util.MapUtil;
 import util.ResourceHandler;
@@ -27,18 +25,25 @@ public class ServerGame extends Game {
     private static final int TCP_PORT = 25565;
     private static final int UDP_PORT = 25567;
 
-    private int localPlayer = 0;
+    private final int localPlayer;
     private ServerImpl server = null;
     private boolean running = false;
 
+    private RectangleShape[] spawnIndicators;
+    private int placedUnite = 0;
+    private boolean initialized = false;
+    private boolean spawnReady = false;
+
     private boolean inAction = false;
-    private Queue<Action> clientActions = new PriorityQueue<>();
-    private Action hostAction = null;
-    private ActionManager hostManager = null;
+    private Queue<Action> clientActions = new LinkedList<>();
+    private Action currentAction = null;
+    private ActionManager manager = null;
 
     private HudPlayer hudPlayer = null;
     private HudUnite hudUnite = null;
     private Unite selectedUnite = null;
+
+    private boolean clientIsActing = false;
 
     private Set<Vector2i> visibles = new HashSet<>();
 
@@ -64,24 +69,36 @@ public class ServerGame extends Game {
         this.map = map;
         this.players = players;
         this.localPlayer = localPlayer;
+        for (int i = 0 ; i < players.length ; ++i) players[i].setId(i);
 
         mouse = new Mouse(context);
         keyboard = new Keyboard(context);
 
         input = new GameInput(mapCam, hudCam, viewport, mouse, keyboard);
 
-        updateFOG();
-
         hudPlayer = new HudPlayer(this, players[this.localPlayer], input);
 
         // ui
         nextTurn = new Text(ResourceHandler.getFont("default"), "Next Turn");
         nextTurn.setPosition(input.getFrameRectangle().w - nextTurn.getBounds().w - 10, 0);
+
+        spawnIndicators = new RectangleShape[map.getSpawnPoints(localPlayer).size()];
+        for (int i = 0 ; i < spawnIndicators.length ; ++i) {
+            spawnIndicators[i] = new RectangleShape(50, 50);
+            spawnIndicators[i].setFillColor(new Color(1.f,0.2f, 1.f, 0.3f));
+            spawnIndicators[i].setOrigin(spawnIndicators[i].getBounds().w / 2.f,spawnIndicators[i].getBounds().h / 2.f);
+        }
     }
 
     @Override
     public void endTurn() {
-        server.send(new TurnPacket());
+        inAction = false;
+        manager = null;
+        currentAction = null;
+        hudUnite = null;
+        selectedUnite = null;
+
+        players[currentPlayer].getUnites().forEach(Unite::resetTurn);
         currentPlayer = (currentPlayer + 1) % players.length;
     }
 
@@ -92,7 +109,6 @@ public class ServerGame extends Game {
 
     @Override
     public void start(){
-        server.send(new ReadyPacket());
         running = true;
     }
 
@@ -108,32 +124,75 @@ public class ServerGame extends Game {
         players[localPlayer].getUnites().forEach(u -> visibles.addAll(MapUtil.getVisibles(u, super.getMap())));
     }
 
-    private void throwErrorToClient(String msg) {
-        ErrorPacket p = new ErrorPacket();
-        p.msg = msg;
-        server.send(p, 0);
-    }
-
-    private void throwFatalErrorToClient(String msg) {
-        FatalErrorPacket p = new FatalErrorPacket();
-        p.msg = msg;
-        server.send(p, 0);
-        running = false;
-    }
-
     private void updateActionProgress(ConstTime time) {
         //déroulement des actions
-        if (hostAction != null && !hostAction.isFinished()) {
-            hostAction.update(time);
+        if (currentAction != null && !currentAction.isFinished()) {
+            currentAction.update(time);
         } else {
             // il n'y a plus d'action alors on arrete la phase déroulement des actions
             inAction = false;
-            hostAction = null;
+            currentAction = null;
             hudUnite.resetSelectedAction();
-            hostManager = hudUnite.getSelectedAction();
+            manager = hudUnite.getSelectedAction();
             //endTurn();
         }
     }
+
+    private void updatePlacement(ConstTime elapsed) throws RuntimeException {
+        // exception throwing
+        if (map.getSpawnPoints(localPlayer).size() < players[localPlayer].getUnites().size()) throw new RuntimeException("La map n'a pas assez de slot spawn");
+
+        // update indicators
+        for (int i = 0; i < spawnIndicators.length ; ++i) {
+            // on obtient les coordonnées de la caméra
+            Vector2f dim = mapCam.getDimension(); // dimension de la vue de la caméra
+            Vector2f tlCorner = mapCam.getCenter().sum(dim.mul(-0.5f)); // coin gauche haut de la caméra
+            // on calcule le décallage si la carte est trop petite par rapport a l'écran
+            Vector2f mapBorder = new Vector2f(Math.max(0, (dim.x - map.getWidth() * 64) / 2.f), Math.max(0, (dim.y - map.getHeight() * 64) / 2.f));
+            // on cacule la zone rectangulaire où les tuiles doivent être affichées
+            float x = Math.max(0, (tlCorner.x / 64.f)); // tuile la plus a gauche du point de vue de la caméra
+            float y = Math.max(0, (tlCorner.y / 64.f)); // tuile la plus a gauche du point de vue de la caméra
+            float x2 = Math.max(0, (tlCorner.x / 64.f) + (dim.x / 64.f)); // tuile la plus a droite affichée du point de vue de la caméra
+            float y2 = Math.max(0, (tlCorner.y / 64.f) + (dim.y / 64.f)); // tuile la plus en bas affichée du point de vue de la caméra
+
+            Vector2i spawn = map.getSpawnPoints(localPlayer).get(i);
+            Vector2f hudPos = new Vector2f(Math.min(dim.x - 32, (Math.min(x2, Math.max(x, spawn.x)) - x) * 64 + 32) + mapBorder.x, (Math.min(dim.y - 32, (Math.min(y2, Math.max(y, spawn.y)) - y) * 64 + 32)) + mapBorder.y);
+            spawnIndicators[i].setPosition(hudPos.x, hudPos.y);
+            float ratio = Math.min(1, 2.f * Math.max(0,(float)(1.0 / (1.0 + Math.exp(hudPos.add(tlCorner).sum(new Vector2f(spawn).mul(64.f).neg()).length() / 1000.f)))));
+
+            if (players[localPlayer].getUnites().stream().anyMatch(u -> spawn.equals(u.getMapPosition()))) {
+                spawnIndicators[i].setFillColor(new Color(ratio, 0, 0, 0.2f));
+            } else {
+                spawnIndicators[i].setFillColor(new Color(ratio, 0, 0, 1.f));
+            }
+        }
+
+        // spawn unite selection
+        if (input.getFrameRectangle().contains(input.getMousePosition().x, input.getMousePosition().y)) {
+            Vector2f mouse = input.getMousePositionOnMap();
+            Vector2i tile = new Vector2i((int) (mouse.x / 64.f), (int) (mouse.y / 64.f));
+            //selectedSpawn.setPosition(tile.x * 64, tile.y * 64);
+            Unite unite = players[localPlayer].getUnites().get(placedUnite);
+
+            if (input.isLeftReleased() && map.getSpawnPoints(localPlayer).contains(tile) && players[localPlayer].getUnites().stream().noneMatch(u -> u != unite && tile.equals(u.getMapPosition()))) {
+                unite.setMapPosition(new Vector2i(tile.x, tile.y));
+                unite.getSprite().setPosition(tile.x * 64, tile.y * 64);
+                SpawnPacket packet = new SpawnPacket();
+                packet.playerId = localPlayer;
+                packet.uniteId = placedUnite;
+                packet.spawn = unite.getMapPosition();
+                server.send(packet);
+                placedUnite++;
+            }
+
+            if (placedUnite == players[localPlayer].getUnites().size()) {
+                initialized = true;
+                updateFOG();
+                server.send(new ReadyPacket());
+            }
+        }
+    }
+
 
     private void updateCamera(ConstTime time) {
         float seconds = (float)time.asSeconds();
@@ -175,90 +234,173 @@ public class ServerGame extends Game {
     }
 
     private void updateUserInput(ConstTime time) {
-        nextTurn.setPosition(input.getFrameRectangle().w - nextTurn.getBounds().w - 10, 0);
+        if (currentPlayer == localPlayer) {
+            nextTurn.setPosition(input.getFrameRectangle().w - nextTurn.getBounds().w - 10, 0);
 
-        Vector2f mouseHud = input.getMousePositionOnHUD();
+            Vector2f mouseHud = input.getMousePositionOnHUD();
 
-        if (input.isLeftReleased() && nextTurn.getBounds().contains(mouseHud.x, mouseHud.y)) {
-            endTurn();
-        }
-
-        hudPlayer.update(time);
-
-        if (hudPlayer.isSelected()) {
-            if (selectedUnite != hudPlayer.getSelectedUnit() && !hudPlayer.getSelectedUnit().isDead()) {
-                selectedUnite = hudPlayer.getSelectedUnit();
-                //reset player HUD
-                // selection sur le HUD du joueur
-                hudUnite = new HudUnite(players[currentPlayer], selectedUnite, input, this);
-                //hudUnite.setSelectedUnite(selectedUnite);
-                //reset action manager
-                hostManager = hudUnite.getSelectedAction();
+            if (input.isLeftReleased() && nextTurn.getBounds().contains(mouseHud.x, mouseHud.y)) {
+                server.send(new TurnPacket());
+                endTurn();
             }
-        }
 
-        if (hudUnite != null) {
-            hudUnite.update(time);
-            if (hudUnite.getSelectedAction() != hostManager) {
-                hostManager = hudUnite.getSelectedAction();
-            }
-        }
+            hudPlayer.update(time);
 
-        if (hostManager != null) {
-            if ((hudUnite == null || !hudUnite.isClicked()) && (hudPlayer == null || !hudPlayer.isSelected())) {
-                hostManager.updatePreparation(time);
-                if (hostManager.isAvailable()) {
-                    hostAction = hostManager.build();
-                    hostAction.init(this);
-                    selectedUnite.removePA((short) hostAction.getCost());
-                    inAction = true;
-                    hostManager = null;
-                }
-            }
-        }
-
-
-        // la souris est dans le rectangle du jeu du bon joueur && qu'aucune action ne va se dérouler après alors on peut cliquer sur une unité
-        if (input.isLeftReleased() && input.getFrameRectangle().contains(input.getMousePosition().x, input.getMousePosition().y)) {
-            // selection d'unité sur le HUD
-
-            // selection d'unité sur la map
-            players[currentPlayer].getUnites().forEach(u -> {
-                if (!u.isDead() && u.getSprite().getBounds().contains(input.getMousePositionOnMap().x, input.getMousePositionOnMap().y)) {
-                    selectedUnite = u;
+            if (hudPlayer.isSelected()) {
+                if (selectedUnite != hudPlayer.getSelectedUnit() && hudPlayer.getSelectedUnit() != null && !hudPlayer.getSelectedUnit().isDead()) {
+                    selectedUnite = hudPlayer.getSelectedUnit();
                     //reset player HUD
                     // selection sur le HUD du joueur
-                    hudUnite = new HudUnite(players[currentPlayer], selectedUnite, input, this);
-                    //hudUnite.setSelectedUnite(selectedUnite);
+                    hudUnite = new HudUnite(players[localPlayer], selectedUnite, input, this);
                     //reset action manager
-                    hostManager = hudUnite.getSelectedAction();
+                    manager = hudUnite.getSelectedAction();
+                    // on veut voir l'unite
+                    mapCam.setCenter(selectedUnite.getSprite().getPosition());
                 }
-            });
+            }
+
+            if (hudUnite != null) {
+                hudUnite.update(time);
+                if (hudUnite.getSelectedAction() != manager) {
+                    manager = hudUnite.getSelectedAction();
+                }
+            }
+
+            if (manager != null && currentAction == null) {
+                if ((hudUnite == null || !hudUnite.isClicked()) && (hudPlayer == null || !hudPlayer.isSelected())) {
+                    manager.updatePreparation(time);
+                    if (manager.isAvailable()) {
+                        currentAction = manager.build();
+                        ActionPacket ap = new ActionPacket();
+                        ap.action = currentAction;
+                        ap.uniteId = selectedUnite.getId();
+                        ap.playerId = localPlayer;
+                        server.send(ap);
+                        currentAction.init(this);
+                        selectedUnite.removePA((short) currentAction.getCost());
+                        inAction = true;
+                        manager = null;
+                    }
+                }
+            }
+
+
+            // la souris est dans le rectangle du jeu du bon joueur && qu'aucune action ne va se dérouler après alors on peut cliquer sur une unité
+            if (input.isLeftReleased() && input.getFrameRectangle().contains(input.getMousePosition().x, input.getMousePosition().y)) {
+                // selection d'unité sur le HUD
+
+                // selection d'unité alliée sur la map
+                players[localPlayer].getUnites().forEach(u -> {
+                    if (!u.isDead() && u.getSprite().getBounds().contains(input.getMousePositionOnMap().x, input.getMousePositionOnMap().y)) {
+                        System.out.println("SELECTION UNITE ALLIE");
+                        selectedUnite = u;
+                        //reset player HUD
+                        // selection sur le HUD du joueur
+                        hudUnite = new HudUnite(players[localPlayer], selectedUnite, input, this);
+                        //hudUnite.setSelectedUnite(selectedUnite);
+                        //reset action manager
+                        manager = hudUnite.getSelectedAction();
+                    }
+                });
+
+                // selection d'unité ennemie sur la map (sauf si une action va se produire)
+                if (currentAction == null) {
+                    for (int i = 0 ; i < players.length ; ++i) {
+                        if (i != localPlayer) {
+                            final int index = i;
+                            players[i].getUnites().forEach(u -> {
+                                if (!u.isDead() && u.getSprite().getBounds().contains(input.getMousePositionOnMap().x, input.getMousePositionOnMap().y)) {
+                                    System.out.println("SELECTION UNITE ENNEMIE :" + index);
+
+                                    selectedUnite = u;
+                                    //reset player HUD
+                                    // selection sur le HUD du joueur
+                                    hudUnite = new HudUnite(players[localPlayer], selectedUnite, input, this);
+                                    //hudUnite.setSelectedUnite(selectedUnite);
+                                    //reset action manager
+                                    manager = hudUnite.getSelectedAction();
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            if (selectedUnite != null && selectedUnite.isDead()) {
+                selectedUnite = null;
+                hudUnite = null;
+                manager = null;
+            }
+        }
+    }
+
+    private void updateOtherActions(ConstTime time) {
+        if (!clientActions.isEmpty()) {
+            clientActions.peek().update(time);
+            if (clientActions.peek().isFinished()) {
+                clientActions.remove();
+            }
         }
 
-        if (selectedUnite != null && selectedUnite.isDead()) {
-            selectedUnite = null;
-            hudUnite = null;
-            hostManager = null;
-        }
-
+        clientIsActing = !clientActions.isEmpty();
     }
 
     @Override
     public void update(ConstTime time) {
         nextTurn.setPosition(input.getFrameRectangle().w - nextTurn.getBounds().w - 10, 0);
 
+        this.updateCamera(time);
+        if (initialized) {
+            if (!spawnReady) {
+                this.waitSpawnPacket();
+            } else {
+                if (clientIsActing) {
+                    // si l'adversaire n'a pas encore fini ses actions
+                    updateOtherActions(time);
+                } else {
+                    this.waitGamePacket();
+
+                    if (inAction) {
+                        this.updateActionProgress(time);
+                    }
+
+                    if (localPlayer == currentPlayer) {
+                        this.updateUserInput(time);
+                    }
+                }
+            }
+        } else {
+            this.updatePlacement(time);
+        }
+
+
+        input.reset();
+    }
+
+    public void waitSpawnPacket() {
         if (server.isRunning()) {
             if (!server.isReceptionEmpty()) {
                 Packet packet = server.received();
+                if (packet instanceof SpawnPacket) {
+                    SpawnPacket sp = (SpawnPacket)packet;
+                    players[sp.playerId].getUnites().get(sp.uniteId).setMapPosition(sp.spawn);
+                    players[sp.playerId].getUnites().get(sp.uniteId).getSprite().setPosition(sp.spawn.x * 64, sp.spawn.y * 64);
+                }
+            }
+        }
+
+        spawnReady = Arrays.stream(players).allMatch(p -> p.getUnites().stream().allMatch(u -> u.getMapPosition() != null));
+    }
+
+    public void waitGamePacket() {
+        if (server.isRunning()) {
+            while (!server.isReceptionEmpty()) {
+                Packet packet = server.received();
                 if (packet instanceof TurnPacket) {
-                    // si on reçoit ce packet alors que c'est notre tour (bug)
-                    if (currentPlayer == localPlayer) {
-                        throwFatalErrorToClient("Not your turn [TurnPacket]");
-                    } else {
-                        // on envoie au client que l'on valide la fin de son tour
-                        this.endTurn();
-                    }
+                    if (currentPlayer == localPlayer)
+                        throwErrorToClient("Not your turn you idiot but ok");
+                    endTurn();
+                    clientIsActing = true;
                 } else if (packet instanceof ActionPacket) {
                     // si on reçoit ce packet alors que c'est notre tour (bug)
                     if (currentPlayer == localPlayer) {
@@ -275,23 +417,13 @@ public class ServerGame extends Game {
                     System.out.println("Client fatal issue: " + ((FatalErrorPacket) packet).msg);
                     server.close();
                     running = false;
+                } else {
+                    System.out.println("unknown received");
                 }
             }
         }
-
-        this.updateCamera(time);
-
-        if (localPlayer == currentPlayer) {
-            if (inAction) {
-                this.updateActionProgress(time);
-            } else {
-                this.updateUserInput(time);
-            }
-        }
-
-
-        input.reset();
     }
+
 
     @Override
     public void handle(Event event) {
@@ -332,7 +464,7 @@ public class ServerGame extends Game {
             else target.draw(u.getSprite());
         });
         players[(localPlayer+1)%2].getUnites().forEach(u -> {
-            if (visibles.stream().anyMatch(v -> u.getMapPosition().equals(v))) {
+            if (visibles.stream().anyMatch(v -> v.equals(u.getMapPosition()))) {
                 if (u.isDead())
                     target.draw(u.getSprite(), ResourceHandler.getShader("grey"));
                 else target.draw(u.getSprite());
@@ -380,38 +512,49 @@ public class ServerGame extends Game {
         int y2 = Math.max(0, (int) (tlCorner.y / 64.f) + (int) (dim.y / 64.f) + offset); // tuile la plus en bas affichée du point de vue de la caméra
 
 
+        if (!initialized && currentPlayer == 0) {
+            ResourceHandler.getShader("grey").bind();
+            GL20.glUniform1f(ResourceHandler.getShader("grey").getUniformLocation("colorRatio"), 1.0f);
+        } else {
+            ResourceHandler.getShader("grey").bind();
+            GL20.glUniform1f(ResourceHandler.getShader("grey").getUniformLocation("colorRatio"), (!initialized) ? 0.2f : 0.05f);
+        }
 
         // draw map
         drawMapFloor(x, y, x2, y2, target);
-        if (currentPlayer == localPlayer && hostAction != null)
-            hostAction.drawAboveFloor(target);
-        if (currentPlayer == localPlayer && hostManager != null)
-            hostManager.drawAboveFloor(target);
+        if (currentPlayer == localPlayer && currentAction != null)
+            currentAction.drawAboveFloor(target);
+        if (currentPlayer == localPlayer && manager != null)
+            manager.drawAboveFloor(target);
         drawUnite(target);
-        if (currentPlayer == localPlayer && hostAction != null)
-            hostAction.drawAboveEntity(target);
-        if (currentPlayer == localPlayer && hostManager != null)
-            hostManager.drawAboveEntity(target);
+        if (currentPlayer == localPlayer && currentAction != null)
+            currentAction.drawAboveEntity(target);
+        if (currentPlayer == localPlayer && manager != null)
+            manager.drawAboveEntity(target);
         drawMapStruct(x, y, x2, y2, target);
-        if (currentPlayer == localPlayer && hostAction != null)
-            hostAction.drawAboveStruct(target);
-        if (currentPlayer == localPlayer && hostManager != null)
-            hostManager.drawAboveStruct(target);
+        if (currentPlayer == localPlayer && currentAction != null)
+            currentAction.drawAboveStruct(target);
+        if (currentPlayer == localPlayer && manager != null)
+            manager.drawAboveStruct(target);
 
         // on affiche au niveau du hud
         target.setCamera(hudCam);
 
-        if (currentPlayer == localPlayer && hostAction != null)
-            hostAction.drawAboveHUD(target);
-        if (currentPlayer == localPlayer && hostManager != null)
-            hostManager.drawAboveHUD(target);
+        if (initialized) {
+            if (currentPlayer == localPlayer && currentAction != null)
+                currentAction.drawAboveHUD(target);
+            if (currentPlayer == localPlayer && manager != null)
+                manager.drawAboveHUD(target);
 
-        hudPlayer.draw(target);
-        if (hudUnite != null && currentPlayer == localPlayer) {
-            hudUnite.draw(target);
-        }
-        if (currentPlayer == localPlayer) {
-            target.draw(nextTurn);
+            hudPlayer.draw(target);
+            if (/*!inAction && */hudUnite != null && currentPlayer == localPlayer) {
+                hudUnite.draw(target);
+            }
+            if (currentPlayer == localPlayer) {
+                target.draw(nextTurn);
+            }
+        } else {
+            Arrays.stream(spawnIndicators).forEach(target::draw);
         }
 
 
@@ -420,5 +563,16 @@ public class ServerGame extends Game {
         target.setCamera(previousCam);
     }
 
+    private void throwErrorToClient(String msg) {
+        ErrorPacket p = new ErrorPacket();
+        p.msg = msg;
+        server.send(p, 0);
+    }
 
+    private void throwFatalErrorToClient(String msg) {
+        FatalErrorPacket p = new FatalErrorPacket();
+        p.msg = msg;
+        server.send(p, 0);
+        running = false;
+    }
 }
