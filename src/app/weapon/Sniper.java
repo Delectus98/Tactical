@@ -31,7 +31,7 @@ public class Sniper extends Weapon
 
     @Override
     public float getAccuracy(float distance) {
-        return 1 - (distance - 6) * .5f;
+        return 1 - (distance - 5.5f) * .05f;
     }
 
     @Override

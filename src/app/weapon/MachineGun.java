@@ -35,7 +35,8 @@ public class MachineGun extends Weapon
     @Override
     public float getAccuracy(float distance)
     {
-        return (float) Math.log(distance) / distance;
+
+        return (float) 1 - Math.max(distance - 5, 0) * .07f;
     }
 
     @Override
