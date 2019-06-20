@@ -403,21 +403,13 @@ public class LocalhostGame extends Game {
     //déssine les unités visibles
     private void drawUnite(RenderTarget target, int player) {
         //Arrays.stream(players).forEach(p -> {if (p != null && !p.getUnites().isEmpty()) p.getUnites().get(0).draw(target);});
+        //Arrays.stream(players).forEach(p -> {if (p != null && !p.getUnites().isEmpty()) p.getUnites().get(0).draw(target);});
         players[player].getUnites().forEach(u -> {
-            if (u.isDead()) target.draw(u.getSprite(), ResourceHandler.getShader("grey"));
+            u.draw(target);
         });
         players[(player + 1) % 2].getUnites().forEach(u -> {
             if (visibles[player].stream().anyMatch(v -> u.getMapPosition().equals(v))) {
-                if (u.isDead()) target.draw(u.getSprite(), ResourceHandler.getShader("grey"));
-            }
-        });
-
-        players[player].getUnites().forEach(u -> {
-            if (!u.isDead()) target.draw(u.getSprite());
-        });
-        players[(player + 1) % 2].getUnites().forEach(u -> {
-            if (visibles[player].stream().anyMatch(v -> u.getMapPosition().equals(v))) {
-                if (!u.isDead()) target.draw(u.getSprite());
+                u.draw(target);
             }
         });
     }
