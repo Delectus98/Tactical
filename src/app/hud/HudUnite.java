@@ -177,12 +177,14 @@ public class HudUnite
         hp.setPosition(imgUnit.getPosition().x + 128 + 10, imgUnit.getPosition().y + 5);
         pa.setPosition(hp.getPosition().x, hp.getPosition().y + 25);
 
-        shoot1.setPosition(hp.getPosition().x - 10, hp.getPosition().y + 61);
-        cost1.setPosition(shoot1.getPosition().x + 38, shoot1.getPosition().y + 4);
-        shoot2.setPosition(shoot1.getPosition().x + 60, shoot1.getPosition().y);
-        cost2.setPosition(shoot2.getPosition().x + 38, shoot2.getPosition().y + 4);
-        shoot3.setPosition(shoot2.getPosition().x + 60, shoot2.getPosition().y);
-        cost3.setPosition(shoot3.getPosition().x + 38, shoot3.getPosition().y + 4);
+        if (player.getUnites().contains(selected)) {
+            shoot1.setPosition(hp.getPosition().x - 10, hp.getPosition().y + 61);
+            cost1.setPosition(shoot1.getPosition().x + 38, shoot1.getPosition().y + 4);
+            shoot2.setPosition(shoot1.getPosition().x + 60, shoot1.getPosition().y);
+            cost2.setPosition(shoot2.getPosition().x + 38, shoot2.getPosition().y + 4);
+            shoot3.setPosition(shoot2.getPosition().x + 60, shoot2.getPosition().y);
+            cost3.setPosition(shoot3.getPosition().x + 38, shoot3.getPosition().y + 4);
+        }
 
         cancelAction.setPosition(lower.getPosition().x, lower.getPosition().y);
 
