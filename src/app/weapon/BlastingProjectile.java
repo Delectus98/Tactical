@@ -14,8 +14,14 @@ public class BlastingProjectile extends Projectile {
     //network
     private String projectile;
     private String explosion;
-    private FloatRect projectileRect;
-    private FloatRect explosionRect;
+    private float projectileRectT;
+    private float projectileRectL;
+    private float projectileRectW;
+    private float projectileRectH;
+    private float explosionRectT;
+    private float explosionRectL;
+    private float explosionRectW;
+    private float explosionRectH;
     private float torque;
     private float duration;
 
@@ -31,9 +37,15 @@ public class BlastingProjectile extends Projectile {
 
     public BlastingProjectile(String projectile, FloatRect projectileRect, String explosion, FloatRect explosionRect, Vector2f p1, Vector2f target, float seconds){
         this.projectile = projectile;
-        this.projectileRect = projectileRect;
+        this.projectileRectT = projectileRect.t;
+        this.projectileRectL = projectileRect.l;
+        this.projectileRectW = projectileRect.w;
+        this.projectileRectH = projectileRect.h;
         this.explosion = explosion;
-        this.explosionRect = explosionRect;
+        this.explosionRectT = explosionRect.t;
+        this.explosionRectL = explosionRect.l;
+        this.explosionRectW = explosionRect.w;
+        this.explosionRectH = explosionRect.h;
         super.firstPos = p1;
         super.lastPos = target;
 
@@ -55,15 +67,15 @@ public class BlastingProjectile extends Projectile {
     @Override
     public void init() {
         sprite = new Sprite(ResourceHandler.getTexture(projectile));
-        sprite.setTextureRect(projectileRect.l, projectileRect.t, projectileRect.w, projectileRect.h);
+        sprite.setTextureRect(projectileRectL, projectileRectT, projectileRectW, projectileRectH);
         sprite.setPosition(firstPos.x, firstPos.y);
         sprite.setOrigin(sprite.getBounds().w / 2.f, sprite.getBounds().h / 2.f);
 
         explosionSprite = new Sprite();
         explosionSprite.setPosition(super.lastPos.x, lastPos.y);
-        explosionSprite.setOrigin(explosionRect.w / 2.f, explosionRect.h / 2.f);
+        explosionSprite.setOrigin(explosionRectW / 2.f, explosionRectH / 2.f);
 
-        animation = new SpriteAnimation(ResourceHandler.getTexture(explosion), explosionRect, Time.seconds(1), 0, 15);
+        animation = new SpriteAnimation(ResourceHandler.getTexture(explosion), new FloatRect(explosionRectL, explosionRectT, explosionRectW, explosionRectH), Time.seconds(1), 0, 15);
     }
 
     @Override

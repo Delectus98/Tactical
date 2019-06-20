@@ -132,7 +132,7 @@ public class GameInput
         if (event.type == Event.Type.BUTTONRELEASED) {
             if (Mouse.Button.Left.getButtonID() == event.keyReleased) {
                 leftReleased = true;
-            } else if (Mouse.Button.Left.getButtonID() == event.keyReleased) {
+            } else if (Mouse.Button.Right.getButtonID() == event.keyReleased) {
                 rightReleased = true;
             }
         }
