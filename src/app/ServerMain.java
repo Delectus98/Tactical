@@ -27,10 +27,32 @@ public class ServerMain {
         ResourceHandler.loadTexture("res/character.png", "character");
         ResourceHandler.loadTexture("res/ammo.png", "ammo");
         ResourceHandler.loadTexture("Sprites/FX/Explosion.png", "explosion");
-        ResourceHandler.loadFont("res/font.ttf", 20,"default");
+        ResourceHandler.loadFont("res/font.ttf", 20, "default");
+
         ResourceHandler.loadTexture("Sprites/Characterrs/Animation/Walk/oldMan.png", "oldMan");
+        ResourceHandler.loadTexture("Sprites/Characterrs/Animation/Walk/otherChar.png", "otherChar");
         ResourceHandler.loadTexture("Sprites/Characterrs/Animation/Walk/gurl.png", "gurl");
         ResourceHandler.loadTexture("Sprites/Characterrs/Animation/Walk/bigDude.png", "bigDude");
+
+        ResourceHandler.loadTexture("Sprites/UI/Character/bigDudeFace.png", "bigDudeAvt");
+        ResourceHandler.loadTexture("Sprites/UI/Character/diffCharFace.png", "otherCharAvt");
+        ResourceHandler.loadTexture("Sprites/UI/Character/gurlFace.png", "gurlAvt");
+        ResourceHandler.loadTexture("Sprites/UI/Character/oldManFace.png", "oldManAvt");
+
+        ResourceHandler.loadTexture("Sprites/UI/Character/faceFrame.png", "avtFrame");
+        ResourceHandler.loadTexture("Sprites/UI/Character/faceBack.png", "avtBack");
+
+        ResourceHandler.loadTexture("Sprites/UI/Buttons/shoot1.png", "shoot1");
+        ResourceHandler.loadTexture("Sprites/UI/Buttons/shoot2.png", "shoot2");
+        ResourceHandler.loadTexture("Sprites/UI/Buttons/knife.png", "knife");
+        ResourceHandler.loadTexture("Sprites/UI/Buttons/skip.png", "skip");
+
+        ResourceHandler.loadTexture("Sprites/UI/arr.png", "lower");
+        ResourceHandler.loadTexture("Sprites/UI/uiBack.png", "uiBack");
+        ResourceHandler.loadTexture("Sprites/UI/uiFrame.png", "backFrame");
+        ResourceHandler.loadTexture("Sprites/FX/Explosion.png", "explosion");
+
+        ResourceHandler.loadFont("res/font.ttf", 20,"default");
         ResourceHandler.loadShader("res/shader/default.vert", "res/shader/shining.frag", "shining");
         ConstShader shader = ResourceHandler.loadShader("res/shader/default.vert", "res/shader/grisant.frag", "grey");
         shader.bind();
