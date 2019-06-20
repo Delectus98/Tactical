@@ -11,13 +11,23 @@ public class BladeProjectile extends Projectile {
     private transient SpriteAnimation animation;
 
     private String spritesheet;
-    private FloatRect rect;
+    private float rectT;
+    private float rectL;
+    private float rectW;
+    private float rectH;
     private float duration = 1;
+
+    public BladeProjectile() {
+        // kryo net empty constructor required
+    }
 
 
     public BladeProjectile(String spritesheet, FloatRect imageRect, Vector2f f1, Vector2f l) {
         this.spritesheet = spritesheet;
-        this.rect = imageRect;
+        this.rectT = imageRect.t;
+        this.rectL = imageRect.l;
+        this.rectW = imageRect.w;
+        this.rectH = imageRect.h;
         super.firstPos = f1;
         super.lastPos = l;
     }
@@ -27,10 +37,10 @@ public class BladeProjectile extends Projectile {
         smite = new Sprite();
         smite.setPosition(lastPos.x + 32, lastPos.y + 32);
         smite.setScale(0.5f, 0.5f);
-        smite.setOrigin(rect.w / 4.f, rect.h / 4.f);
+        smite.setOrigin(rectW / 4.f, rectH / 4.f);
         Vector2f trajectory = firstPos.neg().sum(lastPos).unit();
         smite.setRotation((float)Math.atan2(-trajectory.y, trajectory.x));
-        animation = new SpriteAnimation(ResourceHandler.getTexture(spritesheet), rect, Time.seconds(1), 0, 15);
+        animation = new SpriteAnimation(ResourceHandler.getTexture(spritesheet), new FloatRect(rectL, rectH, rectW, rectH), Time.seconds(1), 0, 15);
     }
 
     @Override
