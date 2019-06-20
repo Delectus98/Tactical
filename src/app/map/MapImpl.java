@@ -40,6 +40,8 @@ public class MapImpl extends Map {
                     } else {
                         world[i][j] = new Tile(floor, ti.floorRect, false);
                     }
+
+                    if (ti.spawn) spawnPoints[ti.spawnId].add(new Vector2i(i, j));
                 }
                 else if (ti.enableStruct) {
                     ConstTexture struct = ResourceHandler.getTexture(ti.textureStruct);
