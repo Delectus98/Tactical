@@ -7,8 +7,10 @@ import app.Game;
 import app.Player;
 import app.Unite;
 import app.Weapon;
+import com.sun.xml.internal.ws.api.ResourceLoader;
 import org.lwjgl.opengl.GL20;
 import util.GameInput;
+import util.Line;
 import util.MapUtil;
 import util.ResourceHandler;
 
@@ -27,6 +29,7 @@ public class ShootingManager extends ActionManager {
     private Vector2i p2 = null;
     private GameInput input = null;
     private float totalElapsed = 0;
+    private Text pct;
 
     public ShootingManager(Player p, Unite user, Game game, GameInput input, Weapon weapon) {
         super(p, user, game);
@@ -35,12 +38,13 @@ public class ShootingManager extends ActionManager {
 
         p1 = user.getMapPosition();
 
-        if (weapon.getAmmunition() != 0) {
-            selectable = MapUtil.getVisibles(user, game.getMap());
-            selectable = selectable.stream().filter(v2i -> (!game.getCurrentVisibles().contains(v2i) && weapon.isInRange(new Vector2f(user.getMapPosition()).neg().sum(new Vector2f(v2i)).length()))).collect(Collectors.toList());
-        } else {
-            selectable = new ArrayList<>();
-        }
+//        if (weapon.getAmmunition() != 0) {
+//            selectable = MapUtil.getVisibles(user, game.getMap());
+//            selectable = selectable.stream().filter(v2i -> (!game.getCurrentVisibles().contains(v2i) && weapon.isInRange(new Vector2f(user.getMapPosition()).neg().sum(new Vector2f(v2i)).length()))).collect(Collectors.toList());
+//        } else {
+//            selectable = new ArrayList<>();
+//        }
+        setSelectable();
 
         rectangles = new ArrayList<>();
         selectable.forEach(s -> {
@@ -68,6 +72,11 @@ public class ShootingManager extends ActionManager {
             mouse = input.getMousePositionOnMap();
 
             Vector2i tile = new Vector2i(mouse.mul(1.f / 64.f));
+            if (selectable.contains(tile))
+            {
+                pct = new Text(ResourceHandler.getFont("default"), ""+Line.computePercentage(unite.getMapPosition(), tile, game.getMap()));
+                pct.setPosition(input.getMousePositionOnMap().x, input.getMousePositionOnMap().y - 20);
+            }
 
             if (input.isLeftReleased()) {
                 if (!tile.equals(p1) && selectable.contains(tile)) {
@@ -106,6 +115,10 @@ public class ShootingManager extends ActionManager {
         }
 
         target.draw(touched, shining);
+        if (pct != null)
+        {
+            target.draw(pct);
+        }
     }
 
     @Override
@@ -150,6 +163,23 @@ public class ShootingManager extends ActionManager {
         //TODO unite.removePA(this.getCost());
         //selectedWeapon.getImpactZone(p1, p2, super.game.getMap()).chance(0.5f);
         return new Shooting(selectedWeapon.getImpactZone(p1, p2, super.game.getMap()), selectedWeapon.buildProjectile(p1, p2), getCost());
+    }
+
+    private void setSelectable()
+    {
+        selectable = new ArrayList<>();
+        for (int i = 0; i < game.getMap().getWorld().length; i++)
+        {
+            for (int j = 0; j < game.getMap().getWorld().length; j++)
+            {
+                if (Line.computePercentage(unite.getMapPosition(), new Vector2i(i, j), game.getMap()) > 0
+                && selectedWeapon.isInRange(new Vector2f(unite.getMapPosition()).neg().sum(new Vector2f(i,j)).length()))
+                {
+                    selectable.add(new Vector2i(i,j));
+                }
+            }
+        }
+        //weapon.isInRange(new Vector2f(user.getMapPosition()).neg().sum(new Vector2f(v2i)).length());
     }
 
 }
