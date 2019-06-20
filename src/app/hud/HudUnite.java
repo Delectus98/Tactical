@@ -58,54 +58,53 @@ public class HudUnite
         this.selected = unite;
         this.input = input;
         this.game = game;
-        FloatRect rect = unite.getSprite().getTextureRect();
 
         if (player.getUnites().contains(selected))
         {
             action1 = new ShootingManager(player, selected, game, input, selected.getPrimary());
-            cost1 = new Text(ResourceHandler.getFont("default"), ""+action1.getCost());
+            cost1 = new Text(ResourceHandler.getFont("default"), "" + action1.getCost());
             cost1.setFillColor(Color.Blue);
             action2 = new ShootingManager(player, selected, game, input, selected.getSecondary());
-            cost2 = new Text(ResourceHandler.getFont("default"), ""+action2.getCost());
+            cost2 = new Text(ResourceHandler.getFont("default"), "" + action2.getCost());
             cost2.setFillColor(Color.Blue);
             action3 = new ShootingManager(player, selected, game, input, selected.getMelee());
-            cost3 = new Text(ResourceHandler.getFont("default"), ""+action3.getCost());
+            cost3 = new Text(ResourceHandler.getFont("default"), "" + action3.getCost());
             cost3.setFillColor(Color.Blue);
             move = new MovingManager(player, selected, game, input);
             selectedAction = move;
         }
-            cancelAction = new Sprite(ResourceHandler.getTexture("skip"));
-            lower = new Sprite(ResourceHandler.getTexture("lower"));
-            lower.setTextureRect(32, 0, 32, 32);
-            back = new Sprite(ResourceHandler.getTexture("uiBack"));
+        cancelAction = new Sprite(ResourceHandler.getTexture("skip"));
+        lower = new Sprite(ResourceHandler.getTexture("lower"));
+        lower.setTextureRect(32, 0, 32, 32);
+        back = new Sprite(ResourceHandler.getTexture("uiBack"));
 
-            backFrame = new Sprite(ResourceHandler.getTexture("backFrame"));
-            avtFrame = new Sprite(ResourceHandler.getTexture("avtFrame"));
-            avtBack = new Sprite(ResourceHandler.getTexture("avtBack"));
+        backFrame = new Sprite(ResourceHandler.getTexture("backFrame"));
+        avtFrame = new Sprite(ResourceHandler.getTexture("avtFrame"));
+        avtBack = new Sprite(ResourceHandler.getTexture("avtBack"));
 
-            lower.setPosition(64, input.getFrameRectangle().h - 32);
-            back.setPosition(0, 0);
-            cancelAction.setPosition(lower.getPosition().x + back.getBounds().w, input.getFrameRectangle().h - 32);
+        lower.setPosition(64, input.getFrameRectangle().h - 32);
+        back.setPosition(0, 0);
+        cancelAction.setPosition(lower.getPosition().x + back.getBounds().w, input.getFrameRectangle().h - 32);
 
-            imgUnit = new Sprite(unite.getAvatarTexture());
-            //imgUnit.setTextureRect(rect.l, rect.t, rect.w, rect.h);
-            imgUnit.setPosition(back.getPosition().x + 10, back.getPosition().y + 10);
+        imgUnit = new Sprite(unite.getAvatarTexture());
+        //imgUnit.setTextureRect(rect.l, rect.t, rect.w, rect.h);
+        imgUnit.setPosition(back.getPosition().x + 10, back.getPosition().y + 10);
 
-            hp = new Text(ResourceHandler.getFont("default"), "HP: " + unite.getHp());
-            hp.setFillColor(Color.Red);
-            hp.setPosition(imgUnit.getPosition().x + 64 + 10, imgUnit.getPosition().y + 10);
-            pa = new Text(ResourceHandler.getFont("default"), "PA: " + unite.getSparePoints());
-            pa.setFillColor(Color.Blue);
-            pa.setPosition(hp.getPosition().x, hp.getPosition().y + 25);
+        hp = new Text(ResourceHandler.getFont("default"), "HP: " + unite.getHp());
+        hp.setFillColor(Color.Red);
+        hp.setPosition(imgUnit.getPosition().x + 64 + 10, imgUnit.getPosition().y + 10);
+        pa = new Text(ResourceHandler.getFont("default"), "PA: " + unite.getSparePoints());
+        pa.setFillColor(Color.Blue);
+        pa.setPosition(hp.getPosition().x, hp.getPosition().y + 25);
 
-            shoot1 = new Sprite(ResourceHandler.getTexture("shoot1"));
-            shoot1.setPosition(hp.getPosition().x + 64, hp.getPosition().y);
+        shoot1 = new Sprite(ResourceHandler.getTexture("shoot1"));
+        shoot1.setPosition(hp.getPosition().x + 64, hp.getPosition().y);
 
-            shoot2 = new Sprite(ResourceHandler.getTexture("shoot2"));
-            shoot1.setPosition(hp.getPosition().x + 64, hp.getPosition().y);
+        shoot2 = new Sprite(ResourceHandler.getTexture("shoot2"));
+        shoot1.setPosition(hp.getPosition().x + 64, hp.getPosition().y);
 
-            shoot3 = new Sprite(ResourceHandler.getTexture("knife"));
-            shoot3.setPosition(shoot2.getPosition().x, shoot2.getPosition().y + 25);
+        shoot3 = new Sprite(ResourceHandler.getTexture("knife"));
+        shoot3.setPosition(shoot2.getPosition().x, shoot2.getPosition().y + 25);
 
     }
 
@@ -168,7 +167,7 @@ public class HudUnite
     public void update(ConstTime time)
     {
         lower.setPosition(64, input.getFrameRectangle().h - 32);
-        back.setPosition(lower.getPosition().x+32, input.getFrameRectangle().h - 128);
+        back.setPosition(lower.getPosition().x + 32, input.getFrameRectangle().h - 128);
         backFrame.setPosition(back.getPosition().x, back.getPosition().y);
 
         imgUnit.setPosition(back.getPosition().x + 10, back.getPosition().y + 10);
@@ -192,45 +191,49 @@ public class HudUnite
         pa.setString("PA: " + selected.getSparePoints());
         hp.setString("HP: " + selected.getHp());
         //we check if the unit is part of the player's units
-        if (input.isLeftReleased() && player.getUnites().contains(selected))
+        if (input.isLeftReleased())
         {
             clicked = back.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y) && !lowered;
 
-            if (cancelAction.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y))
+            if (cancelAction.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)
+                    && (selectedAction != move)) //equivalent to selectAction != move || != null)
             {
                 resetSelectedAction();
                 clicked = true;
                 this.lowered = false;
-            }else if (lower.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y))
+            } else if (lower.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y))
             {
                 this.lowered = !this.lowered;
                 if (lowered)
                 {
-                    lower.setTextureRect(0,0,32,32);
-                }else
+                    lower.setTextureRect(0, 0, 32, 32);
+                } else
                 {
-                    lower.setTextureRect(32,0,32,32);
+                    lower.setTextureRect(32, 0, 32, 32);
                 }
                 clicked = true;
-            } else if (shoot1.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y) && !lowered)
+            } else if (shoot1.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)
+                    && !lowered && player.getUnites().contains(selected))
             {
                 //on passe en action de actione
                 selectedAction = action1;
                 //on reduit le hud
                 this.lowered = true;
-                lower.setTextureRect(0,0,32,32);
+                lower.setTextureRect(0, 0, 32, 32);
                 clicked = true;
-            } else if (shoot2.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y) && !lowered)
+            } else if (shoot2.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)
+                    && !lowered && player.getUnites().contains(selected))
             {
                 selectedAction = action2;
                 this.lowered = true;
-                lower.setTextureRect(0,0,32,32);
+                lower.setTextureRect(0, 0, 32, 32);
                 clicked = true;
-            } else if (shoot3.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y) && !lowered)
+            } else if (shoot3.getBounds().contains(input.getMousePositionOnHUD().x, input.getMousePositionOnHUD().y)
+                    && !lowered && player.getUnites().contains(selected))
             {
                 selectedAction = action3;
                 this.lowered = true;
-                lower.setTextureRect(0,0,32,32);
+                lower.setTextureRect(0, 0, 32, 32);
                 clicked = true;
             }
         }
@@ -252,13 +255,13 @@ public class HudUnite
     public void resetSelectedAction()
     {
         action1 = new ShootingManager(player, selected, game, input, selected.getPrimary());
-        cost1 = new Text(ResourceHandler.getFont("default"), ""+action1.getCost());
+        cost1 = new Text(ResourceHandler.getFont("default"), "" + action1.getCost());
         cost1.setFillColor(Color.Blue);
         action2 = new ShootingManager(player, selected, game, input, selected.getSecondary());
-        cost2 = new Text(ResourceHandler.getFont("default"), ""+action2.getCost());
+        cost2 = new Text(ResourceHandler.getFont("default"), "" + action2.getCost());
         cost2.setFillColor(Color.Blue);
         action3 = new ShootingManager(player, selected, game, input, selected.getMelee());
-        cost3 = new Text(ResourceHandler.getFont("default"), ""+action3.getCost());
+        cost3 = new Text(ResourceHandler.getFont("default"), "" + action3.getCost());
         cost3.setFillColor(Color.Blue);
         move = new MovingManager(player, selected, game, input);
         selectedAction = move;
