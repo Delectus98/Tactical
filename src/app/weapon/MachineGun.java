@@ -48,7 +48,7 @@ public class MachineGun extends Weapon
     public Impact getImpactZone(Vector2i thrower, Vector2i target, Map map)
     {
         Impact i = new Impact();
-        i.add(target, 6);
+        i.add(target, 7);
         return i;
     }
 

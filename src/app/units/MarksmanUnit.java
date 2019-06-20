@@ -6,6 +6,7 @@ import Graphics.Vector2i;
 import app.Team;
 import app.Unite;
 import app.Weapon;
+import app.weapon.Blade;
 import app.weapon.CombatRifle;
 import System.*;
 import app.weapon.Sniper;
@@ -24,7 +25,7 @@ public class MarksmanUnit extends Unite
         //todo Melee aussi.
         this.melee = secondary;
         //TODO : Créer une arme de melee et la mettre
-        this.melee = this.primary;
+        this.melee = new Blade();
         //todo dans le Main:    +   change Texture texture to ConstTexture texture;
         //ResourceHandler.loadTexture("Sprites/Characterrs/Walk/oldMan.png", "oldMan");
         //ResourceHandler.loadTexture("Sprites/Characterrs/Walk/otherChar.png", "otherChar");
@@ -33,11 +34,13 @@ public class MarksmanUnit extends Unite
         {
             case APE:
                 this.spritesheet = ResourceHandler.getTexture("oldMan");
+                this.avatarTexture = ResourceHandler.getTexture("oldManAvt");
                 this.sprite = new Sprite(spritesheet);
                 sprite.setTextureRect(0, 0, 64, 64);
                 break;
             case MAN:
                 this.spritesheet = ResourceHandler.getTexture("otherChar");
+                this.avatarTexture = ResourceHandler.getTexture("otherCharAvt");
                 this.sprite = new Sprite(spritesheet);
                 sprite.setTextureRect(0, 0, 64, 64);
                 break;

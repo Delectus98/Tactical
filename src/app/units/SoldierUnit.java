@@ -32,11 +32,13 @@ public class SoldierUnit extends Unite
         {
             case APE:
                 this.spritesheet = ResourceHandler.getTexture("gurl");
+                this.avatarTexture = ResourceHandler.getTexture("gurlAvt");
                 this.sprite = new Sprite(spritesheet);
                 sprite.setTextureRect(0,0, 64, 64);
                 break;
             case MAN :
                 this.spritesheet = ResourceHandler.getTexture("bigDude");
+                this.avatarTexture = ResourceHandler.getTexture("bigDudeAvt");
                 this.sprite = new Sprite(spritesheet);
                 sprite.setTextureRect(0,0, 64, 64);
                 break;

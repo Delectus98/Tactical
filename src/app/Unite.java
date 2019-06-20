@@ -17,6 +17,7 @@ public abstract class Unite
     protected Weapon secondary;
     protected Weapon melee;
     protected Texture texture;
+    protected ConstTexture avatarTexture;
     protected Sprite sprite;
     protected ConstTexture spritesheet;
     protected Team team;
@@ -150,5 +151,10 @@ public abstract class Unite
 
     public int getCreationCost() {
         return 0;
+    }
+
+    public ConstTexture getAvatarTexture()
+    {
+        return this.avatarTexture;
     }
 }
