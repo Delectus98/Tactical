@@ -16,7 +16,7 @@ public class Sniper extends Weapon
 
     @Override
     public boolean isInRange(float distance) {
-        return 5.5f < distance && distance <= 17.5f;
+        return 5.5f < distance && distance <= 14f;
     }
 
     @Override

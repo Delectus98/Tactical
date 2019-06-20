@@ -17,7 +17,7 @@ public class MachineGun extends Weapon
     @Override
     public boolean isInRange(float distance)
     {
-        return 1.5f < distance && distance <= 9.5f;
+        return 1.5f < distance && distance <= 10.5f;
     }
 
     @Override

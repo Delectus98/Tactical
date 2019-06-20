@@ -16,7 +16,7 @@ public class CombatRifle extends Weapon {
 
     @Override
     public boolean isInRange(float distance) {
-        return .5f < distance && distance <= 6;
+        return .5f < distance && distance <= 8.5;
     }
 
     @Override
