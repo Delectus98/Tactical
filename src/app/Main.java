@@ -7,6 +7,7 @@ import app.map.Map;
 import app.map.MapImpl;
 import app.map.MapList;
 import app.play.LocalhostGame;
+import app.units.MarksmanUnit;
 import app.units.SoldierUnit;
 import app.weapon.*;
 import org.lwjgl.opengl.GL20;
@@ -106,7 +107,7 @@ public class Main
 
         @Override
         public ConstTexture getSpriteSheet() {
-            return null;
+            return sprite.getTexture();
         }
 
         @Override
@@ -146,32 +147,24 @@ public class Main
         shader.bind();
         GL20.glUniform1f(shader.getUniformLocation("colorRatio"), 0.2f);
 
-        Map map = new MapImpl(MapList.Battlefield3);
+        Map map = new MapImpl(MapList.Battlefield1);
         //Map map = new MapImpl(mapInfo);
         Player p1 = new Player("P1");
         //Unite unite = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
         Unite unite = new SoldierUnit(Team.MAN);
-        unite.setMapPosition(new Vector2i(13, 12));
-        unite.getSprite().setPosition(64*13, 64*12);
         unite.setTeam(Team.MAN);
         p1.addUnite(unite);
         //Unite unite1 = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
         Unite unite1 = new SoldierUnit(Team.MAN);
-        unite1.setMapPosition(new Vector2i(16, 12));
-        unite1.getSprite().setPosition(64*16, 64*12);
         unite1.setTeam(Team.MAN);
         p1.addUnite(unite1);
         Player p2 = new Player("P2");
         //Unite unite2 = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
         Unite unite2 = new SoldierUnit(Team.APE);
-        unite2.getSprite().setPosition(256, 128);
-        unite2.setMapPosition(new Vector2i(4, 2));
         unite2.setTeam(Team.APE);
         p2.addUnite(unite2);
         //Unite unite3 = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
-        Unite unite3 = new SoldierUnit(Team.APE);
-        unite3.setMapPosition(new Vector2i(1, 12));
-        unite3.getSprite().setPosition(64*1, 64*12);
+        Unite unite3 = new MarksmanUnit(Team.APE);
         unite3.setTeam(Team.APE);
         p2.addUnite(unite3);
 
