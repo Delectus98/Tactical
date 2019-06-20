@@ -1,8 +1,6 @@
 package app.units;
 
-import Graphics.ConstTexture;
-import Graphics.Sprite;
-import Graphics.Vector2i;
+import Graphics.*;
 import app.Team;
 import app.Unite;
 import app.Weapon;
@@ -11,6 +9,8 @@ import app.weapon.Blade;
 import app.weapon.Grenade;
 import app.weapon.MachineGun;
 import util.ResourceHandler;
+
+import javax.annotation.Resource;
 
 
 public class SoldierUnit extends Unite
@@ -24,6 +24,10 @@ public class SoldierUnit extends Unite
         this.primary = new MachineGun();
         this.secondary = new Grenade();
         this.melee = new Blade();
+        this.hpText = new Text(ResourceHandler.getFont("default"), "");
+        hpText.setFillColor(Color.Green);
+
+        //hptext.setScale(.4f,.4f);
         //todo dans le Main:    +   change Texture texture to ConstTexture texture;
         //ResourceHandler.loadTexture("Sprites/Characterrs/Walk/gurl.png", "gurl");
         //ResourceHandler.loadTexture("Sprites/Characterrs/Walk/bigDude.png", "bigDude");
@@ -140,6 +144,15 @@ public class SoldierUnit extends Unite
     @Override
     public void draw(RenderTarget target)
     {
-        target.draw(this.sprite);
+        if (isDead())
+        {
+            target.draw(sprite, ResourceHandler.getShader("grey"));
+        }else
+        {
+            target.draw(this.sprite);
+            hpText.setString(""+hp);
+            hpText.setPosition(sprite.getPosition().x + 1, sprite.getPosition().y+36);
+            target.draw(hpText);
+        }
     }
 }

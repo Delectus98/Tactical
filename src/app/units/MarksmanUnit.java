@@ -1,8 +1,6 @@
 package app.units;
 
-import Graphics.ConstTexture;
-import Graphics.Sprite;
-import Graphics.Vector2i;
+import Graphics.*;
 import app.Team;
 import app.Unite;
 import app.Weapon;
@@ -22,6 +20,8 @@ public class MarksmanUnit extends Unite
         this.actionPoints = maxActionPoints;
         this.primary = new Sniper();
         this.secondary = new CombatRifle();
+        this.hpText = new Text(ResourceHandler.getFont("default"), "");
+        hpText.setFillColor(Color.Green);
         //todo Melee aussi.
         this.melee = secondary;
         //TODO : Créer une arme de melee et la mettre
@@ -146,7 +146,16 @@ public class MarksmanUnit extends Unite
     @Override
     public void draw(RenderTarget target)
     {
-        target.draw(this.sprite);
+        if (isDead())
+        {
+            target.draw(sprite, ResourceHandler.getShader("grey"));
+        }else
+        {
+            target.draw(this.sprite);
+            hpText.setString(""+hp);
+            hpText.setPosition(sprite.getPosition().x + 1, sprite.getPosition().y+36);
+            target.draw(hpText);
+        }
     }
 }
 

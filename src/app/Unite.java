@@ -21,6 +21,7 @@ public abstract class Unite
     protected Sprite sprite;
     protected ConstTexture spritesheet;
     protected Team team;
+    protected Text hpText;
 
     /**
      * When unite is added to player unites we defines a unique id
