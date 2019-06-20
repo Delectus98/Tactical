@@ -239,7 +239,7 @@ public class ServerGame extends Game {
 
             Vector2f mouseHud = input.getMousePositionOnHUD();
 
-            if (input.isLeftReleased() && nextTurn.getBounds().contains(mouseHud.x, mouseHud.y)) {
+            if (input.isLeftReleased() && !clientIsActing && !inAction && nextTurn.getBounds().contains(mouseHud.x, mouseHud.y)) {
                 server.send(new TurnPacket());
                 endTurn();
             }
@@ -550,7 +550,7 @@ public class ServerGame extends Game {
             if (/*!inAction && */hudUnite != null && currentPlayer == localPlayer) {
                 hudUnite.draw(target);
             }
-            if (currentPlayer == localPlayer) {
+            if (currentPlayer == localPlayer && !clientIsActing && !inAction) {
                 target.draw(nextTurn);
             }
         } else {

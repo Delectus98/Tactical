@@ -180,7 +180,7 @@ public class ClientGame extends Game {
 
             Vector2f mouseHud = input.getMousePositionOnHUD();
 
-            if (input.isLeftReleased() && nextTurn.getBounds().contains(mouseHud.x, mouseHud.y)) {
+            if (input.isLeftReleased() && !serverIsActing && !inAction && nextTurn.getBounds().contains(mouseHud.x, mouseHud.y)) {
                 client.send(new TurnPacket());
                 endTurn();
             }
@@ -554,7 +554,7 @@ public class ClientGame extends Game {
             if (/*!inAction && */hudUnite != null && currentPlayer == localPlayer) {
                 hudUnite.draw(target);
             }
-            if (currentPlayer == localPlayer) {
+            if (currentPlayer == localPlayer && !serverIsActing && !inAction) {
                 target.draw(nextTurn);
             }
         } else {
