@@ -140,7 +140,7 @@ public class ShootingManager extends ActionManager {
         {
             if (unite.getSparePoints() != unite.getMaximumPoints())
             {
-                cost = super.unite.getSparePoints();
+                cost = Math.max(-cost, super.unite.getSparePoints());
             } else
             {
                 cost = -cost;
