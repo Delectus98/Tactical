@@ -49,7 +49,7 @@ public class Pathfinder {
         if (k >= 0 && k < dist.length) {
             dist[k] = 0;
         } else {
-            System.out.println("Erreur case de l'unité déja occupée ou inexdistante");
+
             return new HashMap<>();
         }
 
@@ -112,16 +112,16 @@ public class Pathfinder {
         for (Unite v : allyunits)
             if (Objects.equals(inMap(v.getMapPosition()), inMap(goal))) {
 
-                System.out.println("Case occupée par un allié");
+
                 return path;
             }
 
 
         //Check si goal appartient bien a maplist, et prend l'adresse du vecteur équivement à goal dans maplist
         if (startInMap == null || goalInMap == null) {
-            System.out.println("Pathfind: Position non trouvée");
+
         } else if (!correspondance.keySet().contains(goalInMap)) {
-            System.out.println("Objectif trop loin, occupée par un ennemi ou un décors");
+
 
         } else {
             //Début de la recherche
@@ -189,7 +189,7 @@ public class Pathfinder {
                 if (path.get(i).equals(vect)) {
                     //  for (int j = 0; j < v.length; j++)
                     //      if (path.get(i).equals(v[j])) {
-                    System.out.println("Unité ennemie trouvée, arrêt du mouvement en: (" + path.get(i).x + "," + path.get(i - 1).y + ")");
+
                     return new ArrayList<>(path.subList(0, i));
                 }
             //rencontre
@@ -224,7 +224,7 @@ public class Pathfinder {
             Vector2i current = tmpMapList.get(i);
             if (((current.x == v.x - 1 || current.x == v.x + 1) && current.y == v.y) || (current.y == v.y - 1 || current.y == v.y + 1) && current.x == v.x) {
                 res.add(current);
-                // System.out.println(v.x+", "+v.y+"///"+current.x+" ,"+current.y);
+
             }
         }
 
@@ -253,7 +253,7 @@ public class Pathfinder {
             if (vect.equals(v))
                 return vect;
 
-        System.out.println("Position (" + v.x + "," + v.y + " )non trouvée dans la map. Hauteur " + height + ", Largeur " + width);
+
         return null;
 
 
