@@ -1,5 +1,6 @@
 package app.network;
 
+import Graphics.FloatRect;
 import Graphics.Vector2f;
 import Graphics.Vector2i;
 import app.actions.Moving;
@@ -9,6 +10,8 @@ import app.weapon.BulletProjectile;
 import app.weapon.BlastingProjectile;
 import app.weapon.Impact;
 import com.esotericsoftware.kryonet.EndPoint;
+
+import java.util.ArrayList;
 
 
 public class GameRegistration extends PacketRegistration {
@@ -25,8 +28,11 @@ public class GameRegistration extends PacketRegistration {
         point.getKryo().register(FatalErrorPacket.class);
         point.getKryo().register(TurnPacket.class);
         point.getKryo().register(TeamPacket.class);
+        point.getKryo().register(SpawnPacket.class);
+        point.getKryo().register(ReadyPacket.class);
 
         //data
+        point.getKryo().register(ArrayList.class, new ArrayListSerializer());
         point.getKryo().register(String.class);
         point.getKryo().register(Vector2i.class);
         point.getKryo().register(Vector2f.class);

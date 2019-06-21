@@ -10,7 +10,10 @@ public class BulletProjectile extends Projectile {
 
     //network
     private String texture;
-    private FloatRect shape;
+    private float rectT;
+    private float rectL;
+    private float rectW;
+    private float rectH;
     private float radian;
     private float duration = 1.f;
 
@@ -24,7 +27,10 @@ public class BulletProjectile extends Projectile {
 
     public BulletProjectile(String texture, FloatRect textureRect, Vector2f p1, Vector2f target){
         this.texture = texture;
-        this.shape = textureRect;
+        this.rectT = textureRect.t;
+        this.rectL = textureRect.l;
+        this.rectW = textureRect.w;
+        this.rectH = textureRect.h;
         super.firstPos = p1;
         super.lastPos = target;
 
@@ -33,7 +39,7 @@ public class BulletProjectile extends Projectile {
         this.radian = (float)Math.atan2(-trajectory.y, trajectory.x);
 
         bullet = new Sprite(ResourceHandler.getTexture(texture));
-        bullet.setTextureRect(shape.l, shape.t, shape.w, shape.h);
+        bullet.setTextureRect(rectL, rectT, rectW, rectH);
         bullet.setPosition(firstPos.x, firstPos.y);
         bullet.setOrigin(bullet.getBounds().w / 2.f, bullet.getBounds().h / 2.f);
         bullet.setRotation(radian);
@@ -42,7 +48,7 @@ public class BulletProjectile extends Projectile {
     @Override
     public void init() {
         bullet = new Sprite(ResourceHandler.getTexture(texture));
-        bullet.setTextureRect(shape.l, shape.t, shape.w, shape.h);
+        bullet.setTextureRect(rectL, rectT, rectW, rectH);
         bullet.setPosition(firstPos.x, firstPos.y);
         bullet.setOrigin(bullet.getBounds().w / 2.f, bullet.getBounds().h / 2.f);
         bullet.setRotation(radian);

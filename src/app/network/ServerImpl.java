@@ -9,6 +9,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
@@ -59,6 +60,7 @@ public class ServerImpl extends Listener {
 
     public synchronized void close() {
         running = false;
+        Arrays.stream(s.getConnections()).forEach(Connection::close);
         s.close();
     }
 

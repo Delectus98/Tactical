@@ -12,11 +12,13 @@ import java.util.List;
  */
 public final class Impact
 {
-    private List<MyPair<Vector2i, Integer>> impact;
+    private List<Integer> damages;
+    private List<Vector2i> areas;
 
     public Impact()
     {
-        impact = new ArrayList<>();
+        damages = new ArrayList<>();
+        areas = new ArrayList<>();
     }
 
     /**
@@ -26,16 +28,8 @@ public final class Impact
      */
     public void add(Vector2i tile, int damage)
     {
-        impact.add(new MyPair<>(tile, damage));
-    }
-
-    /**
-     * Creates an impact zone using a list that contains all tiles associated with a damage
-     * @param impact list with pairs of tile pos and damage
-     */
-    public Impact(List<MyPair<Vector2i, Integer>> impact)
-    {
-        this.impact = impact;
+        damages.add(damage);
+        areas.add(tile);
     }
 
     /**
@@ -43,7 +37,7 @@ public final class Impact
      * @return total of tiles impacted
      */
     public int getTileCount() {
-        return impact.size();
+        return damages.size();
     }
 
     /**
@@ -52,7 +46,7 @@ public final class Impact
      * @return coordinates of a tile using index
      */
     public Vector2i getTileCoord(int i) {
-        return impact.get(i).getFst();
+        return areas.get(i);
     }
 
     /**
@@ -61,7 +55,34 @@ public final class Impact
      * @return damage associated to a tile using index
      */
     public int getTileDamage(int i) {
-        return impact.get(i).getSnd();
+        return damages.get(i);
+    }
+
+    /**
+     * Reduce the damage according to an accuracy
+     * @param percent accuracy percent
+     * @return
+     */
+    public Impact reduceAccuracy(float percent) {
+        for (int i = 0 ; i < damages.size() ; ++i) {
+            damages.set(i, (int)(damages.get(i) * percent));
+        }
+
+        return this;
+    }
+
+    /**
+     * Reduce the chance
+     * @param percent
+     * @return
+     */
+    public Impact chance(float percent) {
+        for (int i = 0 ; i < damages.size() ; ++i) {
+            int impacted = Math.random() <= percent ? 1 : 0;
+            damages.set(i, (damages.get(i) * impacted));
+        }
+
+        return this;
     }
 
     /**
@@ -71,11 +92,11 @@ public final class Impact
     public final void apply(List<Unite> all)
     {
         for (Unite unite : all) {
-            impact.forEach(i -> {
-                if (i.getFst().equals(unite.getMapPosition())) {
-                    unite.takeDamages(i.getSnd());
+            for (int i = 0 ; i < damages.size() ; ++i) {
+                if (areas.get(i).equals(unite.getMapPosition())) {
+                    unite.takeDamages(damages.get(i));
                 }
-            });
+            }
         }
     }
 }

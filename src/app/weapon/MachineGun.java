@@ -17,7 +17,7 @@ public class MachineGun extends Weapon
     @Override
     public boolean isInRange(float distance)
     {
-        return 1.5f < distance && distance <= 9.5f;
+        return 1.5f < distance && distance <= 10.5f;
     }
 
     @Override
@@ -35,7 +35,8 @@ public class MachineGun extends Weapon
     @Override
     public float getAccuracy(float distance)
     {
-        return (float) Math.log(distance) / distance;
+
+        return (float) 1 - Math.max(distance - 5, 0) * .07f;
     }
 
     @Override
@@ -48,7 +49,7 @@ public class MachineGun extends Weapon
     public Impact getImpactZone(Vector2i thrower, Vector2i target, Map map)
     {
         Impact i = new Impact();
-        i.add(target, 6);
+        i.add(target, 7);
         return i;
     }
 

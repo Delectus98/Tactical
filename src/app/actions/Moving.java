@@ -5,6 +5,7 @@ import System.*;
 import app.Game;
 import app.Player;
 import app.Unite;
+import app.animations.UniteAnimation;
 import util.Pathfinder;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class Moving extends Action {
     private float elapsed = 0.f;
     private float speed = 1.f;
     private static float factor = 0.2f;
+    private transient UniteAnimation animation = null;
 
     public Moving()
     {
@@ -35,6 +37,7 @@ public class Moving extends Action {
     @Override
     public void init(Game gameContext) {
         super.game = gameContext;
+        if (!tilePath.isEmpty()) animation = new UniteAnimation(game.getPlayers()[playerId].getUnites().get(uniteId), tilePath, 300);
     }
 
     @Override
@@ -44,7 +47,8 @@ public class Moving extends Action {
 
     @Override
     public boolean isFinished() {
-        return tilePath.isEmpty() ||(int)((elapsed / duration) * (speed)) >= tilePath.size();
+        //return tilePath.isEmpty() ||(int)((elapsed / duration) * (speed)) >= tilePath.size();
+        return animation.isTerminated();
     }
 
     @Override
@@ -70,13 +74,13 @@ public class Moving extends Action {
     @Override
     public void update(ConstTime time) {
         elapsed += time.asSeconds();
-
-        Unite u = game.getPlayers()[playerId].getUnites().get(uniteId);
+        animation.update(time);
+        /*Unite u = game.getPlayers()[playerId].getUnites().get(uniteId);
         if (!u.isDead() && tilePath.size() != 0) {
             Vector2i v = tilePath.get(Math.min(tilePath.size()-1, (int)((elapsed / duration) * (speed) )));
             u.getSprite().setPosition(v.x * 64, v.y * 64);
             u.setMapPosition(v);
-        }
+        }*/
         game.updateFOG();
     }
 }

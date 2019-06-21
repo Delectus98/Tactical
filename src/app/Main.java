@@ -7,6 +7,8 @@ import app.map.Map;
 import app.map.MapImpl;
 import app.map.MapList;
 import app.play.LocalhostGame;
+import app.units.MarksmanUnit;
+import app.units.SoldierUnit;
 import app.weapon.*;
 import org.lwjgl.opengl.GL20;
 import util.ResourceHandler;
@@ -105,7 +107,7 @@ public class Main
 
         @Override
         public ConstTexture getSpriteSheet() {
-            return null;
+            return sprite.getTexture();
         }
 
         @Override
@@ -135,41 +137,55 @@ public class Main
         ResourceHandler.loadTexture("res/character.png", "character");
         ResourceHandler.loadTexture("res/ammo.png", "ammo");
         ResourceHandler.loadTexture("Sprites/FX/Explosion.png", "explosion");
-        ResourceHandler.loadFont("res/font.ttf", 20,"default");
+        ResourceHandler.loadFont("res/font.ttf", 20, "default");
+
+        ResourceHandler.loadTexture("Sprites/Characterrs/Animation/Walk/oldMan.png", "oldMan");
+        ResourceHandler.loadTexture("Sprites/Characterrs/Animation/Walk/otherChar.png", "otherChar");
+        ResourceHandler.loadTexture("Sprites/Characterrs/Animation/Walk/gurl.png", "gurl");
+        ResourceHandler.loadTexture("Sprites/Characterrs/Animation/Walk/bigDude.png", "bigDude");
+
+        ResourceHandler.loadTexture("Sprites/UI/Character/bigDudeFace.png", "bigDudeAvt");
+        ResourceHandler.loadTexture("Sprites/UI/Character/diffCharFace.png", "otherCharAvt");
+        ResourceHandler.loadTexture("Sprites/UI/Character/gurlFace.png", "gurlAvt");
+        ResourceHandler.loadTexture("Sprites/UI/Character/oldManFace.png", "oldManAvt");
+
+        ResourceHandler.loadTexture("Sprites/UI/Character/faceFrame.png", "avtFrame");
+        ResourceHandler.loadTexture("Sprites/UI/Character/faceBack.png", "avtBack");
+
+        ResourceHandler.loadTexture("Sprites/UI/Buttons/shoot1.png", "shoot1");
+        ResourceHandler.loadTexture("Sprites/UI/Buttons/shoot2.png", "shoot2");
+        ResourceHandler.loadTexture("Sprites/UI/Buttons/knife.png", "knife");
+        ResourceHandler.loadTexture("Sprites/UI/Buttons/skip.png", "skip");
+
+        ResourceHandler.loadTexture("Sprites/UI/arr.png", "lower");
+        ResourceHandler.loadTexture("Sprites/UI/uiBack.png", "uiBack");
+        ResourceHandler.loadTexture("Sprites/UI/uiFrame.png", "backFrame");
 
         ResourceHandler.loadShader("res/shader/default.vert", "res/shader/shining.frag", "shining");
         ConstShader shader = ResourceHandler.loadShader("res/shader/default.vert", "res/shader/grisant.frag", "grey");
         shader.bind();
         GL20.glUniform1f(shader.getUniformLocation("colorRatio"), 0.2f);
 
-        Map map = new MapImpl(MapList.Battlefield3);
+        Map map = new MapImpl(MapList.DemoField);
         //Map map = new MapImpl(mapInfo);
         Player p1 = new Player("P1");
-        Unite unite = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
-        unite.setMapPosition(new Vector2i(13, 12));
-        unite.getSprite().setPosition(64*13, 64*12);
+        //Unite unite = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
+        Unite unite = new SoldierUnit(Team.MAN);
         unite.setTeam(Team.MAN);
         p1.addUnite(unite);
-        Unite unite1 = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
-        unite1.setMapPosition(new Vector2i(16, 12));
-        unite1.getSprite().setPosition(64*16, 64*12);
+        //Unite unite1 = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(0,0,64,64));
+        Unite unite1 = new SoldierUnit(Team.MAN);
         unite1.setTeam(Team.MAN);
         p1.addUnite(unite1);
         Player p2 = new Player("P2");
-        Unite unite2 = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
-        unite2.getSprite().setPosition(256, 128);
-        unite2.setMapPosition(new Vector2i(4, 2));
+        //Unite unite2 = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
+        Unite unite2 = new SoldierUnit(Team.APE);
         unite2.setTeam(Team.APE);
         p2.addUnite(unite2);
-        Unite unite3 = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
-        unite3.setMapPosition(new Vector2i(1, 12));
-        unite3.getSprite().setPosition(64*1, 64*12);
-        unite3.setTeam(Team.MAN);
+        //Unite unite3 = new UniteTest(ResourceHandler.getTexture("character"), new FloatRect(64,0,64,64));
+        Unite unite3 = new MarksmanUnit(Team.APE);
+        unite3.setTeam(Team.APE);
         p2.addUnite(unite3);
-
-        SpriteAnimation animation = new SpriteAnimation(ResourceHandler.getTexture("explosion"), new FloatRect(0,0,192,192), Time.seconds(1), 0, 15);
-        Sprite sprite = new Sprite();
-        animation.apply(sprite);
 
         Game current = new LocalhostGame(window, p1, p2, map);
 
@@ -183,12 +199,6 @@ public class Main
         {
             Time elapsed = clock.restart();
 
-          /*  animation.update(elapsed);
-            animation.apply(sprite);
-
-            sprite.rotate((float)elapsed.asSeconds());
-            sprite.setOrigin(sprite.getBounds().w / 2.f, sprite.getBounds().h / 2.f);
-            sprite.setPosition(192,192);*/
             Event event;
             while ((event = window.pollEvents()) != null)
             {
@@ -201,11 +211,7 @@ public class Main
                     window.close();
                 }
             }
-
-          /*  if (animation.isLastImage())
-                window.clear();
-            else*/
-                window.clear(Color.Red);
+            window.clear();
             //Menu principal:
 
             //Game Menu:  game is running
@@ -214,7 +220,6 @@ public class Main
                 current.update(elapsed);
                 current.draw(window);
             }
-          //  window.draw(sprite);
             window.display();
         }
     }

@@ -37,6 +37,13 @@ public class MapUtil
         return getVisibles(unit.getMapPosition(), unit.getFov(), map);
     }
 
+    /**
+     * compute the blind spots on a map from a tile position and a field of view
+     * @param tile
+     * @param fov
+     * @param map
+     * @return a list of map position in a **square** of length fov where the initial position is the center
+     */
     public static List<Vector2i> getHidden(Vector2i tile, int fov, Map map)
     {
         ArrayList<Vector2i> hidden = new ArrayList<Vector2i>();
@@ -381,7 +388,7 @@ public class MapUtil
                     }
                 } else if (a > b)
                 {
-                    if (bis.getKey().y <= key.y
+                    if ((bis.getKey().y <= key.y || bis.getKey().x < key.x) //lastedit
                             && pointBetweenTwoLines(coin, value.getFst(), value.getSnd())
                             && !pointBetweenTwoLines(coin1, value.getFst(), value.getSnd()))
                     {
@@ -489,6 +496,13 @@ public class MapUtil
         return hidden;
     }
 
+    /**
+     * Return the visibles tiles around tile in a field of view
+     * @param tile the initial position
+     * @param fov  the field of view from the initial position
+     * @param map  the map on which we want the visible tiles
+     * @return a list of tile positions
+     */
     public static List<Vector2i> getVisibles(Vector2i tile, int fov, Map map)
     {
         Vector2i pos = tile;

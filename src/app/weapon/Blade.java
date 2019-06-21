@@ -15,7 +15,7 @@ public class Blade extends Weapon {
 
     @Override
     public int getCost() {
-        return 0;
+        return -3;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class Blade extends Weapon {
     @Override
     public Impact getImpactZone(Vector2i thrower, Vector2i target, Map map) {
         Impact i = new Impact();
-        i.add(target, 30);
+        i.add(target, 12);
         return i;
     }
 

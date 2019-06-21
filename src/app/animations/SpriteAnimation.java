@@ -4,6 +4,9 @@ package app.animations;
 import System.*;
 import Graphics.*;
 
+/**
+ * Animation using a sprite sheet
+ */
 public class SpriteAnimation {
     private ConstTexture spritesheet;
     private FloatRect spriteRectangle;
@@ -31,8 +34,25 @@ public class SpriteAnimation {
         current =  (int)((lastImage - firstImage)* (float)totalElapsed.asSeconds() / (float)frameDuration.asSeconds()) % (lastImage - firstImage) + firstImage;
     }
 
+    public void reset() {
+        current = firstImage;
+        totalElapsed = Time.zero();
+    }
+
+    public void setStep(int step) {
+        current = step;
+    }
+
     public boolean isLastImage() {
         return current == lastImage - 1;
+    }
+
+    public int getLocalStep() {
+        return current - firstImage;
+    }
+
+    public int getGlobalStep() {
+        return current;
     }
 
     public void apply(Sprite s){
