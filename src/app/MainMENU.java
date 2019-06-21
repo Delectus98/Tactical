@@ -9,6 +9,7 @@ import app.map.MapImpl;
 import app.map.MapList;
 import app.menu.Buttons.MenuButton;
 import app.menu.Buttons.SpecialButton;
+import app.menu.MakeSquad;
 import app.menu.Menu;
 import app.play.LocalhostGame;
 import app.units.MarksmanUnit;
@@ -18,10 +19,9 @@ import util.ResourceHandler;
 
 import java.io.IOException;
 
-import static org.lwjgl.glfw.GLFW.glfwMaximizeWindow;
-
 public class MainMENU {
     public static Map[] availableMaps;
+    public static Unite[] availableUnits;
 
     public static int WIDTH = 1280;
     public static int HEIGHT = 720;
@@ -58,7 +58,7 @@ public class MainMENU {
         unite.setTeam(Team.MAN);
         p1.addUnite(unite);
 
-       /* Unite unite0 = new SoldierUnit(Team.MAN);
+        Unite unite0 = new SoldierUnit(Team.MAN);
         unite0.setMapPosition(new Vector2i(0, 8));
         unite0.getSprite().setPosition(64 * 0, 64 * 8);
         p1.addUnite(unite0);
@@ -68,7 +68,7 @@ public class MainMENU {
         unite1.setMapPosition(new Vector2i(1, 9));
         unite1.getSprite().setPosition(64 * 1, 64 * 9);
         p1.addUnite(unite1);
-      Unite unite2 = new SoldierUnit(Team.APE);
+        Unite unite2 = new SoldierUnit(Team.APE);
         unite2.setMapPosition(new Vector2i(22, 8));
         unite2.getSprite().setPosition(64 * 22, 64 * 8);
         p2.addUnite(unite2);
@@ -76,7 +76,7 @@ public class MainMENU {
         Unite unite3 = new SoldierUnit(Team.APE);
         unite3.setMapPosition(new Vector2i(22, 9));
         unite3.getSprite().setPosition(64 * 22, 64 * 9);
-        p2.addUnite(unite3);*/
+        p2.addUnite(unite3);
 
         Unite unite4 = new MarksmanUnit(Team.APE);
         unite4.setMapPosition(new Vector2i(21, 8));
@@ -87,8 +87,9 @@ public class MainMENU {
     }
 
     public static void main(String[] args) throws IOException {
-        window = new GLFWWindow(VideoMode.getDesktopMode(), "Tactical", WindowStyle.DEFAULT);
-        glfwMaximizeWindow(window.getGlId());
+        window = new GLFWWindow(new VideoMode(WIDTH,HEIGHT), "Tactical", WindowStyle.DEFAULT);
+
+       // glfwMaximizeWindow(window.getGlId());
         ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
         ResourceHandler.loadTexture("res/wall.png", "res/wall.png");
         ResourceHandler.loadTexture("res/character.png", "character");
@@ -111,8 +112,14 @@ public class MainMENU {
                 new MapImpl(MapList.Battlefield1),
                 new MapImpl(MapList.Battlefield2),
                 new MapImpl(MapList.Battlefield3),
-                new MapImpl(MapList.Example1),
+                //new MapImpl(MapList.Example1),
                 new MapImpl(MapList.DemoField)
+        };
+        availableUnits = new Unite[]{
+                new SoldierUnit(Team.APE),
+                new MarksmanUnit(Team.APE),
+                new SoldierUnit(Team.MAN),
+                new MarksmanUnit(Team.MAN)
         };
 
         Mouse mousse = new Mouse(window);
@@ -121,6 +128,8 @@ public class MainMENU {
         Menu.init(menulist, window);
 
 
+        //RESIZE
+
         while (window.isOpen()) {
             Time elapsed = clock.restart();
 
@@ -128,7 +137,8 @@ public class MainMENU {
             Event event;
             while ((event = window.pollEvents()) != null) {
                 // updates window events (resize, keyboard text input, ...)
-                currentGame.handle(event);
+                if(currentGame!=null)
+                    currentGame.handle(event);//TODO si currengame=null
 
                 if (event.type == Event.Type.CLOSE) {
                     ResourceHandler.free();
@@ -141,14 +151,14 @@ public class MainMENU {
 //If STATE=MENU
             if (state == STATE.MENU) {
                 window.draw(getCurrentMenu().getTitle());//TODO Getbackground
-
 //DRAW BUTTONS
                 for (MenuButton b : getCurrentMenu().getButtons()) {
                     if (b instanceof SpecialButton) {
                         ((SpecialButton) b).checkIfButtonReady();
-                    }
+                    }//todo getsprite
                     window.draw(b.getShape());
                     window.draw(b.getText());
+
                 }
 
 //CHECK BUTTON CLICKED
@@ -157,8 +167,10 @@ public class MainMENU {
                     for (MenuButton b : getCurrentMenu().getButtons()) {//éléments à afficher du menu getcurrentmenu
                         if (b.collide(mousse.getRelativePosition())) {
                             b.clicked();
-                            // System.out.println("Menu: " +getCurrentMenu().getTitle().getString());
                         }
+                    }
+                    if(currentMenu==MAKESQUAD){
+                        ((MakeSquad)menulist[MAKESQUAD]).update(((MakeSquad)menulist[MAKESQUAD]).player);
                     }
                 }
                 isClicking = mousse.isButtonPressed(Mouse.Button.Left);//TODO améliorer vers: clicker sur un élément et y aller si relache sur le même
@@ -167,7 +179,11 @@ public class MainMENU {
                 if (!currentGame.isFinished()) {
                     currentGame.update(elapsed);
                     currentGame.draw(window);
-                }else{MainMENU.state=STATE.MENU;MainMENU.currentMenu=GAMEMODE;}
+                } else {
+                    MainMENU.state = STATE.MENU;
+                    window.setDimension(new VideoMode(1280,720));
+                    MainMENU.currentMenu = GAMEMODE;
+                }
             }
             window.display();
 
