@@ -11,7 +11,7 @@ public class RenamePlayer extends SpecialButton{
 Player p;
 
     public RenamePlayer(Player player) {
-        super("Rename",new RectangleShape(0,0,60,30));
+        super("Rename",new RectangleShape(0,0,120,55));
         this.p=player;
 
 

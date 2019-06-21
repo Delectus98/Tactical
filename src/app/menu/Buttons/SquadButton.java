@@ -3,6 +3,7 @@ package app.menu.Buttons;
 import Graphics.RectangleShape;
 import app.MainMENU;
 import app.Player;
+import app.menu.Lobby;
 import app.menu.MakeSquad;
 import app.menu.OnlineLobby;
 
@@ -11,7 +12,7 @@ public class SquadButton extends SpecialButton {
 
 
     public SquadButton(Player p, int windowWidth, int windowHeight){
-        super(p.getName(),new RectangleShape(0,0, windowWidth/2, windowHeight/10));
+        super(p.getName(),new RectangleShape(0,0, 460, 100));
         this.player=p;
         //TODO Editable par le joueur courant uniquement ( online. et par les deux en local)
     }
@@ -19,7 +20,7 @@ public class SquadButton extends SpecialButton {
 
     @Override
     protected void clickedIfReady() {
-        MainMENU.menulist[MainMENU.MAKESQUAD]=new MakeSquad(MainMENU.WIDTH,MainMENU.HEIGHT,player);
+        MainMENU.menulist[MainMENU.MAKESQUAD]=new MakeSquad(MainMENU.WIDTH,MainMENU.HEIGHT,player,((Lobby)MainMENU.menulist[MainMENU.LOBBY]).getSquadCreationPoints() );
         MainMENU.currentMenu=MainMENU.MAKESQUAD;
     }
 

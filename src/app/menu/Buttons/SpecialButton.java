@@ -28,10 +28,6 @@ public abstract class SpecialButton extends MenuButton {
         }
     }
 
-    public boolean getReady() {
-        return ready;
-    }
-
     protected abstract void clickedIfReady();
     public abstract void checkIfButtonReady();
 

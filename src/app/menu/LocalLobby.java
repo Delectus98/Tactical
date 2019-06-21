@@ -6,17 +6,15 @@ import Graphics.Vector2f;
 import app.MainMENU;
 import app.Player;
 import app.Team;
-import app.map.MapImpl;
-import app.map.MapList;
 import app.menu.Buttons.*;
-import app.play.LocalhostGame;
 
 import java.io.IOException;
 import java.util.HashMap;
 
 public class LocalLobby extends Lobby {
     private Player[] playerlist = new Player[2];
-    // protected static Map map = new MapImpl(MapList.Example1); //default
+
+
 
     /**
      * Menu constructor
@@ -27,7 +25,7 @@ public class LocalLobby extends Lobby {
     public LocalLobby(int width, int height, int buttonWidth, int buttonHeight) throws IOException {
         super(width, height, "Game Local: Lobby", MainMENU.GAMEMODE, buttonWidth, buttonHeight, new Vector2f(), new HashMap<>(), true);
         //Ajoute le bouton de lancement de jeu
-        this.getButtons().add(new ReadyButton(new RectangleShape(width - buttonWidth, height - buttonHeight, buttonWidth, buttonHeight)));
+        this.getButtons().add(new ReadyButton(new RectangleShape(MainMENU.WIDTH - buttonWidth, MainMENU.HEIGHT - buttonHeight, buttonWidth, buttonHeight)));
         this.getButtons().add(new toMapButton());
 
 
@@ -35,18 +33,22 @@ public class LocalLobby extends Lobby {
         playerlist[0].setTeam(Team.MAN);
         playerlist[1] = new Player("Player2");
         playerlist[1].setTeam(Team.APE);
-        for (int i = 0; i < playerlist.length; i++) {
-            SquadButton b = new SquadButton(playerlist[i], width, height);
-            b.setPosition(20, 50 + height / 10 + b.getShape().getBounds().l + i * (15 + b.shape.getBounds().h + b.getShape().getBounds().l));
+        setPlayers(playerlist);
+        for (int i = 0; i < getPlayers().length; i++) {
+            SquadButton b = new SquadButton(getPlayers()[i], MainMENU.WIDTH, MainMENU.HEIGHT);
+            b.setPosition(20, 50 + MainMENU.HEIGHT / 10 + b.getShape().getBounds().l + i * (15 + b.shape.getBounds().h + b.getShape().getBounds().l));
             getButtons().add(b);
 
-            RenamePlayer rename = new RenamePlayer(playerlist[i]);
-            rename.setPosition(b.shape.getBounds().l + b.getShape().getBounds().w + 15, b.shape.getBounds().h + b.getShape().getBounds().l + i * (15 + b.shape.getBounds().h + b.getShape().getBounds().l));
+            RenamePlayer rename = new RenamePlayer(getPlayers()[i]);
+            rename.setPosition(b.getShape().getBounds().l + 15+b.shape.getBounds().w, b.shape.getBounds().t);
             getButtons().add(rename);
+
+            TeamButton t = new TeamButton(getPlayers()[i],new RectangleShape(rename.shape.getBounds().l, rename.shape.getBounds().t+rename.shape.getBounds().h+10, rename.shape.getBounds().w, rename.shape.getBounds().h));
+            getButtons().add(t);
 
 //TODO CHANGER OU BOUTON CHOIX TEAM
         }
-        MainMENU.currentGame = new LocalhostGame(MainMENU.window, playerlist[0], playerlist[1], new MapImpl(MapList.Example1));
+     //   MainMENU.currentGame = new LocalhostGame(MainMENU.window, playerlist[0], playerlist[1], );
 
     }
 
@@ -67,7 +69,7 @@ public class LocalLobby extends Lobby {
             for (MenuComponent m : MainMENU.menulist[MainMENU.MAPCHOICE].getButtons()) {
                 if (m instanceof MapButton) {
                     m.shape.setFillColor(Color.Red);
-                    if (((MapButton) m).map == MainMENU.currentGame.getMap()) {
+                    if (((MapButton) m).map == ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap()) {
                         m.shape.setFillColor(Color.Yellow);
                     }
                 }
