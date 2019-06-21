@@ -20,6 +20,7 @@ import util.ResourceHandler;
 import java.io.IOException;
 
 public class MainMENU {
+
     public static Map[] availableMaps;
     public static Unite[] availableUnits;
 
