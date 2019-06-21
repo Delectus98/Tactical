@@ -183,12 +183,12 @@ public class Main
         {
             Time elapsed = clock.restart();
 
-            animation.update(elapsed);
+          /*  animation.update(elapsed);
             animation.apply(sprite);
 
             sprite.rotate((float)elapsed.asSeconds());
             sprite.setOrigin(sprite.getBounds().w / 2.f, sprite.getBounds().h / 2.f);
-            sprite.setPosition(192,192);
+            sprite.setPosition(192,192);*/
             Event event;
             while ((event = window.pollEvents()) != null)
             {
@@ -202,9 +202,9 @@ public class Main
                 }
             }
 
-            if (animation.isLastImage())
+          /*  if (animation.isLastImage())
                 window.clear();
-            else
+            else*/
                 window.clear(Color.Red);
             //Menu principal:
 
@@ -214,7 +214,7 @@ public class Main
                 current.update(elapsed);
                 current.draw(window);
             }
-            window.draw(sprite);
+          //  window.draw(sprite);
             window.display();
         }
     }
