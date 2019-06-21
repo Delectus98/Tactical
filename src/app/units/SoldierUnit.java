@@ -41,6 +41,7 @@ public class SoldierUnit extends Unite
                 sprite.setTextureRect(0,0, 64, 64);
                 break;
         }
+    this.team=team;
     }
     @Override
     public boolean isDead()
