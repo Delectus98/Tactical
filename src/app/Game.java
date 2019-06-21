@@ -14,7 +14,7 @@ public abstract class Game
     protected Player[] players;
     protected Map map;
     protected Unite selected;
-    private int squadCreationPoints=Integer.MAX_VALUE;
+    private int squadCreationPoints=5;//TODO à changer après manip dans lobby
 
     /**
      * Finish the current turn to let the next player play.
