@@ -44,7 +44,7 @@ public class MapInfo implements Serializable {
                 obstacle = false;
             }
         }
-        public TileInfo(String texture, FloatRect rect, boolean isSpawn, int playerSpawn) {
+        public TileInfo(String texture, FloatRect rect, int playerSpawn) {
             textureFloor = texture;
             floorRect = rect;
             enableFloor = true;

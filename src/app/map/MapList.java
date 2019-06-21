@@ -26,8 +26,8 @@ public class MapList {
         HashMap<String, MapInfo.TileInfo> infos = new HashMap<>();
 
         infos.putIfAbsent("F", new MapInfo.TileInfo("res/floor.png", new FloatRect(0, 0, 64, 64), false));
-        infos.putIfAbsent("S1", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), true, 0));
-        infos.putIfAbsent("S2", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), true, 1));
+        infos.putIfAbsent("S1", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), 0));
+        infos.putIfAbsent("S2", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), 1));
         infos.putIfAbsent("W", new MapInfo.TileInfo("res/wall.png", new FloatRect(0, 0, 64, 64), true));
         infos.putIfAbsent("M", new MapInfo.TileInfo("res/wall.png", new FloatRect(64, 0, 64, 64), true));
 
@@ -53,8 +53,8 @@ public class MapList {
         HashMap<String, MapInfo.TileInfo> infos = new HashMap<>();
 
         infos.putIfAbsent("F", new MapInfo.TileInfo("res/floor.png", new FloatRect(0, 0, 64, 64), false));
-        infos.putIfAbsent("S1", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), true, 0));
-        infos.putIfAbsent("S2", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), true, 1));
+        infos.putIfAbsent("S1", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), 0));
+        infos.putIfAbsent("S2", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), 1));
         infos.putIfAbsent("W", new MapInfo.TileInfo("res/wall.png", new FloatRect(0, 0, 64, 64), true));
         infos.putIfAbsent("M", new MapInfo.TileInfo("res/wall.png", new FloatRect(64, 0, 64, 64), true));
 
@@ -83,8 +83,8 @@ public class MapList {
         HashMap<String, MapInfo.TileInfo> infos = new HashMap<>();
 
         infos.putIfAbsent("F", new MapInfo.TileInfo("res/floor.png", new FloatRect(0, 0, 64, 64), false));
-        infos.putIfAbsent("S1", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), true, 0));
-        infos.putIfAbsent("S2", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), true, 1));
+        infos.putIfAbsent("S1", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), 0));
+        infos.putIfAbsent("S2", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), 1));
         infos.putIfAbsent("W", new MapInfo.TileInfo("res/wall.png", new FloatRect(0, 0, 64, 64), true));
         infos.putIfAbsent("M", new MapInfo.TileInfo("res/wall.png", new FloatRect(64, 0, 64, 64), true));
 
@@ -144,8 +144,8 @@ public class MapList {
         HashMap<String, MapInfo.TileInfo> infos = new HashMap<>();
 
         infos.putIfAbsent("F", new MapInfo.TileInfo("res/floor.png", new FloatRect(0, 0, 64, 64), false));
-        infos.putIfAbsent("S1", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), true, 0));
-        infos.putIfAbsent("S2", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), true, 1));
+        infos.putIfAbsent("S1", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), 0));
+        infos.putIfAbsent("S2", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), 1));
         infos.putIfAbsent("W", new MapInfo.TileInfo("res/wall.png", new FloatRect(0, 0, 64, 64), true));
         infos.putIfAbsent("M", new MapInfo.TileInfo("res/wall.png", new FloatRect(64, 0, 64, 64), true));
 
@@ -184,8 +184,8 @@ public class MapList {
         HashMap<String, MapInfo.TileInfo> infos = new HashMap<>();
 
         infos.putIfAbsent("F", new MapInfo.TileInfo("res/floor.png", new FloatRect(0, 0, 64, 64), false));
-        infos.putIfAbsent("S1", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), true, 0));
-        infos.putIfAbsent("S2", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), true, 1));
+        infos.putIfAbsent("S1", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), 0));
+        infos.putIfAbsent("S2", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), 1));
         infos.putIfAbsent("W", new MapInfo.TileInfo("res/wall.png", new FloatRect(0, 0, 64, 64), true));
         infos.putIfAbsent("M", new MapInfo.TileInfo("res/wall.png", new FloatRect(64, 0, 64, 64), true));
 

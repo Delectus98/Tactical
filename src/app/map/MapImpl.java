@@ -48,7 +48,12 @@ public class MapImpl extends Map {
 
                 if (world[i][j].getFloor() != null)  world[i][j].getFloor().setPosition(i * 64, j * 64);
                 if (world[i][j].getStruct() != null) world[i][j].getStruct().setPosition(i * 64, j * 64);
+
+                if(ti.spawnId!=-1){
+                    spawnPoints[ti.spawnId].add(new Vector2i(i,j));
+                }
             }
+
         }
     }
 

@@ -17,7 +17,9 @@ public abstract class Map
      * @param spawnPoints list of available tiles
      * @param player specified player
      */
-    public void setSpawnPoints(Collection<Vector2i> spawnPoints, int player){}
+    public void setSpawnPoints(Collection<Vector2i> spawnPoints, int player){
+        this.spawnPoints[player].addAll(spawnPoints);
+    }
 
     /**
      * Gives the world tiles
