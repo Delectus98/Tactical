@@ -1,23 +1,24 @@
 package app.menu.Buttons;
 
 import Graphics.Color;
-import Graphics.Shape;
+import Graphics.Sprite;
 
 public abstract class SpecialButton extends MenuButton {
-    boolean ready = true;
+    private boolean ready = true;
 
-    public SpecialButton(String title, Shape shape) {
+    public SpecialButton(String title, Sprite shape) {
         super(title, shape);
     }
 
-    public void setReady(boolean b) {
+    protected void setReady(boolean b) {
         ready = b;
 
         if (ready){
-            this.shape.setFillColor(Color.Blue);
+            //this.getSprite().setFillColor(new Color(169,169,169));
+            this.getSprite().setFillColor(new Color(169,169,169));
         }
           else
-              this.shape.setFillColor(Color.Black);
+              this.getSprite().setFillColor(new Color(178,34,34));
     }
 
     public void clicked() {

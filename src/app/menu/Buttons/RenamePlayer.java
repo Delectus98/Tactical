@@ -1,8 +1,8 @@
 package app.menu.Buttons;
 
-import Graphics.RectangleShape;
 import app.MainMENU;
 import app.Player;
+import app.menu.Menu;
 import app.menu.OnlineLobby;
 
 import java.util.Scanner;
@@ -11,7 +11,7 @@ public class RenamePlayer extends SpecialButton{
 Player p;
 
     public RenamePlayer(Player player) {
-        super("Rename",new RectangleShape(0,0,120,55));
+        super("Rename", Menu.newButtonSprite("menuSmall"));
         this.p=player;
 
 

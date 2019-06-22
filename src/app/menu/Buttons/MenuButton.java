@@ -1,13 +1,13 @@
 package app.menu.Buttons;
 
 
-import Graphics.Shape;
+import Graphics.Sprite;
 import Graphics.Vector2f;
 
 
 public abstract class MenuButton extends MenuComponent {
-    public MenuButton(String title, Shape shape) {
-        super(title,shape);
+    public MenuButton(String title, Sprite sprite ) {
+        super(title,sprite);
 
     }
 
@@ -17,7 +17,7 @@ public abstract class MenuButton extends MenuComponent {
 
 
     public boolean collide(Vector2f mousse) {
-        return shape.getBounds().contains(mousse.x, mousse.y);
+        return getSprite().getBounds().contains(mousse.x, mousse.y);
     }
 
 }

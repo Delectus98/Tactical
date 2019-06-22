@@ -1,7 +1,7 @@
 package app.menu.Buttons;
 
 import Graphics.Color;
-import Graphics.Shape;
+import Graphics.Sprite;
 import app.Player;
 import app.Team;
 import app.Unite;
@@ -9,17 +9,17 @@ import app.Unite;
 public class TeamButton extends SpecialButton {
     Player p;
 
-    public TeamButton(Player player, Shape shape) {
-        super("Switch Team",shape);
+    public TeamButton(Player player, Sprite sprite) {
+        super("Switch Team",sprite);
         this.p=player;
         update();
     }
 
     private void update() {
         if (p.getTeam() == Team.MAN) {
-            this.shape.setFillColor(Color.Magenta);
+            this.getSprite().setFillColor(Color.Magenta);
         } else {
-            this.shape.setFillColor(Color.Green);
+            this.getSprite().setFillColor(Color.Green);
         }
         for(Unite u:p.getUnites()){
             u.setTeam(p.getTeam());

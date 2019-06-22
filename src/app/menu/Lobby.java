@@ -2,19 +2,19 @@ package app.menu;
 
 import Graphics.Vector2f;
 import System.GLFWWindow;
+import app.MainMENU;
 import app.Player;
 import app.map.Map;
-import app.map.MapImpl;
-import app.map.MapList;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public abstract class Lobby extends Menu {
-    Map map=new MapImpl(MapList.DemoField);
+    Map map= MainMENU.availableMaps[3];
     Player[] players;
     private int squadCreationPoints=3;
 
-    public Lobby(GLFWWindow window, String title, int parentMenuId, Vector2f normalButtonOrigin, Vector2f specialButtonOrigin, Vector2f titleposition, boolean backbutton) {
+    public Lobby(GLFWWindow window, String title, int parentMenuId, Vector2f normalButtonOrigin, Vector2f specialButtonOrigin, Vector2f titleposition, boolean backbutton) throws IOException {
         super(window, title, parentMenuId, normalButtonOrigin, specialButtonOrigin, titleposition, backbutton);
     }
     public Lobby(int width, int height, String title, int parentMenuId, int buttonWidth, int buttonHeight, Vector2f buttonOrigin, HashMap<String, Integer> correspondances, boolean backbutton){
@@ -44,4 +44,6 @@ public abstract class Lobby extends Menu {
     public void setSquadCreationPoints(int squadCreationPoints) {
         this.squadCreationPoints = squadCreationPoints;
     }
+
+
 }

@@ -1,6 +1,6 @@
 package app.menu.Buttons;
 
-import Graphics.Shape;
+import Graphics.Sprite;
 import Graphics.Vector2f;
 import app.MainMENU;
 
@@ -14,20 +14,22 @@ public class NormalButton extends MenuButton {
      *
      * @param title          Texte affiché sur le bouton
      * @param goTOMenuNumber Index du menu où il mène ( utiliser MainMenu.
-     * @param shape
+     * @param sprite
      */
-    public NormalButton(String title, int goTOMenuNumber, Shape shape) {
-        super(title, shape);
+    public NormalButton(String title, int goTOMenuNumber, Sprite sprite) {
+        super(title, sprite);
         this.goTOMenuNumber = goTOMenuNumber;
+
     }
 
     public void clicked() {
         //System.out.println("Button: " + this.textZone.getString());
         MainMENU.currentMenu = goTOMenuNumber;
+        MainMENU.menulist[MainMENU.currentMenu].update();
     }
 
     public boolean collide(Vector2f mousse) {
-        return shape.getBounds().contains(mousse.x, mousse.y);
+        return getSprite().getBounds().contains(mousse.x, mousse.y);
     }
 
 }

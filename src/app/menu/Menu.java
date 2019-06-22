@@ -1,9 +1,6 @@
 package app.menu;
 
-import Graphics.Color;
-import Graphics.RectangleShape;
-import Graphics.Text;
-import Graphics.Vector2f;
+import Graphics.*;
 import app.MainMENU;
 import app.menu.Buttons.*;
 import util.ResourceHandler;
@@ -22,9 +19,14 @@ public class Menu {
     private Vector2f specialButtonOrigin;
     private Vector2f normalButtonOrigin;
     private int nbSpecialButton;
+    private ConstTexture texture;
+    private Sprite sprite;
 
-    public Menu(GLFWWindow window, String title, int parentMenuId, Vector2f normalButtonOrigin, Vector2f specialButtonOrigin, Vector2f titleposition, boolean backbutton) {
+    public Menu(GLFWWindow window, String title, int parentMenuId, Vector2f normalButtonOrigin, Vector2f specialButtonOrigin, Vector2f titleposition, boolean backbutton) throws IOException {
         this.title = new Text(ResourceHandler.getFont("default"), title);
+        this.texture = ResourceHandler.getTexture("menuBackground");
+        this.sprite = new Sprite(texture);
+
         this.title.setPosition(titleposition.x, titleposition.y);
         this.windoHeight = window.getDimension().y;
         this.windowWidth = window.getDimension().x;
@@ -33,7 +35,7 @@ public class Menu {
 
 
         if (backbutton)
-            backbutton(parentMenuId, windowWidth, windoHeight, 150, 30);
+            backbutton(parentMenuId);
 
     }
 
@@ -51,27 +53,30 @@ public class Menu {
     public Menu(int width, int height, String title, int parentMenuId, int buttonWidth, int buttonHeight, Vector2f buttonOrigin, HashMap<String, Integer> correspondances, boolean backbutton) {
         this.title = new Text(ResourceHandler.getFont("default"), title);
         this.title.setPosition(width / 10, height / 10);
-
+        this.texture = ResourceHandler.getTexture("menuBackground");
+        this.sprite = new Sprite(texture);
         //For correspondance créer nouveau boutton avec la shape.
         for (String p : correspondances.keySet()) {
 
             MenuButton b = new NormalButton(p, correspondances.get(p),
-                    new RectangleShape(buttonOrigin.x + buttonWidth / 2, buttonOrigin.y + buttonHeight / 2 + buttons.size() * 2 * buttonHeight, buttonWidth, buttonHeight));
+                    newButtonSprite("menuSmall"));
+            b.setPosition(buttonOrigin.x + buttonWidth / 2, buttonOrigin.y + buttonHeight / 2 + buttons.size() * 2 * buttonHeight);
 
-           // b.getShape().setFillColor(Color.Blue);
+            // b.getShape().setFillColor(Color.Blue);
             buttons.add(b);
         }
 
 //RETURN BUTTON
         if (backbutton)
-            backbutton(parentMenuId, width, height, buttonWidth, buttonHeight);
+            backbutton(parentMenuId);
 
     }
 
-    public void backbutton(int parentMenuId, int windowWidth, int windowHeight, int buttonWidth, int buttonHeight) {
-        NormalButton n = new NormalButton("Go back", parentMenuId, new RectangleShape(0, windowHeight - buttonHeight, buttonWidth, buttonHeight));
+    public void backbutton(int parentMenuId) {
+        NormalButton n = new NormalButton("Go back", parentMenuId, newButtonSprite("menuSmall"));
+        n.setPosition(0, MainMENU.HEIGHT - sprite.getBounds().h);
         buttons.add(n);
-        n.shape.setFillColor(Color.Blue);
+        //n.shape.setFillColor(Color.Blue);
     }
 
     public ArrayList<MenuButton> getButtons() {
@@ -85,18 +90,32 @@ public class Menu {
     public void addComponent(boolean special, MenuComponent c) {
         if (special) {
             nbSpecialButton++;
-            c.setPosition(specialButtonOrigin.x, specialButtonOrigin.y + nbSpecialButton * (10 + c.getShape().getBounds().h));
+            c.setPosition(specialButtonOrigin.x, specialButtonOrigin.y + nbSpecialButton * (10 + c.getSprite().getBounds().h));
         } else {
-            c.setPosition(normalButtonOrigin.x, normalButtonOrigin.y + (buttons.size() - nbSpecialButton) * (10 + c.getShape().getBounds().h));
+            c.setPosition(normalButtonOrigin.x, normalButtonOrigin.y + (buttons.size() - nbSpecialButton) * (10 + c.getSprite().getBounds().h));
         }
+    }
+
+    public Sprite getSprite() {
+        return this.sprite;
+    }
+
+    public void setSprite(Sprite sprite) {
+        this.sprite = sprite;
+    }
+
+    public static Sprite newButtonSprite(String textureName) {
+        return new Sprite(ResourceHandler.getTexture(textureName));
     }
 
     /**
      * Initialisation du menu, à utiliser Une (1) fois
      *
      * @param menulist la liste de menus à modifier
-     * @param window window game
+     * @param window   window game
      */
+
+
     public static void init(Menu[] menulist, GLFWWindow window) throws IOException {
 //Main
         //  Pair<String,Integer>[][]correspondance= new Pair[15][10];//paire nombre de menu/nombre de boutons max
@@ -116,13 +135,13 @@ public class Menu {
 
 
         ToLobbyButton t = new ToLobbyButton("Local game", (byte) 0);
-        t.shape = menulist[MainMENU.GAMEMODE].buttons.get(1).getShape();
-        t.setPosition(menulist[MainMENU.GAMEMODE].buttons.get(1).shape.getX(), menulist[MainMENU.GAMEMODE].buttons.get(1).shape.getY());
+        t.setSprite(menulist[MainMENU.GAMEMODE].buttons.get(1).getSprite());
+        t.setPosition(menulist[MainMENU.GAMEMODE].buttons.get(1).getSprite().getX(), menulist[MainMENU.GAMEMODE].buttons.get(1).getSprite().getY());
         menulist[MainMENU.GAMEMODE].buttons.set(1, t);
 
 
 //LOCAL
-       // menulist[MainMENU.LOCAL] =new LocalLobby(window,);
+        // menulist[MainMENU.LOCAL] =new LocalLobby(window,);
         menulist[MainMENU.LOCAL] = new LocalLobby(window.getDimension().x, window.getDimension().y, 100, 40);
 
 //ONLINE
@@ -147,7 +166,7 @@ public class Menu {
         menulist[MainMENU.MAKESQUAD] = null;
 
 
-
     }
+    public void update(){}
 }
 

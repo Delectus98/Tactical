@@ -6,6 +6,7 @@ import app.MainMENU;
 import app.Player;
 import app.Unite;
 import app.menu.Lobby;
+import app.menu.Menu;
 import app.play.LocalhostGame;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ import static org.lwjgl.glfw.GLFW.glfwMaximizeWindow;
 
 public class ReadyButton extends SpecialButton {
     public ReadyButton(Shape shape) {
-        super("Ready", shape);
+        super("Ready", Menu.newButtonSprite("menuSmall"));
     }//TODO WARNING TEST NEED CONDITIONS
 
 
@@ -24,31 +25,17 @@ public class ReadyButton extends SpecialButton {
 
         MainMENU.state = MainMENU.STATE.GAME;
 
-/*
-        for (Player p : MainMENU.currentGame.getPlayers())
-            for (Unite u : p.getUnites())
-                System.out.println(p.getName() + " // " + u.getMapPosition().toString());
-*/
-
-
-
         try {
             window.setDimension(VideoMode.getDesktopMode());
             glfwMaximizeWindow(window.getGlId());
 
-            for (int i = 0; i < ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers().length; i++) {
-                System.out.println(((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap().getSpawnPoints(i).size());//pour chaque joueur
-//                    System.out.println( (((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap().getSpawnPoints(i).size()+" "+((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[i].getUnites().size() ));
+            for (int i = 0; i < ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers().length; i++) {//
                 for (int k = 0; k < ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap().getSpawnPoints(i).size() && k < ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[i].getUnites().size(); k++) { //pour chaque tile
                     ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap().getSpawnPoints(i).get(k).toString();
                     ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[i].getUnites().get(k).setMapPosition(((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap().getSpawnPoints(i).get(k));//on met une unité
                     ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[i].getUnites().get(k).getSprite().setPosition( 64*((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[i].getUnites().get(k).getMapPosition().x, 64*((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[i].getUnites().get(k).getMapPosition().y);
                 }
-
-                for (Unite u : ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[i].getUnites())
-                    System.out.println(u.getMapPosition());
             }
-
 
             MainMENU.currentGame = new LocalhostGame(window, ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[0], ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[1], ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap());
             MainMENU.currentGame.start();

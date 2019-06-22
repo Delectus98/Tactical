@@ -1,12 +1,12 @@
 package app.menu.Buttons;
 
 import Graphics.Color;
-import Graphics.RectangleShape;
 import Graphics.Shape;
 import Graphics.Text;
 import System.IO.AZERTYLayout;
 import System.Keyboard;
 import app.MainMENU;
+import app.menu.Menu;
 import util.ResourceHandler;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ public abstract class TextField extends SpecialButton {
     private String acceptedCharacters;
 
     public TextField(int x, int y, int width, int height,String acceptedCharacters) throws IOException {
-        super("", new RectangleShape(x, y, width, height));
+        super("", Menu.newButtonSprite("menuSmall"));
         this.acceptedCharacters=acceptedCharacters;
         this.shape.setFillColor(Color.White);
         if (ResourceHandler.getFont("default") == null) {

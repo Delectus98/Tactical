@@ -2,7 +2,6 @@ package app.menu.Buttons;
 
 
 import Graphics.Color;
-import Graphics.RectangleShape;
 import Graphics.Sprite;
 import app.MainMENU;
 import app.map.Map;
@@ -11,23 +10,23 @@ import app.menu.Menu;
 
 public class MapButton extends SpecialButton {
 
-    private Sprite mapMiniature;
+    private Sprite sprite;
     public Map map;
 
 
-    public MapButton(MapMenu makeMap, Sprite mapMiniature, Map map, float x, float y) {
+    public MapButton(Sprite mapMiniature, Map map, float x, float y) {
 
-        super("", new RectangleShape(x, y, 170, 100));
-        this.mapMiniature = mapMiniature;
-        shape.setFillColor(Color.Red);
+        super("", Menu.newButtonSprite("menuBig"));
+        setPosition(x,y);
+        this.sprite = mapMiniature;
         this.map = map;
 
     }
 
     public void clickedIfReady() {
-        ((MapMenu)MainMENU.menulist[MainMENU.MAPCHOICE]).selectedMap.shape.setFillColor(Color.Red);
+        ((MapMenu)MainMENU.menulist[MainMENU.MAPCHOICE]).selectedMap.getSprite().setFillColor(new Color(169,169,169));
         ((MapMenu)MainMENU.menulist[MainMENU.MAPCHOICE]).selectedMap=this;
-        this.shape.setFillColor(Color.Yellow);
+        this.getSprite().setFillColor(Color.Red);
     }
 
     @Override

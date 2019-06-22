@@ -1,14 +1,14 @@
 package app.menu.Buttons;
 
 
-import Graphics.RectangleShape;
 import app.MainMENU;
+import app.menu.Menu;
 
 public class ToLobbyButton extends NormalButton {
     byte lobbyType; //lobbyType 0=Local, 1=Host, 2=Client
 
     public ToLobbyButton(String title, byte lobbyType) {
-        super(title, MainMENU.LOBBY, new RectangleShape());
+        super(title, MainMENU.LOBBY, Menu.newButtonSprite("menuSmall"));
         this.lobbyType = lobbyType;
 
     }

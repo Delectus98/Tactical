@@ -121,6 +121,12 @@ public class MainMENU {
         ResourceHandler.loadTexture("Sprites/UI/uiBack.png", "uiBack");
         ResourceHandler.loadTexture("Sprites/UI/uiFrame.png", "backFrame");
 
+        ResourceHandler.loadTexture("Sprites/Menu/Menubg.jpg","menuBackground");
+        ResourceHandler.loadTexture("Sprites/Menu/menuBig.png","menuBig");
+        ResourceHandler.loadTexture("Sprites/Menu/menuSmall.png","menuSmall");
+        ResourceHandler.loadTexture("Sprites/Menu/menuLarge.png","menuLarge");
+        ResourceHandler.loadTexture("Sprites/Menu/squadSlot.png","squadSlot");
+
         ResourceHandler.loadShader("res/shader/default.vert", "res/shader/shining.frag", "shining");
         ConstShader shader = ResourceHandler.loadShader("res/shader/default.vert", "res/shader/grisant.frag", "grey");
         shader.bind();
@@ -131,7 +137,6 @@ public class MainMENU {
                 new MapImpl(MapList.Battlefield1),
                 new MapImpl(MapList.Battlefield2),
                 new MapImpl(MapList.Battlefield3),
-                //new MapImpl(MapList.Example1),
                 new MapImpl(MapList.DemoField)
         };
         availableUnits = new Unite[]{
@@ -169,13 +174,14 @@ public class MainMENU {
 
 //If STATE=MENU
             if (state == STATE.MENU) {
+                window.draw(getCurrentMenu().getSprite());
                 window.draw(getCurrentMenu().getTitle());//TODO Getbackground
 //DRAW BUTTONS
                 for (MenuButton b : getCurrentMenu().getButtons()) {
                     if (b instanceof SpecialButton) {
                         ((SpecialButton) b).checkIfButtonReady();
                     }//todo getsprite
-                    window.draw(b.getShape());
+                    window.draw(b.getSprite());
                     window.draw(b.getText());
 
                 }
