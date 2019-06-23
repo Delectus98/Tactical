@@ -57,4 +57,10 @@ public abstract class Weapon
      * @return the graphic component of the weapon.
      */
     public abstract Sprite getSprite();
+
+    /**
+     * Gives the triggered sound when the weapon is used
+     * @return the triggered sound when the weapon is used
+     */
+    public abstract String getWeaponSound();
 }

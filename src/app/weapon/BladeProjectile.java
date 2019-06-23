@@ -3,6 +3,7 @@ package app.weapon;
 import Graphics.*;
 import System.*;
 import app.animations.SpriteAnimation;
+import app.sounds.Sound;
 import util.ResourceHandler;
 
 public class BladeProjectile extends Projectile {
@@ -16,13 +17,16 @@ public class BladeProjectile extends Projectile {
     private float rectW;
     private float rectH;
     private float duration = 1;
+    private String bladeSound = "";
+
+    private transient boolean triggeredSound = false;
 
     public BladeProjectile() {
         // kryo net empty constructor required
     }
 
 
-    public BladeProjectile(String spritesheet, FloatRect imageRect, Vector2f f1, Vector2f l) {
+    public BladeProjectile(String spritesheet, FloatRect imageRect, Vector2f f1, Vector2f l, String bladeSound) {
         this.spritesheet = spritesheet;
         this.rectT = imageRect.t;
         this.rectL = imageRect.l;
@@ -30,6 +34,8 @@ public class BladeProjectile extends Projectile {
         this.rectH = imageRect.h;
         super.firstPos = f1;
         super.lastPos = l;
+
+        this.bladeSound = bladeSound;
     }
 
     @Override
@@ -55,6 +61,12 @@ public class BladeProjectile extends Projectile {
 
     @Override
     public void update(ConstTime time) {
+        if (!triggeredSound) {
+            triggeredSound = true;
+            Sound s = ResourceHandler.getSound(bladeSound);
+            if (s != null) s.play();
+        }
+
         advance += time.asSeconds();
         animation.update(time);
         animation.apply(smite);

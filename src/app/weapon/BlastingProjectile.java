@@ -3,6 +3,7 @@ package app.weapon;
 import System.*;
 import Graphics.*;
 import app.animations.SpriteAnimation;
+import app.sounds.Sound;
 import util.ResourceHandler;
 
 public class BlastingProjectile extends Projectile {
@@ -24,10 +25,12 @@ public class BlastingProjectile extends Projectile {
     private float explosionRectH;
     private float torque;
     private float duration;
+    private String explosionSound = "";
 
     //
     private transient float advance = 0.f;
     private transient float advanceExplosion = 0.f;
+    private transient boolean triggeredSound = false;
 
 
     public BlastingProjectile()
@@ -35,7 +38,7 @@ public class BlastingProjectile extends Projectile {
 
     }
 
-    public BlastingProjectile(String projectile, FloatRect projectileRect, String explosion, FloatRect explosionRect, Vector2f p1, Vector2f target, float seconds){
+    public BlastingProjectile(String projectile, FloatRect projectileRect, String explosion, FloatRect explosionRect, Vector2f p1, Vector2f target, float seconds, String explosionSound){
         this.projectile = projectile;
         this.projectileRectT = projectileRect.t;
         this.projectileRectL = projectileRect.l;
@@ -62,6 +65,8 @@ public class BlastingProjectile extends Projectile {
         explosionSprite.setOrigin(explosionRect.w / 2.f, explosionRect.h / 2.f);
 
         animation = new SpriteAnimation(ResourceHandler.getTexture(explosion), explosionRect, Time.seconds(1), 0, 15);
+
+        this.explosionSound = explosionSound;
     }
 
     @Override
@@ -99,6 +104,12 @@ public class BlastingProjectile extends Projectile {
             sprite.setPosition(pos.x, pos.y);
             sprite.rotate(torque * (float) time.asSeconds());
         } else {
+            if (!triggeredSound) {
+                triggeredSound = true;
+                Sound s = ResourceHandler.getSound(explosionSound);
+                if (s != null) s.play();
+            }
+
             advanceExplosion += time.asSeconds();
             animation.update(time);
             animation.apply(explosionSprite);

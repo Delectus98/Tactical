@@ -36,7 +36,7 @@ public class CombatRifle extends Weapon {
 
     @Override
     public Projectile buildProjectile(Vector2i thrower, Vector2i target) {
-        return new BulletProjectile(projectileSprite, projectileRect, new Vector2f(thrower.x*64.f + 32, thrower.y*64.f + 32), new Vector2f(target.x*64.f + 32, target.y*64.f + 32));
+        return new BulletProjectile(projectileSprite, projectileRect, new Vector2f(thrower.x*64.f + 32, thrower.y*64.f + 32), new Vector2f(target.x*64.f + 32, target.y*64.f + 32), getWeaponSound());
     }
 
     @Override
@@ -49,5 +49,10 @@ public class CombatRifle extends Weapon {
     @Override
     public Sprite getSprite() {
         return sprite;
+    }
+
+    @Override
+    public String getWeaponSound() {
+        return "assault";
     }
 }

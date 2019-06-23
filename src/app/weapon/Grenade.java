@@ -42,7 +42,7 @@ public class Grenade extends Weapon {
     @Override
     public Projectile buildProjectile(Vector2i thrower, Vector2i target) {
         ammunition--;
-        return new BlastingProjectile(projectileSprite, projectileRect, explosionSprite, explosionRect, new Vector2f(thrower.x*64.f + 32, thrower.y*64.f + 32), new Vector2f(target.x*64.f + 32, target.y*64.f + 32), 1);
+        return new BlastingProjectile(projectileSprite, projectileRect, explosionSprite, explosionRect, new Vector2f(thrower.x*64.f + 32, thrower.y*64.f + 32), new Vector2f(target.x*64.f + 32, target.y*64.f + 32), 1, getWeaponSound());
     }
 
     @Override
@@ -57,5 +57,10 @@ public class Grenade extends Weapon {
     @Override
     public Sprite getSprite() {
         return sprite;
+    }
+
+    @Override
+    public String getWeaponSound() {
+        return "grenade";
     }
 }
