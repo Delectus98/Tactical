@@ -347,8 +347,6 @@ public class ClientGame extends Game {
     public void update(ConstTime time) {
         nextTurn.setPosition(input.getFrameRectangle().w - nextTurn.getBounds().w - 10, 0);
 
-        if (selectedUnite != null) selectedUnite.getSprite().setFillColor(Color.Red);
-
         this.updateCamera(time);
 
 
