@@ -8,6 +8,9 @@ import app.Unite;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Sprite Animation for Units according to Tactical Unite Pattern
+ */
 public class UniteAnimation {
     private static final int UP_DIRECTION = 9;
     private static final int DOWN_DIRECTION = 0;
@@ -65,8 +68,6 @@ public class UniteAnimation {
             Vector2i v = new Vector2i(tiles.get(i).x - tiles.get(i - 1).x, tiles.get(i).y - tiles.get(i - 1).y);
             directions.add(direction(v));
         }
-        System.out.println("d:"+directions.size());
-        System.out.println("t:"+tiles.size());
 
         this.currentDirection = directions.get(0);
 
