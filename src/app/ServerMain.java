@@ -21,13 +21,14 @@ import java.io.IOException;
 public class ServerMain {
     public static void main(String[] args) throws IOException {
         GLFWWindow window = new GLFWWindow(new VideoMode(500, 500), "Tactical Server");
+        window.setFrameRateLimit(40);
 
         ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
         ResourceHandler.loadTexture("res/wall.png", "res/wall.png");
         ResourceHandler.loadTexture("res/character.png", "character");
         ResourceHandler.loadTexture("res/ammo.png", "ammo");
+
         ResourceHandler.loadTexture("Sprites/FX/Explosion.png", "explosion");
-        ResourceHandler.loadFont("res/font.ttf", 20, "default");
 
         ResourceHandler.loadTexture("Sprites/Characterrs/Animation/Walk/oldMan.png", "oldMan");
         ResourceHandler.loadTexture("Sprites/Characterrs/Animation/Walk/otherChar.png", "otherChar");
@@ -38,25 +39,27 @@ public class ServerMain {
         ResourceHandler.loadTexture("Sprites/UI/Character/diffCharFace.png", "otherCharAvt");
         ResourceHandler.loadTexture("Sprites/UI/Character/gurlFace.png", "gurlAvt");
         ResourceHandler.loadTexture("Sprites/UI/Character/oldManFace.png", "oldManAvt");
-
         ResourceHandler.loadTexture("Sprites/UI/Character/faceFrame.png", "avtFrame");
         ResourceHandler.loadTexture("Sprites/UI/Character/faceBack.png", "avtBack");
-
         ResourceHandler.loadTexture("Sprites/UI/Buttons/shoot1.png", "shoot1");
         ResourceHandler.loadTexture("Sprites/UI/Buttons/shoot2.png", "shoot2");
         ResourceHandler.loadTexture("Sprites/UI/Buttons/knife.png", "knife");
         ResourceHandler.loadTexture("Sprites/UI/Buttons/skip.png", "skip");
-
         ResourceHandler.loadTexture("Sprites/UI/arr.png", "lower");
         ResourceHandler.loadTexture("Sprites/UI/uiBack.png", "uiBack");
         ResourceHandler.loadTexture("Sprites/UI/uiFrame.png", "backFrame");
-        ResourceHandler.loadTexture("Sprites/FX/Explosion.png", "explosion");
 
-        ResourceHandler.loadFont("res/font.ttf", 20,"default");
+        ResourceHandler.loadFont("res/font.ttf", 20, "default");
+
         ResourceHandler.loadShader("res/shader/default.vert", "res/shader/shining.frag", "shining");
         ConstShader shader = ResourceHandler.loadShader("res/shader/default.vert", "res/shader/grisant.frag", "grey");
         shader.bind();
         GL20.glUniform1f(shader.getUniformLocation("colorRatio"), 0.2f);
+
+        ResourceHandler.loadSound("res/sounds/sniper.wav", "sniper");
+        ResourceHandler.loadSound("res/sounds/assault.wav", "assault");
+        ResourceHandler.loadSound("res/sounds/grenade.wav", "grenade");
+        ResourceHandler.loadSound("res/sounds/uppercut.wav", "uppercut");
 
 
         Player p1 = new Player("P1");
@@ -78,6 +81,7 @@ public class ServerMain {
         Map map = new MapImpl(MapList.DemoField);
         try {
             server = new ServerImpl(25565, GameRegistration.instance);
+            server.setClientLimit(1);
 
             while (server.getClientCount() == 0) {
                 Thread.sleep(1000);
@@ -107,6 +111,7 @@ public class ServerMain {
                         ResourceHandler.free();
                         server.close();
                         window.close();
+                        System.exit(0);
                     }
                 }
                 window.clear();

@@ -422,12 +422,12 @@ public class LocalhostGame extends Game {
                 if (sp != null) {
                     if (initialized) {
                         final int xp = i, yp = j;
-                        if (visibles[player].stream().anyMatch(v2i -> v2i.x == xp && v2i.y == yp)) {
+                        //if (visibles[player].stream().anyMatch(v2i -> v2i.x == xp && v2i.y == yp)) {
                             target.draw(sp);
-                        } else {
+                        //} else {
                             //on grisonne la zone
-                            target.draw(sp, ResourceHandler.getShader("grey"));
-                        }
+                        //    target.draw(sp, ResourceHandler.getShader("grey"));
+                        //}
 
                     } else {
                         if (map.getSpawnPoints(player).contains(new Vector2i(i, j))) {

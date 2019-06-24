@@ -30,7 +30,7 @@ public class Blade extends Weapon {
 
     @Override
     public Projectile buildProjectile(Vector2i thrower, Vector2i target) {
-        return new BladeProjectile("explosion", new FloatRect(0,0,192,192), new Vector2f(thrower).mul(64.f), new Vector2f(target).mul(64.f));
+        return new BladeProjectile("explosion", new FloatRect(0,0,192,192), new Vector2f(thrower).mul(64.f), new Vector2f(target).mul(64.f), getWeaponSound());
     }
 
     @Override
@@ -43,5 +43,10 @@ public class Blade extends Weapon {
     @Override
     public Sprite getSprite() {
         return null;
+    }
+
+    @Override
+    public String getWeaponSound() {
+        return "smite";
     }
 }

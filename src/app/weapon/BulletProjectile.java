@@ -2,6 +2,7 @@ package app.weapon;
 
 import Graphics.*;
 import System.*;
+import app.sounds.Sound;
 import util.ResourceHandler;
 
 public class BulletProjectile extends Projectile {
@@ -16,16 +17,18 @@ public class BulletProjectile extends Projectile {
     private float rectH;
     private float radian;
     private float duration = 1.f;
+    private String weaponSound = "";
 
     //
     private transient float advance = 0.f;
+    private transient boolean triggeredSound = false;
 
     public BulletProjectile()
     {
 
     }
 
-    public BulletProjectile(String texture, FloatRect textureRect, Vector2f p1, Vector2f target){
+    public BulletProjectile(String texture, FloatRect textureRect, Vector2f p1, Vector2f target, String weaponSound){
         this.texture = texture;
         this.rectT = textureRect.t;
         this.rectL = textureRect.l;
@@ -43,6 +46,8 @@ public class BulletProjectile extends Projectile {
         bullet.setPosition(firstPos.x, firstPos.y);
         bullet.setOrigin(bullet.getBounds().w / 2.f, bullet.getBounds().h / 2.f);
         bullet.setRotation(radian);
+
+        this.weaponSound = weaponSound;
     }
 
     @Override
@@ -66,6 +71,12 @@ public class BulletProjectile extends Projectile {
 
     @Override
     public void update(ConstTime time) {
+        if (!triggeredSound) {
+            triggeredSound = true;
+            Sound s = ResourceHandler.getSound(weaponSound);
+            if (s != null) s.play();
+        }
+
         advance += time.asSeconds();
 
         if (advance <= duration) {

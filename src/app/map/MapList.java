@@ -13,6 +13,7 @@ public class MapList {
     public static MapInfo Battlefield3;
     public static MapInfo Example1;
     public static MapInfo DemoField;
+    public static MapInfo Casino;
 
     static {
         loadBattleField1();
@@ -20,6 +21,7 @@ public class MapList {
         loadBattleField3();
         loadExample1();
         loadDemoField();
+        loadCasino();
     }
 
     private static void loadBattleField1() {
@@ -226,4 +228,55 @@ public class MapList {
 
 
     }
+
+    private static void loadCasino() {
+        HashMap<String, MapInfo.TileInfo> infos = new HashMap<>();
+
+        infos.putIfAbsent("F", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), false));
+        infos.putIfAbsent("S1", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), 0));
+        infos.putIfAbsent("S2", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), 1));
+        infos.putIfAbsent("S", new MapInfo.TileInfo("tileset", new FloatRect(2*64+32, 64+32, 64, 64), true));
+
+        infos.putIfAbsent("P", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), "furniture", new FloatRect(5*64, 5*64, 192, 128), true));
+        infos.putIfAbsent("R", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), "furniture", new FloatRect(4*64, 0, 127, 128), true));
+        infos.putIfAbsent("W", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), "tileset", new FloatRect(14*64, 5*64, 64, 64), true));
+
+
+        String[][] mapData = {
+                {"F", "F", "F", "F", "F", "F", "S1", "S1", "S1", "S1", "S1", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "S1", "S1", "S1", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "S", "S", "S", "S", "S", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "F", "S", "S", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "F", "S", "S", "F", "R", "W", "W", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "P", "W", "W", "F", "F", "F", "W", "W", "W", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "R", "W", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "S", "S", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "S", "S", "F", "S", "S", "S", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "S", "S", "F", "S", "S", "S", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "S", "S", "S", "S", "S", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "S2", "S2", "S2", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "S2", "S2", "S2", "S2", "S2", "F", "F", "F", "F", "F", "F"}
+
+        };
+
+        Casino = new MapInfo("Demo Battlefield", 23, 17);
+        for (int i = 0; i < Casino.width; ++i) {
+            for (int j = 0; j < Casino.height; ++j) {
+                Casino.setTileInfo(i, j, infos.get(mapData[i][j]));
+            }
+        }
+
+
+    }
+
 }

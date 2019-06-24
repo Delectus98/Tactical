@@ -1,16 +1,13 @@
 package app.network;
 
-import System.*;
-import Graphics.Vector2i;
-import app.actions.Shooting;
-import app.weapon.Impact;
+
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
 import java.util.PriorityQueue;
 
 
@@ -21,6 +18,11 @@ public class ServerImpl extends Listener {
     protected final Server s;
     protected final int tcpPort;
     protected final int udpPort;
+    private int clientLimit = 10;
+    private boolean enableWhitelist = false;
+    private List<String> whitelist;
+    private boolean enableBlacklist = false;
+    private List<String> blacklist;
 
     public ServerImpl(int tcp, PacketRegistration registration) throws IOException {
         this.tcpPort = tcp;
@@ -54,6 +56,17 @@ public class ServerImpl extends Listener {
         running = true;
     }
 
+    public synchronized void setClientLimit(int limit) {
+        this.clientLimit = limit;
+        for (int i = limit ; i < s.getConnections().length ; ++i) {
+            s.getConnections()[i].close();
+        }
+    }
+
+    public int getClientLimit() {
+        return clientLimit;
+    }
+
     public synchronized boolean isRunning(){
         return running;
     }
@@ -83,8 +96,9 @@ public class ServerImpl extends Listener {
     }
 
     @Override
-    public void connected(Connection connection) {
+    public synchronized void connected(Connection connection) {
         System.out.println("connection:"+connection.getRemoteAddressTCP());
+        if (s.getConnections().length > clientLimit) connection.close();
     }
 
     @Override
