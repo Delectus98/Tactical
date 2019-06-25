@@ -488,17 +488,17 @@ public class LocalhostGame extends Game {
 
             // draw map
             drawMapFloor(x, y, x2, y2, target, 0);
-            if (currentPlayer == 0 && currentAction != null)
+            if (currentAction != null)
                 currentAction.drawAboveFloor(target);
             if (currentPlayer == 0 && manager != null)
                 manager.drawAboveFloor(target);
             drawUnite(target, 0);
-            if (currentPlayer == 0 && currentAction != null)
+            if (currentAction != null)
                 currentAction.drawAboveEntity(target);
             if (currentPlayer == 0 && manager != null)
                 manager.drawAboveEntity(target);
             drawMapStruct(x, y, x2, y2, target, 0);
-            if (currentPlayer == 0 && currentAction != null)
+            if (currentAction != null)
                 currentAction.drawAboveStruct(target);
             if (currentPlayer == 0 && manager != null)
                 manager.drawAboveStruct(target);
@@ -507,7 +507,7 @@ public class LocalhostGame extends Game {
             target.setCamera(hudCam[0]);
 
             if (initialized) {
-                if (currentPlayer == 0 && currentAction != null)
+                if (currentAction != null)
                     currentAction.drawAboveHUD(target);
                 if (currentPlayer == 0 && manager != null)
                     manager.drawAboveHUD(target);
@@ -553,17 +553,17 @@ public class LocalhostGame extends Game {
 
             // draw map
             drawMapFloor(x, y, x2, y2, target, 1);
-            if (currentPlayer == 1 && currentAction != null)
+            if (currentAction != null)
                 currentAction.drawAboveFloor(target);
             if (currentPlayer == 1 && manager != null)
                 manager.drawAboveFloor(target);
             drawUnite(target, 1);
-            if (currentPlayer == 1 && currentAction != null)
+            if (currentAction != null)
                 currentAction.drawAboveEntity(target);
             if (currentPlayer == 1 && manager != null)
                 manager.drawAboveEntity(target);
             drawMapStruct(x, y, x2, y2, target, 1);
-            if (currentPlayer == 1 && currentAction != null)
+            if (currentAction != null)
                 currentAction.drawAboveStruct(target);
             if (currentPlayer == 1 && manager != null)
                 manager.drawAboveStruct(target);
@@ -573,7 +573,7 @@ public class LocalhostGame extends Game {
             target.setCamera(hudCam[1]);
 
             if (initialized) {
-                if (currentPlayer == 1 && currentAction != null)
+                if (currentAction != null)
                     currentAction.drawAboveHUD(target);
                 if (currentPlayer == 1 && manager != null)
                     manager.drawAboveHUD(target);
