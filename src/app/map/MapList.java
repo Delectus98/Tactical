@@ -266,7 +266,6 @@ public class MapList {
                 {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
                 {"F", "F", "F", "F", "F", "F", "F", "S2", "S2", "S2", "F", "F", "F", "F", "F", "F", "F"},
                 {"F", "F", "F", "F", "F", "F", "S2", "S2", "S2", "S2", "S2", "F", "F", "F", "F", "F", "F"}
-
         };
 
         Casino = new MapInfo("Demo Battlefield", 23, 17);
