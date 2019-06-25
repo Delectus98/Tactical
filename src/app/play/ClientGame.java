@@ -8,6 +8,7 @@ import app.Player;
 import app.Unite;
 import app.actions.Action;
 import app.actions.ActionManager;
+import app.hud.HudGameMenu;
 import app.hud.HudPlayer;
 import app.hud.HudUnite;
 import app.map.Map;
@@ -42,6 +43,8 @@ public class ClientGame extends Game {
     private HudPlayer hudPlayer = null;
     private HudUnite hudUnite = null;
     private Unite selectedUnite = null;
+
+    private HudGameMenu gameMenu;
 
     private Set<Vector2i> visibles = new HashSet<>();
 
@@ -86,6 +89,8 @@ public class ClientGame extends Game {
             spawnIndicators[i].setFillColor(new Color(1.f,0.2f, 1.f, 0.3f));
             spawnIndicators[i].setOrigin(spawnIndicators[i].getBounds().w / 2.f,spawnIndicators[i].getBounds().h / 2.f);
         }
+
+        gameMenu = new HudGameMenu();
     }
 
     @Override
@@ -349,6 +354,14 @@ public class ClientGame extends Game {
 
         this.updateCamera(time);
 
+        gameMenu.update(input);
+        if (gameMenu.isAttemptingToEscape()) {
+            running = false;
+            GameOverPacket gop = new GameOverPacket();
+            gop.abandon = true;
+            gop.reason = "Client had ended the game.";
+            client.send(gop);
+        }
 
         if (initialized) {
             if (!spawnReady) {
@@ -436,6 +449,7 @@ public class ClientGame extends Game {
         }
 
         input.update(event);
+        gameMenu.handle(event);
     }
 
     //déssine le sol (ce que voit la camera)
@@ -558,6 +572,8 @@ public class ClientGame extends Game {
         } else {
             Arrays.stream(spawnIndicators).forEach(target::draw);
         }
+
+        gameMenu.draw(target);
 
         // set to previous view
         target.setViewport(previousViewport);
