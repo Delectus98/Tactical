@@ -7,11 +7,13 @@ import app.map.Map;
 import app.map.MapImpl;
 import app.map.MapList;
 import app.play.LocalhostGame;
+import app.sounds.Music;
 import app.units.MarksmanUnit;
 import app.units.SoldierUnit;
 import app.weapon.*;
 import org.lwjgl.opengl.GL20;
 import util.ResourceHandler;
+
 
 import java.io.IOException;
 
@@ -132,6 +134,7 @@ public class Main
         GLFWWindow window = new GLFWWindow(VideoMode.getDesktopMode(), "Tactical", WindowStyle.DEFAULT);
         glfwMaximizeWindow(window.getGlId());
 
+
         ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
         ResourceHandler.loadTexture("res/wall.png", "res/wall.png");
         ResourceHandler.loadTexture("res/character.png", "character");
@@ -224,10 +227,12 @@ public class Main
             //Game Menu:  game is running
             if (!current.isFinished())
             {
+
                 current.update(elapsed);
                 current.draw(window);
             }
             window.display();
+            Music.updateLoop();
         }
     }
     //Menu principale

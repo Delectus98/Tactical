@@ -7,6 +7,7 @@ import app.Player;
 import app.Unite;
 import app.menu.Lobby;
 import app.play.LocalhostGame;
+import app.sounds.Music;
 
 import java.io.IOException;
 
@@ -23,6 +24,7 @@ public class ReadyButton extends SpecialButton {
     protected void clickedIfReady() {
 
         MainMENU.state = MainMENU.STATE.GAME;
+        Music.stopMusic();
 
 /*
         for (Player p : MainMENU.currentGame.getPlayers())

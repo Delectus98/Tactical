@@ -12,6 +12,7 @@ import app.menu.Buttons.SpecialButton;
 import app.menu.MakeSquad;
 import app.menu.Menu;
 import app.play.LocalhostGame;
+import app.sounds.Music;
 import app.units.MarksmanUnit;
 import app.units.SoldierUnit;
 import org.lwjgl.opengl.GL20;
@@ -88,6 +89,8 @@ public class MainMENU {
 
     public static void main(String[] args) throws IOException {
         window = new GLFWWindow(new VideoMode(WIDTH,HEIGHT), "Tactical", WindowStyle.DEFAULT);
+
+        Music.init();
 
        // glfwMaximizeWindow(window.getGlId());
         ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
@@ -169,6 +172,7 @@ public class MainMENU {
 //If STATE=MENU
             if (state == STATE.MENU) {
                 window.draw(getCurrentMenu().getTitle());//TODO Getbackground
+                Music.updateMenuLoop();
 //DRAW BUTTONS
                 for (MenuButton b : getCurrentMenu().getButtons()) {
                     if (b instanceof SpecialButton) {
@@ -194,6 +198,7 @@ public class MainMENU {
                 isClicking = mousse.isButtonPressed(Mouse.Button.Left);//TODO améliorer vers: clicker sur un élément et y aller si relache sur le même
 //STATE = GAME
             } else {
+                Music.updateLoop();
                 if (!currentGame.isFinished()) {
                     currentGame.update(elapsed);
                     currentGame.draw(window);
@@ -201,6 +206,7 @@ public class MainMENU {
                     MainMENU.state = STATE.MENU;
                     window.setDimension(new VideoMode(1280,720));
                     MainMENU.currentMenu = GAMEMODE;
+                    Music.stopMusic();
                 }
             }
             window.display();
