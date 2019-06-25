@@ -37,7 +37,7 @@ public class Moving extends Action {
     @Override
     public void init(Game gameContext) {
         super.game = gameContext;
-        if (!tilePath.isEmpty()) animation = new UniteAnimation(game.getPlayers()[playerId].getUnites().get(uniteId), tilePath, 300);
+        if (!tilePath.isEmpty()) animation = new UniteAnimation(game.getPlayers()[playerId].getUnites().get(uniteId), tilePath, 230, 175);
     }
 
     @Override
