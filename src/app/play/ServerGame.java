@@ -399,6 +399,10 @@ public class ServerGame extends Game {
                     SpawnPacket sp = (SpawnPacket)packet;
                     players[sp.playerId].getUnites().get(sp.uniteId).setMapPosition(sp.spawn);
                     players[sp.playerId].getUnites().get(sp.uniteId).getSprite().setPosition(sp.spawn.x * 64, sp.spawn.y * 64);
+                } else if (packet instanceof GameOverPacket) {
+                    GameOverPacket go = (GameOverPacket)packet;
+                    running = false;
+                    System.out.println((go.abandon ? "[Abandon]" : "" + go.reason));
                 }
             }
         }
@@ -431,6 +435,10 @@ public class ServerGame extends Game {
                     System.out.println("Client fatal issue: " + ((FatalErrorPacket) packet).msg);
                     server.close();
                     running = false;
+                } else if (packet instanceof GameOverPacket) {
+                    GameOverPacket go = (GameOverPacket)packet;
+                    running = false;
+                    System.out.println((go.abandon ? "[Abandon]" : "" + go.reason));
                 } else {
                     System.out.println("unknown received");
                 }
@@ -542,16 +550,20 @@ public class ServerGame extends Game {
             currentAction.drawAboveFloor(target);
         if (currentPlayer == localPlayer && manager != null)
             manager.drawAboveFloor(target);
+        if (clientIsActing && !clientActions.isEmpty()) clientActions.peek().drawAboveFloor(target);
         drawUnite(target);
         if (currentPlayer == localPlayer && currentAction != null)
             currentAction.drawAboveEntity(target);
         if (currentPlayer == localPlayer && manager != null)
             manager.drawAboveEntity(target);
+        if (clientIsActing && !clientActions.isEmpty()) clientActions.peek().drawAboveEntity(target);
         drawMapStruct(x, y, x2, y2, target);
         if (currentPlayer == localPlayer && currentAction != null)
             currentAction.drawAboveStruct(target);
         if (currentPlayer == localPlayer && manager != null)
             manager.drawAboveStruct(target);
+        if (clientIsActing && !clientActions.isEmpty()) clientActions.peek().drawAboveStruct(target);
+
 
         // on affiche au niveau du hud
         target.setCamera(hudCam);
@@ -561,6 +573,7 @@ public class ServerGame extends Game {
                 currentAction.drawAboveHUD(target);
             if (currentPlayer == localPlayer && manager != null)
                 manager.drawAboveHUD(target);
+            if (clientIsActing && !clientActions.isEmpty()) clientActions.peek().drawAboveHUD(target);
 
             hudPlayer.draw(target);
             if (/*!inAction && */hudUnite != null && currentPlayer == localPlayer) {
