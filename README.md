@@ -6,10 +6,10 @@ Tactical is our university project to validate our school year. The game introdu
 ## Authors
 
 -   MOREL Adam
--   JAMMES-BEUVE Théo
+-   [AMMES-BEUVE Théo](https://github.com/MphDevelopment)
 -   HART Maximilian
 -   BENNEVENISTE Jules
--   BEUCHER Maxime
+-   [BEUCHER Maxime](https://github.com/Delectus98)
 
 ## Getting Started
 
