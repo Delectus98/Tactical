@@ -151,8 +151,8 @@ public class LocalhostGame extends Game {
             // il n'y a plus d'action alors on arrete la phase déroulement des actions
             inAction = false;
             currentAction = null;
-            hudUnite.resetSelectedAction();
-            manager = hudUnite.getSelectedAction();
+            if (hudUnite != null) hudUnite.resetSelectedAction();
+            if (hudUnite != null) manager = hudUnite.getSelectedAction();
             //endTurn();
         }
     }
@@ -417,12 +417,17 @@ public class LocalhostGame extends Game {
     private void drawUnite(RenderTarget target, int player) {
         //Arrays.stream(players).forEach(p -> {if (p != null && !p.getUnites().isEmpty()) p.getUnites().get(0).draw(target);});
         //Arrays.stream(players).forEach(p -> {if (p != null && !p.getUnites().isEmpty()) p.getUnites().get(0).draw(target);});
-        players[player].getUnites().forEach(u -> {
-            u.draw(target);
-        });
+        // on dessine les morts avant les vivants
+        players[player].getUnites().forEach(u -> {if (u.isDead()) u.draw(target);});
         players[(player + 1) % 2].getUnites().forEach(u -> {
             if (visibles[player].stream().anyMatch(v -> u.getMapPosition().equals(v))) {
-                u.draw(target);
+                if (u.isDead()) u.draw(target);
+            }
+        });
+        players[player].getUnites().forEach(u -> {if (!u.isDead()) u.draw(target);});
+        players[(player + 1) % 2].getUnites().forEach(u -> {
+            if (visibles[player].stream().anyMatch(v -> u.getMapPosition().equals(v))) {
+                if (!u.isDead()) u.draw(target);
             }
         });
     }
