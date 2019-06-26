@@ -1,18 +1,20 @@
 package app.menu.Buttons;
 
-import Graphics.Vector2i;
 import System.VideoMode;
 import app.MainMENU;
 import app.Player;
 import app.Unite;
 import app.menu.Lobby;
 import app.menu.Menu;
+import app.menu.OnlineLobby;
+import app.network.ClientImpl;
+import app.network.ReadyPacket;
+import app.network.ServerImpl;
 import app.sounds.Music;
 
 import java.io.IOException;
 
-import static app.MainMENU.menulist;
-import static app.MainMENU.window;
+import static app.MainMENU.*;
 import static org.lwjgl.glfw.GLFW.glfwMaximizeWindow;
 
 public class ReadyButton extends SpecialButton {
@@ -24,7 +26,7 @@ public class ReadyButton extends SpecialButton {
     @Override
     protected void clickedIfReady() throws IOException {
 
-        MainMENU.state = MainMENU.STATE.GAME;
+        //MainMENU.state = MainMENU.STATE.GAME;
         Music.stopMusic();
         if (MainMENU.LOBBY == MainMENU.LOCAL) {
             MainMENU.state = MainMENU.STATE.GAME;
@@ -32,27 +34,35 @@ public class ReadyButton extends SpecialButton {
             window.setDimension(VideoMode.getDesktopMode());
             glfwMaximizeWindow(window.getGlId());
 
-            for (int i = 0; i < ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers().length; i++) {//
-                for (int k = 0; k < ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap().getSpawnPoints(i).size() && k < ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[i].getUnites().size(); k++) { //pour chaque tile
-                    ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap().getSpawnPoints(i).get(k).toString();
-                    ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[i].getUnites().get(k).setMapPosition(new Vector2i(-1, -1));
-                    //((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[i].getUnites().get(k).setMapPosition(((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap().getSpawnPoints(i).get(k));//on met une unité //unseless placement ingame
-                    ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[i].getUnites().get(k).getSprite().setPosition(64 * ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[i].getUnites().get(k).getMapPosition().x, 64 * ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getPlayers()[i].getUnites().get(k).getMapPosition().y);
-                }
-            }
-            if (((Lobby) menulist[MainMENU.currentMenu]).getGame() != null) {
-                MainMENU.currentGame =((Lobby) menulist[MainMENU.currentMenu]).getGame();
+            if (((Lobby) menulist[MainMENU.LOBBY]).getGame() != null) {
+                MainMENU.currentGame = ((Lobby) menulist[MainMENU.currentMenu]).getGame();
                 MainMENU.currentGame.start();
             } else {
-                System.out.println("Nor ready");
+                System.out.println("readybutton: game Not ready");
             }
-        } else if (MainMENU.LOBBY == MainMENU.HOST) {
 
+        } else if (MainMENU.LOBBY == MainMENU.HOST) {
+            if (((OnlineLobby) menulist[LOBBY]).isClientReady) {
+                ((ServerImpl) ((OnlineLobby) menulist[LOBBY]).listener).send(new ReadyPacket());
+                if (MainMENU.LOBBY == MainMENU.LOCAL) {
+                    MainMENU.state = MainMENU.STATE.GAME;
+
+                    window.setDimension(VideoMode.getDesktopMode());
+                    glfwMaximizeWindow(window.getGlId());
+
+                    if (((Lobby) menulist[MainMENU.LOBBY]).getGame() != null) {
+                        MainMENU.currentGame = ((Lobby) menulist[LOBBY]).getGame();
+                        MainMENU.currentGame.start();
+                    } else {
+                        System.out.println("readybutton: game Not ready");
+                    }
+                }
+            }
+//if playerclient is ready => send them game is starting
 
         } else if (MainMENU.LOBBY == MainMENU.JOIN) {
+            ((ClientImpl) ((OnlineLobby) menulist[LOBBY]).listener).send(new ReadyPacket());
 //send to host "I am ready"
-
-
         }
 
     }

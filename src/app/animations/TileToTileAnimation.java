@@ -1,11 +1,10 @@
 package app.animations;
 
-import Graphics.*;
-import System.*;
 import Graphics.Sprite;
-import Graphics.Texture;
-import Graphics.Vector2f;
 import Graphics.Vector2i;
+import System.ConstTime;
+import System.RenderTarget;
+
 import java.util.ArrayList;
 
 

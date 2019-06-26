@@ -1,14 +1,10 @@
 package app;
 
 import Graphics.Sprite;
-import System.ConstTime;
-import Graphics.FloatRect;
 import Graphics.Vector2i;
 import app.map.Map;
 import app.weapon.Impact;
 import app.weapon.Projectile;
-
-import java.util.List;
 
 public abstract class Weapon
 {

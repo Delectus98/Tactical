@@ -1,10 +1,13 @@
 package app.menu;
 
-import Graphics.*;
+import Graphics.ConstTexture;
+import Graphics.Sprite;
+import Graphics.Text;
+import Graphics.Vector2f;
+import System.GLFWWindow;
 import app.MainMENU;
 import app.menu.Buttons.*;
 import util.ResourceHandler;
-import System.GLFWWindow;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +23,7 @@ public class Menu {
     private ConstTexture texture;
     private Sprite sprite;
 
-    public Menu(GLFWWindow window, String title, int parentMenuId, Vector2f normalButtonOrigin, Vector2f specialButtonOrigin, Vector2f titleposition, boolean backbutton) throws IOException {
+    public Menu(String title, int parentMenuId, Vector2f normalButtonOrigin, Vector2f specialButtonOrigin, Vector2f titleposition, boolean backbutton) throws IOException {
         this.title = new Text(ResourceHandler.getFont("default"), title);
         this.texture = ResourceHandler.getTexture("menuBackground");
         this.sprite = new Sprite(texture);
@@ -164,7 +167,7 @@ public class Menu {
 
     }
 
-    public void update() {
+    public void update() throws IOException {
     }
 }
 

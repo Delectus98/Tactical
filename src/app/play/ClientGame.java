@@ -2,6 +2,7 @@ package app.play;
 
 
 import Graphics.*;
+import System.*;
 import System.IO.AZERTYLayout;
 import app.Game;
 import app.Player;
@@ -13,14 +14,12 @@ import app.hud.HudPlayer;
 import app.hud.HudUnite;
 import app.map.Map;
 import app.network.*;
-
-import java.util.*;
-
-import System.*;
 import org.lwjgl.opengl.GL20;
 import util.GameInput;
 import util.MapUtil;
 import util.ResourceHandler;
+
+import java.util.*;
 
 public class ClientGame extends Game {
     private final int localPlayer;

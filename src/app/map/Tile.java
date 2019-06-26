@@ -3,8 +3,6 @@ package app.map;
 import Graphics.ConstTexture;
 import Graphics.FloatRect;
 import Graphics.Sprite;
-import Graphics.Texture;
-import System.*;
 
 //TODO Remove draw features to let Game draw itself
 public class Tile

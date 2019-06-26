@@ -1,7 +1,8 @@
 package util;
 
-import System.*;
 import Graphics.Vector2f;
+import System.Camera2D;
+import System.Viewport;
 
 public final class WindowUtils {
     private WindowUtils(){}

@@ -236,7 +236,7 @@ public class MapList {
     private static void loadCasino() {
         HashMap<String, MapInfo.TileInfo> infos = new HashMap<>();
 
-        infos.putIfAbsent("F", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), false));
+        infos.putIfAbsent("F", new MapInfo.TileInfo("tileset", new FloatRect(5*64, 5*64, 64, 64), false));
         infos.putIfAbsent("S1", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), 0));
         infos.putIfAbsent("S2", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), 1));
         infos.putIfAbsent("S", new MapInfo.TileInfo("tileset", new FloatRect(2*64+32, 64+32, 64, 64), true));

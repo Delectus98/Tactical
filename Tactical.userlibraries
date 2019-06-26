@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eclipse-userlibraries>
+  <library name="IsticLWJGL">
+    <archive path="C:/Users/Monarch/Intellij/Tactical/IsticLWJGL.jar" />
+  </library>
+  <library name="kryonet-all-2.21">
+    <archive path="C:/Users/Monarch/Intellij/Tactical/kryonet-all-2.21.jar" />
+  </library>
+</eclipse-userlibraries>
+

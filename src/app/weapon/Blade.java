@@ -1,7 +1,9 @@
 package app.weapon;
 
-import System.*;
-import Graphics.*;
+import Graphics.FloatRect;
+import Graphics.Sprite;
+import Graphics.Vector2f;
+import Graphics.Vector2i;
 import app.Weapon;
 import app.map.Map;
 

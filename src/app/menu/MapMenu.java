@@ -2,10 +2,11 @@ package app.menu;
 
 import Graphics.Vector2f;
 import app.MainMENU;
-import app.map.MapImpl;
 import app.menu.Buttons.MapButton;
 import app.menu.Buttons.SpecialButton;
+import app.network.ServerImpl;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 
@@ -22,10 +23,12 @@ public class MapMenu extends Menu {
 
         // Init
         for (int i = 0; i < MainMENU.availableMaps.length; i++) {
-            MapButton m = new MapButton((MapImpl) MainMENU.availableMaps[i], MainMENU.WIDTH / 10 + ((i % 5) * (30 + 170)), MainMENU.HEIGHT / 4 + (i / 5) * 130);
+            MapButton m = new MapButton(i, MainMENU.WIDTH / 10 + ((i % 5) * (30 + 170)), MainMENU.HEIGHT / 4 + (i / 5) * 130);
             this.getButtons().add(m);
+            m.index = i;
             if (i == 0)
                 selectedMap = m;
+
         }
 
     }
@@ -38,10 +41,13 @@ public class MapMenu extends Menu {
         }
 
         @Override
-        protected void clickedIfReady() {
+        protected void clickedIfReady() throws IOException {
             ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).setMap(selectedMap.map);
             MainMENU.menulist[MainMENU.LOBBY].update();
             MainMENU.currentMenu = MainMENU.LOBBY;
+            if(MainMENU.LOBBY==MainMENU.HOST){
+                ((ServerImpl) ((OnlineLobby)MainMENU.menulist[MainMENU.HOST]).listener).send(selectedMap.index);
+            }
         }
 
         @Override

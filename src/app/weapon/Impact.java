@@ -2,7 +2,6 @@ package app.weapon;
 
 import Graphics.Vector2i;
 import app.Unite;
-import util.MyPair;
 
 import java.util.ArrayList;
 import java.util.List;

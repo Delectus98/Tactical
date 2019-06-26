@@ -39,6 +39,6 @@ public class TeamButton extends SpecialButton {
 
     @Override
     public void checkIfButtonReady() {
-
+      //  setReady((MainMENU.LOBBY==MainMENU.LOCAL)|| p.getId()== ((OnlineLobby)MainMENU.menulist[MainMENU.LOBBY]).getMyPlayerId());
     }
 }

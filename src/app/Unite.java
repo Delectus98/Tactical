@@ -1,7 +1,7 @@
 package app;
 
 import Graphics.*;
-import System.*;
+import System.RenderTarget;
 
 public abstract class Unite
 {

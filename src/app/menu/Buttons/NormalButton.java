@@ -4,6 +4,8 @@ import Graphics.Sprite;
 import Graphics.Vector2f;
 import app.MainMENU;
 
+import java.io.IOException;
+
 public class NormalButton extends MenuButton {
 
 
@@ -19,12 +21,10 @@ public class NormalButton extends MenuButton {
     public NormalButton(String title, int goTOMenuNumber, Sprite sprite) {
         super(title, sprite);
         this.goTOMenuNumber = goTOMenuNumber;
-
     }
 
-    public void clicked() {
+    public void clicked() throws IOException {
         MainMENU.currentMenu = goTOMenuNumber;
-    //    MainMENU.menulist[MainMENU.currentMenu].update();
     }
 
     public boolean collide(Vector2f mousse) {

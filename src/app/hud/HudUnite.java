@@ -1,20 +1,18 @@
 package app.hud;
 
 import Graphics.Color;
-import Graphics.FloatRect;
 import Graphics.Sprite;
 import Graphics.Text;
+import System.ConstTime;
+import System.RenderTarget;
 import app.Game;
 import app.Player;
 import app.Unite;
-import System.*;
 import app.actions.ActionManager;
 import app.actions.MovingManager;
 import app.actions.ShootingManager;
 import util.GameInput;
 import util.ResourceHandler;
-
-import java.io.IOException;
 
 
 public class HudUnite

@@ -2,7 +2,6 @@ package app;
 
 import Graphics.*;
 import System.*;
-import app.animations.SpriteAnimation;
 import app.map.Map;
 import app.map.MapImpl;
 import app.map.MapList;
@@ -10,10 +9,11 @@ import app.play.LocalhostGame;
 import app.sounds.Music;
 import app.units.MarksmanUnit;
 import app.units.SoldierUnit;
-import app.weapon.*;
+import app.weapon.Blade;
+import app.weapon.CombatRifle;
+import app.weapon.Grenade;
 import org.lwjgl.opengl.GL20;
 import util.ResourceHandler;
-
 
 import java.io.IOException;
 

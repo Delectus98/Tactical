@@ -1,16 +1,14 @@
 package app.units;
 
 import Graphics.*;
+import System.RenderTarget;
 import app.Team;
 import app.Unite;
 import app.Weapon;
-import System.*;
 import app.weapon.Blade;
 import app.weapon.Grenade;
 import app.weapon.MachineGun;
 import util.ResourceHandler;
-
-import javax.annotation.Resource;
 
 
 public class SoldierUnit extends Unite

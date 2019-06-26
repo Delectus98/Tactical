@@ -1,8 +1,11 @@
 package app.animations;
 
 
-import System.*;
-import Graphics.*;
+import Graphics.ConstTexture;
+import Graphics.FloatRect;
+import Graphics.Sprite;
+import System.ConstTime;
+import System.Time;
 
 /**
  * Animation using a sprite sheet

@@ -2,7 +2,7 @@ package app.network;
 
 
 public class MapPacket extends Packet {
-    public String file = "";
+    public int index = 3;
 
     @Override
     public int getPriority() {

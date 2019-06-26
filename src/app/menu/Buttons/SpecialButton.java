@@ -12,20 +12,18 @@ public abstract class SpecialButton extends MenuButton {
         super(title, shape);
     }
 
-    protected void setReady(boolean b) {
+    public void setReady(boolean b) {
         ready = b;
 
-        if (ready) {
-
+        if (this.ready) {
          getSprite().setFillColor(new Color(169, 169, 169));
-
         } else {
             getSprite().setFillColor(new Color(178, 34, 34));}
-
         }
 
         public void clicked () throws IOException {
-            if (ready) {
+            //checkIfButtonReady ();
+            if (this.ready) {
                 this.clickedIfReady();
             } else {
                 System.out.println(textZone.getString() + " Not ready");

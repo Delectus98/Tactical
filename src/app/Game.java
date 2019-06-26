@@ -1,9 +1,11 @@
 package app;
 
 import Graphics.Vector2i;
+import System.ConstTime;
+import System.Event;
+import System.GLFWWindow;
+import System.RenderTarget;
 import app.map.Map;
-
-import System.*;
 
 import java.util.Set;
 

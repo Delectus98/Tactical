@@ -1,7 +1,8 @@
 package app.weapon;
 
-import System.*;
-import Graphics.*;
+import Graphics.Vector2f;
+import System.ConstTime;
+import System.RenderTarget;
 
 /**
  * Represents the graphics component shown when a Weapon is used

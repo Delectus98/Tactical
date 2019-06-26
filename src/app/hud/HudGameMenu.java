@@ -1,10 +1,11 @@
 package app.hud;
 
 import Graphics.Color;
-import System.*;
 import Graphics.RectangleShape;
 import Graphics.Text;
+import System.Event;
 import System.IO.AZERTYLayout;
+import System.RenderTarget;
 import util.GameInput;
 import util.ResourceHandler;
 

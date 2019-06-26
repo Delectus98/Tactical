@@ -1,12 +1,12 @@
 package app.units;
 
 import Graphics.*;
+import System.RenderTarget;
 import app.Team;
 import app.Unite;
 import app.Weapon;
 import app.weapon.Blade;
 import app.weapon.CombatRifle;
-import System.*;
 import app.weapon.Sniper;
 import util.ResourceHandler;
 

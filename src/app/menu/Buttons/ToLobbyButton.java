@@ -6,6 +6,8 @@ import app.menu.LocalLobby;
 import app.menu.Menu;
 import app.menu.OnlineLobby;
 
+import java.io.IOException;
+
 import static app.MainMENU.menulist;
 
 public class ToLobbyButton extends NormalButton {
@@ -18,7 +20,7 @@ public class ToLobbyButton extends NormalButton {
     }
 
     @Override
-    public void clicked() {
+    public void clicked() throws IOException {
 
         switch (lobbyType) {
             case 0:
@@ -39,6 +41,5 @@ public class ToLobbyButton extends NormalButton {
         }
 
         MainMENU.currentMenu = MainMENU.LOBBY;
-//        System.out.println("Tolobby"+MainMENU.LOBBY);
     }
 }

@@ -11,11 +11,12 @@ import app.menu.MapMenu;
 public class MapButton extends SpecialButton {
 
     public Map map;
+    public int index;
 
 
-    public MapButton( MapImpl map, float x, float y) {
+    public MapButton( int index, float x, float y) {
 
-        super("", new Sprite(map.getMiniature()));
+        super("", new Sprite(((MapImpl)MainMENU.availableMaps[index]).getMiniature())) ;
         setPosition(x,y);
         this.map = map;
 

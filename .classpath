@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/IsticLWJGL"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/kryonet-2.21-all"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/kryonet-all-2.21"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/IsticLWJGL"/>
+	<classpathentry kind="output" path="out/production/Tactical"/>
+</classpath>

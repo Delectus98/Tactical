@@ -1,6 +1,5 @@
 package app.menu;
 
-import Graphics.Color;
 import Graphics.Sprite;
 import app.Game;
 import app.MainMENU;
@@ -9,13 +8,12 @@ import app.Team;
 import app.map.MapImpl;
 import app.menu.Buttons.*;
 import app.play.LocalhostGame;
-import util.ResourceHandler;
 
 import java.io.IOException;
 
 public class LocalLobby extends Lobby {
     private Player[] playerlist = new Player[2];
-    int slots = 0;
+  //  int slots = 0;
 
 
     /**
@@ -28,7 +26,7 @@ public class LocalLobby extends Lobby {
         ReadyButton ready = new ReadyButton();
         ready.setPosition(MainMENU.WIDTH - ready.getSprite().getBounds().w, MainMENU.HEIGHT - ready.getSprite().getBounds().h);
         this.getButtons().add(ready);
-        this.getButtons().add(new toMapButton(new Sprite(((MapImpl) getMap()).getMiniature())));//TODO miniature map
+        this.getButtons().add(new toMapButton(new Sprite(((MapImpl) getMap()).getMiniature())));
 
 
         playerlist[0] = new Player("Player1");
@@ -36,6 +34,8 @@ public class LocalLobby extends Lobby {
         playerlist[1] = new Player("Player2");
         playerlist[1].setTeam(Team.APE);
         setPlayers(playerlist);
+
+
         for (int i = 0; i < getPlayers().length; i++) {
             SquadButton b = new SquadButton(getPlayers()[i], Menu.newButtonSprite("menuLarge"));
             b.setPosition(20, 50 + MainMENU.HEIGHT / 10 + b.getSprite().getBounds().l + i * (15 + b.getSprite().getBounds().h + b.getSprite().getBounds().l));
@@ -50,7 +50,7 @@ public class LocalLobby extends Lobby {
             TeamButton t = new TeamButton(getPlayers()[i], Menu.newButtonSprite("menuSmall"));
             t.setPosition(rename.getSprite().getBounds().l, rename.getSprite().getBounds().t + rename.getSprite().getBounds().h + 10);
             getButtons().add(t);
-
+/*
             slots=getButtons().size()-1;
             // TODO
             for (int k = 0; k < getSquadCreationPoints(); k++) {
@@ -59,10 +59,8 @@ public class LocalLobby extends Lobby {
                 d.setPosition(64 + (80 * k), b.getSprite().getBounds().t + b.getSprite().getBounds().h / 4);
                 getButtons().add(d);
             }//END TODO
-
+*/
         }
-
-
     }
 
     @Override
@@ -71,32 +69,6 @@ public class LocalLobby extends Lobby {
 
         return new LocalhostGame(MainMENU.window,getPlayers()[0],getPlayers()[1],getMap());}
         else {return null;}
-    }
-
-
-    private class toMapButton extends SpecialButton {
-        public toMapButton(Sprite sprite) {
-            super("Chose Map", sprite);
-            setPosition(MainMENU.WIDTH - getSprite().getBounds().w, 50 + MainMENU.HEIGHT / 10);
-        }
-
-        @Override
-        protected void clickedIfReady() {
-            for (MenuComponent m : MainMENU.menulist[MainMENU.MAPCHOICE].getButtons()) {
-                if (m instanceof MapButton) {
-                    // m.getSprite().setFillColor(new Color(169, 169, 169));
-                    if (((MapButton) m).map == ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap()) {
-                        m.getSprite().setFillColor(new Color(255, 255, 153));
-                    }
-                }
-            }
-            MainMENU.currentMenu = MainMENU.MAPCHOICE;
-        }
-
-        @Override
-        public void checkIfButtonReady() {
-            setReady((MainMENU.LOBBY == MainMENU.LOCAL) || MainMENU.LOBBY == MainMENU.HOST);
-        }
     }
 
     @Override

@@ -96,10 +96,8 @@ public class MainMENU {
 
         ResourceHandler.loadSound("res/sounds/sniper.wav", "sniper");
         ResourceHandler.loadSound("res/sounds/assault.wav", "assault");
-        //    ResourceHandler.loadSound("res/sounds/grenade.wav", "grenade");//missing
-        //    ResourceHandler.loadSound("res/sounds/uppercut.wav", "uppercut");
-
-
+        ResourceHandler.loadSound("res/sounds/grenade.wav", "grenade");//missing
+        ResourceHandler.loadSound("res/sounds/uppercut.wav", "uppercut");
         ResourceHandler.loadShader("res/shader/default.vert", "res/shader/shining.frag", "shining");
         ConstShader shader = ResourceHandler.loadShader("res/shader/default.vert", "res/shader/grisant.frag", "grey");
         shader.bind();
@@ -171,6 +169,8 @@ public class MainMENU {
                     }
                     if (currentMenu == MAKESQUAD) {
                         ((MakeSquad) menulist[MAKESQUAD]).update(((MakeSquad) menulist[MAKESQUAD]).player);
+                    }else if(currentMenu==LOBBY){
+                      // menulist[LOBBY].update();
                     }
                 }
                 isClicking = mousse.isButtonPressed(Mouse.Button.Left);//TODO améliorer vers: clicker sur un élément et y aller si relache sur le même
