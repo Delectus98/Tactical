@@ -19,7 +19,7 @@ Player p;
 
     public void changeName(){
         String s = "PPlayer";
-        //TODO Text box in which the player types a thing
+        //TODO TextField
         Scanner sc = new Scanner(System.in);
         System.out.println("Entrer nouveau nom: ");
         s=sc.nextLine();

@@ -2,7 +2,6 @@ package app;
 
 import Graphics.Color;
 import Graphics.ConstShader;
-import Graphics.Vector2i;
 import System.*;
 import app.map.Map;
 import app.map.MapImpl;
@@ -12,7 +11,6 @@ import app.menu.Buttons.SpecialButton;
 import app.menu.Lobby;
 import app.menu.MakeSquad;
 import app.menu.Menu;
-import app.play.LocalhostGame;
 import app.sounds.Music;
 import app.units.MarksmanUnit;
 import app.units.SoldierUnit;
@@ -48,18 +46,19 @@ public class MainMENU {
     public static GLFWWindow window;
 
     public static void main(String[] args) throws IOException {
-        window = new GLFWWindow(new VideoMode(WIDTH,HEIGHT), "Tactical", WindowStyle.DEFAULT);
+        window = new GLFWWindow(new VideoMode(WIDTH, HEIGHT), "Tactical", WindowStyle.DEFAULT);
 
         Music.init();
 
-       // glfwMaximizeWindow(window.getGlId());
+        // glfwMaximizeWindow(window.getGlId());
         ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
         ResourceHandler.loadTexture("res/wall.png", "res/wall.png");
         ResourceHandler.loadTexture("res/character.png", "character");
         ResourceHandler.loadTexture("res/ammo.png", "ammo");
         ResourceHandler.loadTexture("Sprites/FX/Explosion.png", "explosion");
         ResourceHandler.loadFont("res/font.ttf", 20, "default");
-
+        ResourceHandler.loadTexture("Sprites/Tiles/tileset.png", "tileset");
+        ResourceHandler.loadTexture("Sprites/Tiles/furniture.png", "furniture");
 
         ResourceHandler.loadTexture("Sprites/Characterrs/Animation/Walk/oldMan.png", "oldMan");
         ResourceHandler.loadTexture("Sprites/Characterrs/Animation/Walk/otherChar.png", "otherChar");
@@ -83,22 +82,22 @@ public class MainMENU {
         ResourceHandler.loadTexture("Sprites/UI/uiBack.png", "uiBack");
         ResourceHandler.loadTexture("Sprites/UI/uiFrame.png", "backFrame");
 
-        ResourceHandler.loadTexture("Sprites/Menu/Menubg.jpg","menuBackground");
-        ResourceHandler.loadTexture("Sprites/Menu/menuBig.png","menuBig");
-        ResourceHandler.loadTexture("Sprites/Menu/menuSmall.png","menuSmall");
-        ResourceHandler.loadTexture("Sprites/Menu/menuLarge.png","menuLarge");
-        ResourceHandler.loadTexture("Sprites/Menu/squadSlot.png","squadSlot");
+        ResourceHandler.loadTexture("Sprites/Menu/Menubg.jpg", "menuBackground");
+        ResourceHandler.loadTexture("Sprites/Menu/menuBig.png", "menuBig");
+        ResourceHandler.loadTexture("Sprites/Menu/menuSmall.png", "menuSmall");
+        ResourceHandler.loadTexture("Sprites/Menu/menuLarge.png", "menuLarge");
+        ResourceHandler.loadTexture("Sprites/Menu/squadSlot.png", "squadSlot");
 
-        ResourceHandler.loadTexture("Sprites/Menu/maps/bf1.jpg","bf1");
-        ResourceHandler.loadTexture("Sprites/Menu/maps/bf2.jpg","bf2");
-        ResourceHandler.loadTexture("Sprites/Menu/maps/bf3.jpg","bf3");
-        ResourceHandler.loadTexture("Sprites/Menu/maps/casino.jpg","casino");
-        ResourceHandler.loadTexture("Sprites/Menu/maps/demofield.jpg","demofield");
+        ResourceHandler.loadTexture("Sprites/Menu/maps/bf1.jpg", "bf1");
+        ResourceHandler.loadTexture("Sprites/Menu/maps/bf2.jpg", "bf2");
+        ResourceHandler.loadTexture("Sprites/Menu/maps/bf3.jpg", "bf3");
+        ResourceHandler.loadTexture("Sprites/Menu/maps/casino.jpg", "casino");
+        ResourceHandler.loadTexture("Sprites/Menu/maps/demofield.jpg", "demofield");
 
         ResourceHandler.loadSound("res/sounds/sniper.wav", "sniper");
         ResourceHandler.loadSound("res/sounds/assault.wav", "assault");
-    //    ResourceHandler.loadSound("res/sounds/grenade.wav", "grenade");//missing
-    //    ResourceHandler.loadSound("res/sounds/uppercut.wav", "uppercut");
+        //    ResourceHandler.loadSound("res/sounds/grenade.wav", "grenade");//missing
+        //    ResourceHandler.loadSound("res/sounds/uppercut.wav", "uppercut");
 
 
         ResourceHandler.loadShader("res/shader/default.vert", "res/shader/shining.frag", "shining");
@@ -136,7 +135,7 @@ public class MainMENU {
             Event event;
             while ((event = window.pollEvents()) != null) {
                 // updates window events (resize, keyboard text input, ...)
-                if(currentGame!=null)
+                if (currentGame != null)
                     currentGame.handle(event);//TODO si currengame=null
 
                 if (event.type == Event.Type.CLOSE) {
@@ -148,15 +147,17 @@ public class MainMENU {
 
 //If STATE=MENU
             if (state == STATE.MENU) {
-                window.draw(getCurrentMenu().getSprite());
-                window.draw(getCurrentMenu().getTitle());//TODO Getbackground
+
                 Music.updateMenuLoop();
 //DRAW BUTTONS
+                window.draw(getCurrentMenu().getSprite());
+                window.draw(getCurrentMenu().getTitle());//TODO Getbackground
                 for (MenuButton b : getCurrentMenu().getButtons()) {
                     if (b instanceof SpecialButton) {
                         ((SpecialButton) b).checkIfButtonReady();
                     }//todo getsprite
-
+                    window.draw(b.getSprite());
+                    window.draw(b.getText());
 
                 }
 
@@ -168,8 +169,8 @@ public class MainMENU {
                             b.clicked();
                         }
                     }
-                    if(currentMenu==MAKESQUAD){
-                        ((MakeSquad)menulist[MAKESQUAD]).update(((MakeSquad)menulist[MAKESQUAD]).player);
+                    if (currentMenu == MAKESQUAD) {
+                        ((MakeSquad) menulist[MAKESQUAD]).update(((MakeSquad) menulist[MAKESQUAD]).player);
                     }
                 }
                 isClicking = mousse.isButtonPressed(Mouse.Button.Left);//TODO améliorer vers: clicker sur un élément et y aller si relache sur le même
@@ -181,10 +182,10 @@ public class MainMENU {
                     currentGame.draw(window);
                 } else {
                     currentMenu = SCORE;
-                    for(Player p:((Lobby)menulist[LOBBY]).getPlayers())
+                    for (Player p : ((Lobby) menulist[LOBBY]).getPlayers())
                         p.getUnites().clear();
                     state = STATE.MENU;
-                    window.setDimension(new VideoMode(1280,720));
+                    window.setDimension(new VideoMode(1280, 720));
                     MainMENU.currentMenu = GAMEMODE;
                     Music.stopMusic();
                 }

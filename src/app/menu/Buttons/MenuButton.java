@@ -4,6 +4,8 @@ package app.menu.Buttons;
 import Graphics.Sprite;
 import Graphics.Vector2f;
 
+import java.io.IOException;
+
 
 public abstract class MenuButton extends MenuComponent {
     public MenuButton(String title, Sprite sprite ) {
@@ -11,7 +13,7 @@ public abstract class MenuButton extends MenuComponent {
 
     }
 
-    public void clicked() {
+    public void clicked() throws IOException {
         System.out.println(this.textZone.getString()); //TODO temporaire test
     }
 

@@ -1,10 +1,12 @@
 package app.menu;
 
 import Graphics.Vector2f;
+import app.Game;
 import app.MainMENU;
 import app.Player;
 import app.map.Map;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public abstract class Lobby extends Menu {
@@ -41,4 +43,5 @@ public abstract class Lobby extends Menu {
     }
 
 
+    public abstract Game getGame() throws IOException;
 }

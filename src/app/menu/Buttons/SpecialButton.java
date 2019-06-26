@@ -3,6 +3,8 @@ package app.menu.Buttons;
 import Graphics.Color;
 import Graphics.Sprite;
 
+import java.io.IOException;
+
 public abstract class SpecialButton extends MenuButton {
     private boolean ready = true;
 
@@ -22,7 +24,7 @@ public abstract class SpecialButton extends MenuButton {
 
         }
 
-        public void clicked () {
+        public void clicked () throws IOException {
             if (ready) {
                 this.clickedIfReady();
             } else {
@@ -30,7 +32,6 @@ public abstract class SpecialButton extends MenuButton {
             }
         }
 
-        protected abstract void clickedIfReady ();
+        protected abstract void clickedIfReady () throws IOException;
         public abstract void checkIfButtonReady ();
-
     }

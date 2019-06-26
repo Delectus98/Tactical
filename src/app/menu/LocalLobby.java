@@ -2,12 +2,16 @@ package app.menu;
 
 import Graphics.Color;
 import Graphics.Sprite;
+import app.Game;
 import app.MainMENU;
 import app.Player;
 import app.Team;
 import app.map.MapImpl;
 import app.menu.Buttons.*;
+import app.play.LocalhostGame;
 import util.ResourceHandler;
+
+import java.io.IOException;
 
 public class LocalLobby extends Lobby {
     private Player[] playerlist = new Player[2];
@@ -59,6 +63,14 @@ public class LocalLobby extends Lobby {
         }
 
 
+    }
+
+    @Override
+    public Game getGame() throws IOException {
+        if (getPlayers()[0].getUnites().size()>0 &&getPlayers()[1].getUnites().size()>0 &&getPlayers()[0].getUnites().size()<getSquadCreationPoints()&& getPlayers()[1].getUnites().size()<getSquadCreationPoints() &&getMap()!=null){
+
+        return new LocalhostGame(MainMENU.window,getPlayers()[0],getPlayers()[1],getMap());}
+        else {return null;}
     }
 
 
