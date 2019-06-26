@@ -30,6 +30,7 @@ public class GameRegistration extends PacketRegistration {
         point.getKryo().register(TeamPacket.class);
         point.getKryo().register(SpawnPacket.class);
         point.getKryo().register(ReadyPacket.class);
+        point.getKryo().register(GameOverPacket.class);
 
         //data
         point.getKryo().register(ArrayList.class, new ArrayListSerializer());

@@ -2,6 +2,7 @@ package app;
 
 import Graphics.Color;
 import Graphics.ConstShader;
+import Graphics.Vector2i;
 import System.*;
 import app.map.Map;
 import app.map.MapImpl;
@@ -11,6 +12,8 @@ import app.menu.Buttons.SpecialButton;
 import app.menu.Lobby;
 import app.menu.MakeSquad;
 import app.menu.Menu;
+import app.play.LocalhostGame;
+import app.sounds.Music;
 import app.units.MarksmanUnit;
 import app.units.SoldierUnit;
 import org.lwjgl.opengl.GL20;
@@ -19,7 +22,6 @@ import util.ResourceHandler;
 import java.io.IOException;
 
 public class MainMENU {
-
     public static Map[] availableMaps;
     public static Unite[] availableUnits;
 
@@ -47,6 +49,8 @@ public class MainMENU {
 
     public static void main(String[] args) throws IOException {
         window = new GLFWWindow(new VideoMode(WIDTH,HEIGHT), "Tactical", WindowStyle.DEFAULT);
+
+        Music.init();
 
        // glfwMaximizeWindow(window.getGlId());
         ResourceHandler.loadTexture("res/floor.png", "res/floor.png");
@@ -125,19 +129,7 @@ public class MainMENU {
 
         //RESIZE
 
-      /*  ServerImpl server; //public static?
-        try {//onlinelobby server
-            server = new ServerImpl(25565, GameRegistration.instance);
-            server.setClientLimit(1);
-
-            while (server.getClientCount() == 0) {
-                Thread.sleep(1000);
-                System.out.println("wait client");
-            }*/
-
-
         while (window.isOpen()) {
-
             Time elapsed = clock.restart();
 
 
@@ -158,13 +150,13 @@ public class MainMENU {
             if (state == STATE.MENU) {
                 window.draw(getCurrentMenu().getSprite());
                 window.draw(getCurrentMenu().getTitle());//TODO Getbackground
+                Music.updateMenuLoop();
 //DRAW BUTTONS
                 for (MenuButton b : getCurrentMenu().getButtons()) {
                     if (b instanceof SpecialButton) {
                         ((SpecialButton) b).checkIfButtonReady();
-                    }
-                    window.draw(b.getSprite());
-                    window.draw(b.getText());
+                    }//todo getsprite
+
 
                 }
 
@@ -183,6 +175,7 @@ public class MainMENU {
                 isClicking = mousse.isButtonPressed(Mouse.Button.Left);//TODO améliorer vers: clicker sur un élément et y aller si relache sur le même
 //STATE = GAME
             } else {
+                Music.updateLoop();
                 if (!currentGame.isFinished()) {
                     currentGame.update(elapsed);
                     currentGame.draw(window);
@@ -192,7 +185,8 @@ public class MainMENU {
                         p.getUnites().clear();
                     state = STATE.MENU;
                     window.setDimension(new VideoMode(1280,720));
-
+                    MainMENU.currentMenu = GAMEMODE;
+                    Music.stopMusic();
                 }
             }
             window.display();

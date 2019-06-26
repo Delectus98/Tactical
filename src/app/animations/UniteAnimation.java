@@ -54,7 +54,7 @@ public class UniteAnimation {
         }
     }
 
-    public UniteAnimation(Unite unite, List<Vector2i> tiles, int millisecondsPerTile){
+    public UniteAnimation(Unite unite, List<Vector2i> tiles, int millisecondsPerTile, int millisecondsPerStep){
         this.millisecondsPerTile = millisecondsPerTile;
 
         this.unite = unite;
@@ -72,10 +72,10 @@ public class UniteAnimation {
         this.currentDirection = directions.get(0);
 
         this.texture = texture;
-        this.imageAnimation[UP] = new SpriteAnimation(texture, new FloatRect(0,0,64,64), Time.milliseconds(millisecondsPerTile / 2), UP_DIRECTION, UP_DIRECTION + 3);
-        this.imageAnimation[DOWN] = new SpriteAnimation(texture, new FloatRect(0,0,64,64), Time.milliseconds(millisecondsPerTile / 2), DOWN_DIRECTION, DOWN_DIRECTION + 3);
-        this.imageAnimation[RIGHT] = new SpriteAnimation(texture, new FloatRect(0,0,64,64), Time.milliseconds(millisecondsPerTile / 2), RIGHT_DIRECTION, RIGHT_DIRECTION + 3);
-        this.imageAnimation[LEFT] = new SpriteAnimation(texture, new FloatRect(0,0,64,64), Time.milliseconds(millisecondsPerTile / 2), LEFT_DIRECTION, LEFT_DIRECTION + 3);
+        this.imageAnimation[UP] = new SpriteAnimation(texture, new FloatRect(0,0,64,64), Time.milliseconds(millisecondsPerStep), UP_DIRECTION, UP_DIRECTION + 3);
+        this.imageAnimation[DOWN] = new SpriteAnimation(texture, new FloatRect(0,0,64,64), Time.milliseconds(millisecondsPerStep), DOWN_DIRECTION, DOWN_DIRECTION + 3);
+        this.imageAnimation[RIGHT] = new SpriteAnimation(texture, new FloatRect(0,0,64,64), Time.milliseconds(millisecondsPerStep), RIGHT_DIRECTION, RIGHT_DIRECTION + 3);
+        this.imageAnimation[LEFT] = new SpriteAnimation(texture, new FloatRect(0,0,64,64), Time.milliseconds(millisecondsPerStep), LEFT_DIRECTION, LEFT_DIRECTION + 3);
     }
 
     public void update(ConstTime elapsed) {

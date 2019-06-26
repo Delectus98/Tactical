@@ -6,9 +6,7 @@ import java.util.Random;
 import javax.sound.sampled.*;
 
 
-/*
-    TODO call updateLoop on every cycle, add nessesary code for a mute button
- */
+
 
 public enum Music {
     SONG("res\\music\\mainMenuMusic.wav"),
@@ -42,7 +40,7 @@ public enum Music {
     public static void updateLoop(){
         //refill pickables if they have all been played.
         if(pickable.isEmpty()){
-            pickable.add(Music.SONG);
+            System.out.println("chacha");
             pickable.add(Music.SONG2);
             pickable.add(Music.SONG3);
             pickable.add(Music.SONG4);
@@ -56,6 +54,25 @@ public enum Music {
             current.play();
         }
 
+    }
+    public static void updateMenuLoop(){
+        //refill pickables if they have all been played.
+        if(pickable.isEmpty()){
+            pickable.add(Music.SONG);
+        }
+        //pick a new song if need be and remove it from pickables.
+        if(current==null || current.hasEnded()){
+            Random rand = new Random();
+            int index = rand.nextInt(pickable.size());
+            current = pickable.get(index);
+            pickable.remove(current);
+            current.play();
+        }
+
+    }
+    public static void stopMusic(){
+        current.stop();
+        current = null;
     }
 
     private void play() {
@@ -83,7 +100,7 @@ public enum Music {
             clip.stop();
     }
 
-    static void init() {
+    public static void init() {
         values();
     }
 }

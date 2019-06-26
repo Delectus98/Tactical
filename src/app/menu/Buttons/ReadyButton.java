@@ -8,6 +8,7 @@ import app.Unite;
 import app.menu.Lobby;
 import app.menu.Menu;
 import app.play.LocalhostGame;
+import app.sounds.Music;
 
 import java.io.IOException;
 
@@ -22,6 +23,9 @@ public class ReadyButton extends SpecialButton {
 
     @Override
     protected void clickedIfReady() {
+
+        MainMENU.state = MainMENU.STATE.GAME;
+        Music.stopMusic();
         if (MainMENU.LOBBY == MainMENU.LOCAL) {
             MainMENU.state = MainMENU.STATE.GAME;
 

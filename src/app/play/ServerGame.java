@@ -8,6 +8,7 @@ import app.Player;
 import app.Unite;
 import app.actions.Action;
 import app.actions.ActionManager;
+import app.hud.HudGameMenu;
 import app.hud.HudPlayer;
 import app.hud.HudUnite;
 import app.map.Map;
@@ -42,6 +43,8 @@ public class ServerGame extends Game {
     private HudPlayer hudPlayer = null;
     private HudUnite hudUnite = null;
     private Unite selectedUnite = null;
+
+    private HudGameMenu gameMenu;
 
     private boolean clientIsActing = false;
 
@@ -88,6 +91,8 @@ public class ServerGame extends Game {
             spawnIndicators[i].setFillColor(new Color(1.f,0.2f, 1.f, 0.3f));
             spawnIndicators[i].setOrigin(spawnIndicators[i].getBounds().w / 2.f,spawnIndicators[i].getBounds().h / 2.f);
         }
+
+        gameMenu = new HudGameMenu();
     }
 
     @Override
@@ -349,6 +354,15 @@ public class ServerGame extends Game {
     public void update(ConstTime time) {
         nextTurn.setPosition(input.getFrameRectangle().w - nextTurn.getBounds().w - 10, 0);
 
+        gameMenu.update(input);
+        if (gameMenu.isAttemptingToEscape()) {
+            running = false;
+            GameOverPacket gop = new GameOverPacket();
+            gop.abandon = true;
+            gop.reason = "Server had ended the game.";
+            server.send(gop);
+        }
+
         this.updateCamera(time);
         if (initialized) {
             if (!spawnReady) {
@@ -385,6 +399,10 @@ public class ServerGame extends Game {
                     SpawnPacket sp = (SpawnPacket)packet;
                     players[sp.playerId].getUnites().get(sp.uniteId).setMapPosition(sp.spawn);
                     players[sp.playerId].getUnites().get(sp.uniteId).getSprite().setPosition(sp.spawn.x * 64, sp.spawn.y * 64);
+                } else if (packet instanceof GameOverPacket) {
+                    GameOverPacket go = (GameOverPacket)packet;
+                    running = false;
+                    System.out.println((go.abandon ? "[Abandon]" : "" + go.reason));
                 }
             }
         }
@@ -417,6 +435,10 @@ public class ServerGame extends Game {
                     System.out.println("Client fatal issue: " + ((FatalErrorPacket) packet).msg);
                     server.close();
                     running = false;
+                } else if (packet instanceof GameOverPacket) {
+                    GameOverPacket go = (GameOverPacket)packet;
+                    running = false;
+                    System.out.println((go.abandon ? "[Abandon]" : "" + go.reason));
                 } else {
                     System.out.println("unknown received");
                 }
@@ -435,6 +457,8 @@ public class ServerGame extends Game {
         }
 
         input.update(event);
+
+        gameMenu.handle(event);
     }
 
     //déssine le sol (ce que voit la camera)
@@ -526,16 +550,20 @@ public class ServerGame extends Game {
             currentAction.drawAboveFloor(target);
         if (currentPlayer == localPlayer && manager != null)
             manager.drawAboveFloor(target);
+        if (clientIsActing && !clientActions.isEmpty()) clientActions.peek().drawAboveFloor(target);
         drawUnite(target);
         if (currentPlayer == localPlayer && currentAction != null)
             currentAction.drawAboveEntity(target);
         if (currentPlayer == localPlayer && manager != null)
             manager.drawAboveEntity(target);
+        if (clientIsActing && !clientActions.isEmpty()) clientActions.peek().drawAboveEntity(target);
         drawMapStruct(x, y, x2, y2, target);
         if (currentPlayer == localPlayer && currentAction != null)
             currentAction.drawAboveStruct(target);
         if (currentPlayer == localPlayer && manager != null)
             manager.drawAboveStruct(target);
+        if (clientIsActing && !clientActions.isEmpty()) clientActions.peek().drawAboveStruct(target);
+
 
         // on affiche au niveau du hud
         target.setCamera(hudCam);
@@ -545,6 +573,7 @@ public class ServerGame extends Game {
                 currentAction.drawAboveHUD(target);
             if (currentPlayer == localPlayer && manager != null)
                 manager.drawAboveHUD(target);
+            if (clientIsActing && !clientActions.isEmpty()) clientActions.peek().drawAboveHUD(target);
 
             hudPlayer.draw(target);
             if (/*!inAction && */hudUnite != null && currentPlayer == localPlayer) {
@@ -557,6 +586,7 @@ public class ServerGame extends Game {
             Arrays.stream(spawnIndicators).forEach(target::draw);
         }
 
+        gameMenu.draw(target);
 
         // set to previous view
         target.setViewport(previousViewport);
