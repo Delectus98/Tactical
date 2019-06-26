@@ -1,0 +1,43 @@
+plugins {
+    id'java'
+    id'application'
+    id'com.github.johnrengelman.shadow' version '5.0.0'
+}
+
+mainClassName = 'app.Main'
+
+version '1.0'
+
+sourceCompatibility = 1.8
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+//        resources {
+//            srcDirs = ['resources']
+//        }
+//
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+    maven { url "http://clojars.org/repo/" }
+}
+
+dependencies {
+//
+//    compile("com.github.MphDevelopment:IsticLWJGL:master") {
+//        exclude group: 'org.slf4j'
+//    }
+    compile("kryonet:kryonet-all:2.21")
+    compile files('lib/IsticLWJGL.jar')
+    //compile files('lib/kryonet-2.21-all.jar')
+}
+
+
+compileJava.options.encoding = 'UTF-8'
