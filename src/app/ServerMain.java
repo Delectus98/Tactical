@@ -2,16 +2,13 @@ package app;
 
 
 import Graphics.ConstShader;
-import Graphics.FloatRect;
-import Graphics.Vector2i;
+import System.*;
 import app.map.Map;
 import app.map.MapImpl;
 import app.map.MapList;
 import app.network.GameRegistration;
 import app.network.ServerImpl;
 import app.play.ServerGame;
-
-import System.*;
 import app.units.SoldierUnit;
 import org.lwjgl.opengl.GL20;
 import util.ResourceHandler;
@@ -58,8 +55,8 @@ public class ServerMain {
 
         ResourceHandler.loadSound("res/sounds/sniper.wav", "sniper");
         ResourceHandler.loadSound("res/sounds/assault.wav", "assault");
-        ResourceHandler.loadSound("res/sounds/grenade.wav", "grenade");
-        ResourceHandler.loadSound("res/sounds/uppercut.wav", "uppercut");
+     //   ResourceHandler.loadSound("res/sounds/grenade.wav", "grenade");
+     //   ResourceHandler.loadSound("res/sounds/uppercut.wav", "uppercut");
 
 
         Player p1 = new Player("P1");

@@ -4,7 +4,6 @@ import Graphics.Color;
 import Graphics.Sprite;
 import app.Player;
 import app.Team;
-import app.Unite;
 
 public class TeamButton extends SpecialButton {
     Player p;
@@ -21,9 +20,10 @@ public class TeamButton extends SpecialButton {
         } else {
             this.getSprite().setFillColor(Color.Green);
         }
-        for(Unite u:p.getUnites()){
+        /*for(Unite u:p.getUnites()){
             u.setTeam(p.getTeam());
-        }
+        }*/
+        p.getUnites().clear();
     }
 
 

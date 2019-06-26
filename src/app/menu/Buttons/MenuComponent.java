@@ -11,6 +11,7 @@ public class MenuComponent {
     //  public Shape shape;
     protected Text textZone;
     // private ConstTexture texture;
+    String txt;
     private Sprite sprite;
 
 
@@ -21,10 +22,10 @@ public class MenuComponent {
             this.sprite = sprite;
             this.textZone = new Text(ResourceHandler.getFont("default"), title);
             setPosition(sprite.getBounds().l, sprite.getBounds().t);
-            sprite.setFillColor(Color.White);
+            //sprite.setFillColor(Color.White);
             sprite.setTextureRect(sprite.getBounds().l, sprite.getBounds().t, sprite.getBounds().w, sprite.getBounds().h);
             textZone.setFillColor(Color.Black);
-
+txt=title;
         }
     }
 
@@ -50,4 +51,7 @@ public class MenuComponent {
     public void setSprite(Sprite sprite) {
         this.sprite = sprite;
     }
+
+    public String getString() {return txt;}
+
 }

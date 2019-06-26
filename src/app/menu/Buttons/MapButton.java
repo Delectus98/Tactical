@@ -5,20 +5,18 @@ import Graphics.Color;
 import Graphics.Sprite;
 import app.MainMENU;
 import app.map.Map;
+import app.map.MapImpl;
 import app.menu.MapMenu;
-import app.menu.Menu;
 
 public class MapButton extends SpecialButton {
 
-    private Sprite sprite;
     public Map map;
 
 
-    public MapButton(Sprite mapMiniature, Map map, float x, float y) {
+    public MapButton( MapImpl map, float x, float y) {
 
-        super("", Menu.newButtonSprite("menuBig"));
+        super("", new Sprite(map.getMiniature()));
         setPosition(x,y);
-        this.sprite = mapMiniature;
         this.map = map;
 
     }

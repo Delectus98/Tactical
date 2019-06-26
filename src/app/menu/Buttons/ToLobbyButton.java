@@ -2,7 +2,11 @@ package app.menu.Buttons;
 
 
 import app.MainMENU;
+import app.menu.LocalLobby;
 import app.menu.Menu;
+import app.menu.OnlineLobby;
+
+import static app.MainMENU.menulist;
 
 public class ToLobbyButton extends NormalButton {
     byte lobbyType; //lobbyType 0=Local, 1=Host, 2=Client
@@ -20,14 +24,17 @@ public class ToLobbyButton extends NormalButton {
             case 0:
 
                 MainMENU.LOBBY = MainMENU.LOCAL;
+                menulist[MainMENU.LOCAL] = new LocalLobby();
                 break;
             case 1:
 
                 MainMENU.LOBBY = MainMENU.HOST;
+                menulist[MainMENU.HOST] = new OnlineLobby(true);
                 break;
             case 2:
 
                 MainMENU.LOBBY = MainMENU.JOIN;
+                menulist[MainMENU.JOIN] = new OnlineLobby(false);
                 break;
         }
 

@@ -23,9 +23,8 @@ public class NormalButton extends MenuButton {
     }
 
     public void clicked() {
-        //System.out.println("Button: " + this.textZone.getString());
         MainMENU.currentMenu = goTOMenuNumber;
-        MainMENU.menulist[MainMENU.currentMenu].update();
+    //    MainMENU.menulist[MainMENU.currentMenu].update();
     }
 
     public boolean collide(Vector2f mousse) {

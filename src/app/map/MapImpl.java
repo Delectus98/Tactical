@@ -13,7 +13,7 @@ public class MapImpl extends Map {
 
     private int width ;
     private int height ;
-
+    private ConstTexture miniature;
     /**
      * Generates a map using MapInfo that contains data to creates Game Map
      * @param info map info use to load map
@@ -21,6 +21,7 @@ public class MapImpl extends Map {
     public MapImpl(MapInfo info){
         width = info.width;
         height = info.height;
+        this.miniature=info.getMiniature();
 
         spawnPoints = new ArrayList[2];
         spawnPoints[0] = new ArrayList<>();
@@ -104,6 +105,10 @@ public class MapImpl extends Map {
     @Override
     public List<Vector2i> getSpawnPoints(int currentPlayer) {
         return spawnPoints[currentPlayer];
+    }
+
+    public ConstTexture getMiniature() {
+        return miniature;
     }
 }
 

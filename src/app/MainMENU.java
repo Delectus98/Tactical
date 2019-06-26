@@ -2,16 +2,15 @@ package app;
 
 import Graphics.Color;
 import Graphics.ConstShader;
-import Graphics.Vector2i;
 import System.*;
 import app.map.Map;
 import app.map.MapImpl;
 import app.map.MapList;
 import app.menu.Buttons.MenuButton;
 import app.menu.Buttons.SpecialButton;
+import app.menu.Lobby;
 import app.menu.MakeSquad;
 import app.menu.Menu;
-import app.play.LocalhostGame;
 import app.units.MarksmanUnit;
 import app.units.SoldierUnit;
 import org.lwjgl.opengl.GL20;
@@ -45,47 +44,6 @@ public class MainMENU {
     public static int currentMenu = START;//parmi la liste au dessus
     public static Game currentGame;
     public static GLFWWindow window;
-
-    public static Game demo(GLFWWindow window) throws IOException {
-
-        Map map = new MapImpl(MapList.DemoField);
-        //Map map = new MapImpl(mapInfo);
-        Player p1 = new Player("P1");
-        Player p2 = new Player("P2");
-
-        Unite unite = new SoldierUnit(Team.MAN);
-        unite.setMapPosition(new Vector2i(1, 8));
-        unite.getSprite().setPosition(64 * 1, 64 * 8);
-        unite.setTeam(Team.MAN);
-        p1.addUnite(unite);
-
-        Unite unite0 = new SoldierUnit(Team.MAN);
-        unite0.setMapPosition(new Vector2i(0, 8));
-        unite0.getSprite().setPosition(64 * 0, 64 * 8);
-        p1.addUnite(unite0);
-
-        //player2
-        Unite unite1 = new MarksmanUnit(Team.MAN);
-        unite1.setMapPosition(new Vector2i(1, 9));
-        unite1.getSprite().setPosition(64 * 1, 64 * 9);
-        p1.addUnite(unite1);
-        Unite unite2 = new SoldierUnit(Team.APE);
-        unite2.setMapPosition(new Vector2i(22, 8));
-        unite2.getSprite().setPosition(64 * 22, 64 * 8);
-        p2.addUnite(unite2);
-
-        Unite unite3 = new SoldierUnit(Team.APE);
-        unite3.setMapPosition(new Vector2i(22, 9));
-        unite3.getSprite().setPosition(64 * 22, 64 * 9);
-        p2.addUnite(unite3);
-
-        Unite unite4 = new MarksmanUnit(Team.APE);
-        unite4.setMapPosition(new Vector2i(21, 8));
-        unite4.getSprite().setPosition(64 * 21, 64 * 8);
-        p2.addUnite(unite4);
-
-        return new LocalhostGame(window, p1, p2, map);
-    }
 
     public static void main(String[] args) throws IOException {
         window = new GLFWWindow(new VideoMode(WIDTH,HEIGHT), "Tactical", WindowStyle.DEFAULT);
@@ -127,17 +85,30 @@ public class MainMENU {
         ResourceHandler.loadTexture("Sprites/Menu/menuLarge.png","menuLarge");
         ResourceHandler.loadTexture("Sprites/Menu/squadSlot.png","squadSlot");
 
+        ResourceHandler.loadTexture("Sprites/Menu/maps/bf1.jpg","bf1");
+        ResourceHandler.loadTexture("Sprites/Menu/maps/bf2.jpg","bf2");
+        ResourceHandler.loadTexture("Sprites/Menu/maps/bf3.jpg","bf3");
+        ResourceHandler.loadTexture("Sprites/Menu/maps/casino.jpg","casino");
+        ResourceHandler.loadTexture("Sprites/Menu/maps/demofield.jpg","demofield");
+
+        ResourceHandler.loadSound("res/sounds/sniper.wav", "sniper");
+        ResourceHandler.loadSound("res/sounds/assault.wav", "assault");
+    //    ResourceHandler.loadSound("res/sounds/grenade.wav", "grenade");//missing
+    //    ResourceHandler.loadSound("res/sounds/uppercut.wav", "uppercut");
+
+
         ResourceHandler.loadShader("res/shader/default.vert", "res/shader/shining.frag", "shining");
         ConstShader shader = ResourceHandler.loadShader("res/shader/default.vert", "res/shader/grisant.frag", "grey");
         shader.bind();
         GL20.glUniform1f(shader.getUniformLocation("colorRatio"), 0.2f);
 
 
-        availableMaps = new Map[]{
+        availableMaps = new MapImpl[]{
                 new MapImpl(MapList.Battlefield1),
                 new MapImpl(MapList.Battlefield2),
                 new MapImpl(MapList.Battlefield3),
-                new MapImpl(MapList.DemoField)
+                new MapImpl(MapList.DemoField),
+                new MapImpl(MapList.Casino)
         };
         availableUnits = new Unite[]{
                 new SoldierUnit(Team.APE),
@@ -154,7 +125,19 @@ public class MainMENU {
 
         //RESIZE
 
+      /*  ServerImpl server; //public static?
+        try {//onlinelobby server
+            server = new ServerImpl(25565, GameRegistration.instance);
+            server.setClientLimit(1);
+
+            while (server.getClientCount() == 0) {
+                Thread.sleep(1000);
+                System.out.println("wait client");
+            }*/
+
+
         while (window.isOpen()) {
+
             Time elapsed = clock.restart();
 
 
@@ -169,8 +152,7 @@ public class MainMENU {
                     window.close();
                 }
             }
-
-            window.clear(Color.Cyan);
+            window.clear(Color.Black);
 
 //If STATE=MENU
             if (state == STATE.MENU) {
@@ -180,7 +162,7 @@ public class MainMENU {
                 for (MenuButton b : getCurrentMenu().getButtons()) {
                     if (b instanceof SpecialButton) {
                         ((SpecialButton) b).checkIfButtonReady();
-                    }//todo getsprite
+                    }
                     window.draw(b.getSprite());
                     window.draw(b.getText());
 
@@ -205,9 +187,12 @@ public class MainMENU {
                     currentGame.update(elapsed);
                     currentGame.draw(window);
                 } else {
-                    MainMENU.state = STATE.MENU;
+                    currentMenu = SCORE;
+                    for(Player p:((Lobby)menulist[LOBBY]).getPlayers())
+                        p.getUnites().clear();
+                    state = STATE.MENU;
                     window.setDimension(new VideoMode(1280,720));
-                    MainMENU.currentMenu = GAMEMODE;
+
                 }
             }
             window.display();

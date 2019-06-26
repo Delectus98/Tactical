@@ -44,4 +44,5 @@ public abstract class Map
      * @return a list of available spawn points for a specific player
      */
     public abstract List<Vector2i> getSpawnPoints(int currentPlayer);
+
 }

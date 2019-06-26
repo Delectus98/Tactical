@@ -13,23 +13,24 @@ public abstract class SpecialButton extends MenuButton {
     protected void setReady(boolean b) {
         ready = b;
 
-        if (ready){
-            //this.getSprite().setFillColor(new Color(169,169,169));
-            this.getSprite().setFillColor(new Color(169,169,169));
-        }
-          else
-              this.getSprite().setFillColor(new Color(178,34,34));
-    }
-
-    public void clicked() {
         if (ready) {
-            this.clickedIfReady();
+
+         getSprite().setFillColor(new Color(169, 169, 169));
+
         } else {
-            System.out.println(textZone.getString()+" Not ready");
+            getSprite().setFillColor(new Color(178, 34, 34));}
+
         }
+
+        public void clicked () {
+            if (ready) {
+                this.clickedIfReady();
+            } else {
+                System.out.println(textZone.getString() + " Not ready");
+            }
+        }
+
+        protected abstract void clickedIfReady ();
+        public abstract void checkIfButtonReady ();
+
     }
-
-    protected abstract void clickedIfReady();
-    public abstract void checkIfButtonReady();
-
-}

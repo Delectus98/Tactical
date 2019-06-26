@@ -49,6 +49,7 @@ public class MapList {
                 Battlefield1.setTileInfo(i, j, infos.get(mapData[i][j]));
             }
         }
+        Battlefield1.setMiniature("bf1");
     }
 
     private static void loadBattleField2() {
@@ -79,6 +80,7 @@ public class MapList {
                 Battlefield2.setTileInfo(i, j, infos.get(mapData[i][j]));
             }
         }
+        Battlefield2.setMiniature("bf2");
     }
 
     private static void loadBattleField3() {
@@ -140,6 +142,7 @@ public class MapList {
                 Battlefield3.setTileInfo(i, j, infos.get(mapData[i][j]));
             }
         }
+        Battlefield3.setMiniature("bf3");
     }
 
     private static void loadExample1() {
@@ -225,6 +228,7 @@ public class MapList {
                 DemoField.setTileInfo(i, j, infos.get(mapData[i][j]));
             }
         }
+        DemoField.setMiniature("demofield");
 
 
     }
@@ -275,7 +279,7 @@ public class MapList {
                 Casino.setTileInfo(i, j, infos.get(mapData[i][j]));
             }
         }
-
+        Casino.setMiniature("casino");
 
     }
 

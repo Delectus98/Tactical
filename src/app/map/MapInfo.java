@@ -1,6 +1,8 @@
 package app.map;
 
+import Graphics.ConstTexture;
 import Graphics.FloatRect;
+import util.ResourceHandler;
 
 import java.io.*;
 
@@ -8,7 +10,9 @@ import java.io.*;
  * Interface used by Map(s) to load tiles. It contains all information about how a map must be built
  */
 public class MapInfo implements Serializable {
+
     public static class TileInfo implements Serializable {
+
         public boolean obstacle = false;
         public boolean enableFloor = false;
         public boolean enableStruct = false;
@@ -18,6 +22,7 @@ public class MapInfo implements Serializable {
         public String textureStruct = "";
         transient public FloatRect floorRect = new FloatRect(0,0,0,0);
         transient public FloatRect structRect = new FloatRect(0,0,0,0);
+
 
         public TileInfo(String floor, FloatRect rectFloor, String struct, FloatRect rectStruct, boolean isObstacle) {
             textureFloor = floor;
@@ -74,11 +79,13 @@ public class MapInfo implements Serializable {
             oos.writeFloat(structRect.w);
             oos.writeFloat(structRect.h);
         }
+
     }
     public final String name;
     public final int width;
     public final int height;
     transient private TileInfo[][] info;
+    private ConstTexture miniature;
 
     /**
      * Create a map info with a name and default dimension
@@ -178,5 +185,13 @@ public class MapInfo implements Serializable {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public ConstTexture getMiniature() {
+        return miniature;
+    }
+
+    public void setMiniature(String miniature) {
+        this.miniature = ResourceHandler.getTexture(miniature);
     }
 }

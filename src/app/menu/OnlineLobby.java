@@ -1,16 +1,30 @@
 package app.menu;
 
-import Graphics.Vector2f;
-import System.GLFWWindow;
-
-import java.io.IOException;
+import app.MainMENU;
 
 public class OnlineLobby extends Lobby {
 
     int myPlayerId;
+    boolean isHost;
 
-    public OnlineLobby(GLFWWindow window, String title, int parentMenuId, Vector2f normalButtonOrigin, Vector2f specialButtonOrigin, Vector2f titleposition, boolean backbutton) throws IOException {
-        super(window, title, parentMenuId, normalButtonOrigin, specialButtonOrigin, titleposition, backbutton);
+    public OnlineLobby(boolean isHost) {
+        super(isHost?"Host Game":"Local Game", MainMENU.ONLINE);
+        this.isHost=isHost;
+
+
+    }
+
+    @Override
+   public void update(){
+        if(isHost) {
+
+
+
+
+        }else {
+
+
+        }
     }
 
     public int getMyPlayerId() {

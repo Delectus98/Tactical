@@ -17,31 +17,31 @@ import static app.MainMENU.*;
 public class MakeSquad extends Menu {
 
 
-
     private class AddUnitButton extends SpecialButton {
         Player p;
         Unite u;
 
         public AddUnitButton(Player player, Unite u) {//TODO if team==team,addunitbutton
-            super("" , u.getSprite());//TODO unit name
+            super("", new Sprite(u.getSprite().getTexture()));//TODO unit name
             this.p = player;
             this.u = u;
-            getSprite().setFillColor(new Color(169,169,169));
+            getSprite().setFillColor(new Color(169, 169, 169));
         }
 
         @Override
         protected void clickedIfReady() {
-            Unite toAdd=new SoldierUnit(p.getTeam());
+            Unite toAdd = new SoldierUnit(p.getTeam());
             if (p.getUnites().size() < ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getSquadCreationPoints())
                 if (u instanceof SoldierUnit) {
 
                 } else if (u instanceof MarksmanUnit) {
-                   toAdd=new MarksmanUnit(p.getTeam());
+                    toAdd = new MarksmanUnit(p.getTeam());
                 } else {
                     System.out.println("Erreur, type d'unité inconnu. default = soldier");
                 }
             p.addUnite(toAdd);
-            ((MakeSquad) menulist[MainMENU.MAKESQUAD]).addUnitButton(p,toAdd);
+            ((MakeSquad) menulist[MainMENU.MAKESQUAD]).addUnitButton(p, toAdd);
+            MainMENU.menulist[MainMENU.LOBBY].update();
         }
 
         @Override
@@ -53,23 +53,22 @@ public class MakeSquad extends Menu {
     private class DeleteUnit extends SpecialButton {
         private Unite unite;
         final Player p;
-        Sprite s;
         protected boolean isEmpty;
 
         public DeleteUnit(Unite unite, Player p) {
-            super("" ,unite.getSprite());
+            super("", new Sprite(unite.getSprite().getTexture()));
             this.p = p;
-           this.unite=unite;
-            this.s = unite.getSprite();
-            s.setFillColor(new Color(169,169,169));
+            getSprite().setTextureRect(0, 0, 64, 64);
+            this.unite = unite;
+            //getSprite().setFillColor(new Color(169,169,169));
             this.isEmpty = false;
 
         }
 
-        public DeleteUnit(Player p ) {
+        public DeleteUnit(Player p) {
             super("", Menu.newButtonSprite("squadSlot"));
             this.p = p;
-            this.getSprite().setFillColor(new Color(169,169,169));
+            this.getSprite().setFillColor(new Color(169, 169, 169));
             this.isEmpty = true;
 
         }
@@ -77,11 +76,11 @@ public class MakeSquad extends Menu {
         @Override
         protected void clickedIfReady() {
             if (!isEmpty) {
-                int i=p.getUnites().indexOf(unite);
+                int i = p.getUnites().indexOf(unite);
                 p.getUnites().remove(i);
-                DeleteUnit d = new DeleteUnit( p /*, ori*/);
+                DeleteUnit d = new DeleteUnit(p /*, ori*/);
                 menulist[MainMENU.MAKESQUAD].getButtons().set(menulist[MainMENU.MAKESQUAD].getButtons().indexOf(this), d);
-             //   MakeSquad.update(p);
+                //   MakeSquad.update(p);
 
             }
         }
@@ -100,27 +99,30 @@ public class MakeSquad extends Menu {
      * @param height
      * @param player
      */
-public static Player player;
+    public static Player player;
+
     public MakeSquad(Player player, int squadSlots) {
 
-        super(WIDTH, HEIGHT, "Squad Maker", MainMENU.LOBBY, 50, 50, new Vector2f(), new HashMap<>(), true);
+        super("Squad Maker", MainMENU.LOBBY, new Vector2f(), new HashMap<>(), true);
         // this.getButtons().add(new defaultButton(player));
         ;
-        this.player=player;
-        int compatibleUnits=0;
-        for (Unite u: availableUnits) {
+        this.player = player;
+        int compatibleUnits = 0;
+        for (Unite u : availableUnits) {
             if (u.getTeam() == player.getTeam()) {
                 AddUnitButton ad = new AddUnitButton(player, u);
                 ad.setPosition(WIDTH / 10 + (80 * (compatibleUnits % 5)), HEIGHT / 2 + 25 + (100 * (compatibleUnits / 5)));
-                getButtons().add(0,ad);
+                getButtons().add(0, ad);
+                ad.getSprite().setTextureRect(0, 0, 64, 64);
                 compatibleUnits++;
+
             }
         }
 
         for (int i = 0; i < squadSlots; i++) {
             if (i < player.getUnites().size()) {
-                DeleteUnit d = new DeleteUnit( player.getUnites().get(i),player);
-              d.setPosition(WIDTH / 10 + (80 * i /*% 5*/), 300/* +(100) * i / 5*/);
+                DeleteUnit d = new DeleteUnit(player.getUnites().get(i), player);
+                d.setPosition(WIDTH / 10 + (80 * i /*% 5*/), 300/* +(100) * i / 5*/);
                 getButtons().add(d);
 
             } else {
@@ -150,12 +152,12 @@ public static Player player;
         }
     }
 
-    protected void addUnitButton(Player player,Unite unite) {
-        for (int i=0;i< menulist[MainMENU.MAKESQUAD].getButtons().size();i++) {
-            MenuButton b=menulist[MainMENU.MAKESQUAD].getButtons().get(i);
-            if (b instanceof DeleteUnit && ((DeleteUnit)b).isEmpty ){
-                menulist[MainMENU.MAKESQUAD].getButtons().set(i, new DeleteUnit(unite,player ));
-            break;
+    protected void addUnitButton(Player player, Unite unite) {
+        for (int i = 0; i < menulist[MainMENU.MAKESQUAD].getButtons().size(); i++) {
+            MenuButton b = menulist[MainMENU.MAKESQUAD].getButtons().get(i);
+            if (b instanceof DeleteUnit && ((DeleteUnit) b).isEmpty) {
+                menulist[MainMENU.MAKESQUAD].getButtons().set(i, new DeleteUnit(unite, player));
+                break;
             }
         }
     }
@@ -170,8 +172,8 @@ public static Player player;
 
             if (b instanceof DeleteUnit)
                 if (((DeleteUnit) b).isEmpty) {
-                   b.setPosition(WIDTH / 10 + 80 * kfalse, 300);
-                    b.getSprite().setFillColor(new Color(169,169,169));
+                    b.setPosition(WIDTH / 10 + 80 * kfalse, 300);
+                    b.getSprite().setFillColor(new Color(169, 169, 169));
                     kfalse++;
                 } else {
                     b.setPosition(WIDTH / 10 + ktrue * 80, 300);
@@ -182,6 +184,7 @@ public static Player player;
         }
 
     }
+
     private class defaultButton extends SpecialButton {
 
         private Player player;

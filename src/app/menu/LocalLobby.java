@@ -2,32 +2,29 @@ package app.menu;
 
 import Graphics.Color;
 import Graphics.Sprite;
-import Graphics.Vector2f;
 import app.MainMENU;
 import app.Player;
 import app.Team;
+import app.map.MapImpl;
 import app.menu.Buttons.*;
-
-import java.util.HashMap;
+import util.ResourceHandler;
 
 public class LocalLobby extends Lobby {
     private Player[] playerlist = new Player[2];
+    int slots = 0;
 
 
     /**
      * Menu constructor
-     *
-     * @param width
-     * @param height
      */
-    public LocalLobby(int width, int height, int buttonWidth, int buttonHeight) {
-        super(width, height, "Game Local: Lobby", MainMENU.GAMEMODE, buttonWidth, buttonHeight, new Vector2f(), new HashMap<>(), true);
+    public LocalLobby() {
+        super("Game Local: Lobby", MainMENU.GAMEMODE);
         //Ajoute le bouton de lancement de jeu
 
-        ReadyButton ready = new ReadyButton(Menu.newButtonSprite("menuSmall"));
-        ready.setPosition(MainMENU.WIDTH - buttonWidth, MainMENU.HEIGHT - buttonHeight);
+        ReadyButton ready = new ReadyButton();
+        ready.setPosition(MainMENU.WIDTH - ready.getSprite().getBounds().w, MainMENU.HEIGHT - ready.getSprite().getBounds().h);
         this.getButtons().add(ready);
-        this.getButtons().add(new toMapButton(Menu.newButtonSprite("menuBig")));
+        this.getButtons().add(new toMapButton(new Sprite(((MapImpl) getMap()).getMiniature())));//TODO miniature map
 
 
         playerlist[0] = new Player("Player1");
@@ -49,46 +46,36 @@ public class LocalLobby extends Lobby {
             TeamButton t = new TeamButton(getPlayers()[i], Menu.newButtonSprite("menuSmall"));
             t.setPosition(rename.getSprite().getBounds().l, rename.getSprite().getBounds().t + rename.getSprite().getBounds().h + 10);
             getButtons().add(t);
+
+            slots=getButtons().size()-1;
+            // TODO
+            for (int k = 0; k < getSquadCreationPoints(); k++) {
+                MenuButton d = new MenuButton("", new Sprite(ResourceHandler.getTexture("squadSlot"))) {
+                };
+                d.setPosition(64 + (80 * k), b.getSprite().getBounds().t + b.getSprite().getBounds().h / 4);
+                getButtons().add(d);
+            }//END TODO
+
         }
+
 
     }
 
-  /*  @Override
-    public void update() {
-        //int nbplayers = players.length;
-        for (MenuComponent b : getButtons()) {
-            int nbUnits = 0;
-            if (b instanceof SquadButton) {
 
-                for (Unite u : ((SquadButton) b).getPlayer().getUnites()) {
-                    u.getSprite().setPosition(b.getSprite().getX() + 100 + 75 * nbUnits, b.getSprite().getY() + b.getSprite().getBounds().h / 2);
-                    nbUnits++;
-                }
-            }
-        }
-    }*/
     private class toMapButton extends SpecialButton {
         public toMapButton(Sprite sprite) {
             super("Chose Map", sprite);
             setPosition(MainMENU.WIDTH - getSprite().getBounds().w, 50 + MainMENU.HEIGHT / 10);
-
         }
 
         @Override
         protected void clickedIfReady() {
-            /*WARNING, REPETITION DE LA COLORATION
-            Ici, afin que lorsqu'on arrive sur le menu, le selectionné soit coloré.
-            dans MapButton, pour qu'il se colore bien par rapport au clic
-
-             */
             for (MenuComponent m : MainMENU.menulist[MainMENU.MAPCHOICE].getButtons()) {
                 if (m instanceof MapButton) {
                     // m.getSprite().setFillColor(new Color(169, 169, 169));
                     if (((MapButton) m).map == ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap()) {
-                        System.out.println("gud");
                         m.getSprite().setFillColor(new Color(255, 255, 153));
-                    }else{
-                        System.out.println("notgood");}
+                    }
                 }
             }
             MainMENU.currentMenu = MainMENU.MAPCHOICE;
@@ -97,6 +84,27 @@ public class LocalLobby extends Lobby {
         @Override
         public void checkIfButtonReady() {
             setReady((MainMENU.LOBBY == MainMENU.LOCAL) || MainMENU.LOBBY == MainMENU.HOST);
+        }
+    }
+
+    @Override
+    public void update() {
+        //int nbplayers = players.length;
+        for (MenuComponent b : getButtons()) {
+
+            if (b instanceof toMapButton) {
+                float x = b.getSprite().getBounds().l;
+                float y = b.getSprite().getBounds().t;
+                b.setSprite(new Sprite(((MapImpl) map).getMiniature()));
+                b.getSprite().setPosition(x, y);
+            } else if (b instanceof ReadyButton) {
+                ((ReadyButton) b).checkIfButtonReady();
+            } else if (b instanceof SquadButton) {
+                if (((SquadButton) b).getPlayer().getUnites().size() > getSquadCreationPoints())
+                    if (((SquadButton) b).getPlayer().getUnites().size() > getSquadCreationPoints() + 1) {
+                        ((SquadButton) b).getPlayer().getUnites().subList(getSquadCreationPoints() + 1, ((SquadButton) b).getPlayer().getUnites().size()).clear();
+                    }
+            }
         }
     }
 }
