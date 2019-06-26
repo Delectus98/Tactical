@@ -6,7 +6,7 @@ Tactical is our university project to validate our school year. The game introdu
 ## Authors
 
 -   MOREL Adam
--   [AMMES-BEUVE Théo](https://github.com/MphDevelopment)
+-   [JAMMES-BEUVE Théo](https://github.com/MphDevelopment)
 -   HART Maximilian
 -   BENNEVENISTE Jules
 -   [BEUCHER Maxime](https://github.com/Delectus98)
