@@ -16,9 +16,9 @@ public abstract class SpecialButton extends MenuButton {
         ready = b;
 
         if (this.ready) {
-         getSprite().setFillColor(new Color(169, 169, 169));
+         getSprite().setFillColor(new Color(0.86f, 0.86f, 0.86f));
         } else {
-            getSprite().setFillColor(new Color(178, 34, 34));}
+            getSprite().setFillColor(new Color(0.7f, 0.13f, 0.13f));}
         }
 
         public void clicked () throws IOException, InterruptedException {

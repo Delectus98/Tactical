@@ -3,7 +3,7 @@ package util;
 import System.Event;
 
 public class TextInput {
-    private TextInput(){}
+    public TextInput(){}
 
     private static char c;
     private static boolean updated = false;

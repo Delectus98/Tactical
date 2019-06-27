@@ -4,7 +4,7 @@ plugins {
     id'com.github.johnrengelman.shadow' version '5.0.0'
 }
 
-mainClassName = 'app.Main'
+mainClassName = 'app.MainMENU'
 
 version '1.0'
 

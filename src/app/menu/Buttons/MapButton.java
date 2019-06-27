@@ -22,7 +22,7 @@ public class MapButton extends SpecialButton {
     }
 
     public void clickedIfReady() {
-        ((MapMenu)MainMENU.menulist[MainMENU.MAPCHOICE]).selectedMap.getSprite().setFillColor(new Color(169,169,169));
+        //((MapMenu)MainMENU.menulist[MainMENU.MAPCHOICE]).selectedMap.getSprite().setFillColor(new Color(0.6f,0.6f,0.6f));
         ((MapMenu)MainMENU.menulist[MainMENU.MAPCHOICE]).selectedMap=this;
         this.getSprite().setFillColor(Color.Red);
     }

@@ -1,6 +1,5 @@
 package app.menu;
 
-import Graphics.Color;
 import Graphics.Sprite;
 import Graphics.Vector2f;
 import app.Game;
@@ -69,7 +68,7 @@ mapIndex = index;
                 if (m instanceof MapButton) {
                     // m.getSprite().setFillColor(new Color(169, 169, 169));
                     if (((MapButton) m).map == ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap()) {
-                        m.getSprite().setFillColor(new Color(255, 255, 153));
+                       // m.getSprite().setFillColor(new Color(1f, 1f, 1f));
                     }
                 }
             }

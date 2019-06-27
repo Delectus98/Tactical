@@ -1,12 +1,14 @@
 package app.menu.Buttons;
 
+import System.Event;
+import System.IO.AZERTYLayout;
+import System.Keyboard;
 import app.MainMENU;
 import app.Player;
 import app.menu.Menu;
 import app.menu.OnlineLobby;
 import app.network.PlayerPacket;
-
-import java.util.Scanner;
+import util.TextInput;
 
 public class RenamePlayer extends SpecialButton{
     private Player p;
@@ -19,12 +21,26 @@ public class RenamePlayer extends SpecialButton{
     }
 
     private void changeName(){
-        String s;
+String s="";
+        Keyboard keyboard = new Keyboard(MainMENU.window);
+        Event event;
+        TextInput tx = new TextInput();
+        while (!keyboard.isKeyPressed(AZERTYLayout.RETURN.getKeyID())) {
+            if(tx.hasBeenUpdated())
+                if(keyboard.isKeyPressed(AZERTYLayout.PAD_RETURN.getKeyID())){
+                    s=s.substring(0,s.length()-2);}//!!null
+                else{
+                    s+=s+tx.getChar();
+                    tx.reset();
+                }
+            p.setName(s);
+        }
+       /* String s;
         //TODO TextField
         Scanner sc = new Scanner(System.in);
         System.out.println("Entrer nouveau nom: ");
-        s=sc.nextLine();
-        p.setName(s);
+        s=sc.nextLine();*/
+        //p.setName(s);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package app.menu;
 
-import Graphics.Color;
 import Graphics.Sprite;
 import Graphics.Vector2f;
 import app.MainMENU;
@@ -27,7 +26,7 @@ public class MakeSquad extends Menu {
             super("", new Sprite(u.getSprite().getTexture()));//
             this.p = player;
             this.u = u;
-            getSprite().setFillColor(new Color(169, 169, 169));
+            //getSprite().setFillColor(new Color(0.6f, 0.6f, 0.6f));
         }
 
         @Override
@@ -69,7 +68,7 @@ public class MakeSquad extends Menu {
         DeleteUnit(Player p) {
             super("", Menu.newButtonSprite("squadSlot"));
             this.p = p;
-            this.getSprite().setFillColor(new Color(169, 169, 169));
+            //this.getSprite().setFillColor(new Color(0.6f, 0.6f, 0.6f));
             this.isEmpty = true;
 
         }
@@ -171,11 +170,11 @@ public class MakeSquad extends Menu {
             if (b instanceof DeleteUnit)
                 if (((DeleteUnit) b).isEmpty) {
                     b.setPosition(WIDTH / 10 + 80 * kfalse, 300);
-                    b.getSprite().setFillColor(Color.Black);
+                    //b.getSprite().setFillColor(Color.Black);
                     kfalse++;
                 } else {
                     b.setPosition(WIDTH / 10 + ktrue * 80, 300);
-                    b.getSprite().setFillColor(Color.Blue);
+                    //b.getSprite().setFillColor(Color.Blue);
                     ktrue++;
                 }
 
@@ -202,11 +201,11 @@ public class MakeSquad extends Menu {
             if (b instanceof DeleteUnit)
                 if (((DeleteUnit) b).isEmpty) {
                     b.setPosition(WIDTH / 10 + 80 * kfalse, 300);
-                    b.getSprite().setFillColor(new Color(169, 169, 169));
+                   // b.getSprite().setFillColor(new Color(0.6f, 0.6f, 0.6f));
                     kfalse++;
                 } else {
                     b.setPosition(WIDTH / 10 + ktrue * 80, 300);
-                    b.getSprite().setFillColor(Color.White);
+                //   b.getSprite().setFillColor(Color.White);
                     ktrue++;
                 }
         }
