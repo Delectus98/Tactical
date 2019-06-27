@@ -2,7 +2,7 @@
 *.log
 *.ctxt
 
-*.jar
+
 *.war
 *.war
 *.zip

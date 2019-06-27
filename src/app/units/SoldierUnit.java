@@ -11,6 +11,7 @@ import app.weapon.MachineGun;
 import util.ResourceHandler;
 
 
+
 public class SoldierUnit extends Unite
 {
     public SoldierUnit(Team team)

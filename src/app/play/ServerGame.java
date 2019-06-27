@@ -136,8 +136,8 @@ public class ServerGame extends Game {
             // il n'y a plus d'action alors on arrete la phase déroulement des actions
             inAction = false;
             currentAction = null;
-            hudUnite.resetSelectedAction();
-            manager = hudUnite.getSelectedAction();
+            if (hudUnite != null) hudUnite.resetSelectedAction();
+            if (hudUnite != null) manager = hudUnite.getSelectedAction();
             //endTurn();
         }
     }
@@ -481,18 +481,20 @@ public class ServerGame extends Game {
     //déssine les unités visibles
     private void drawUnite(RenderTarget target) {
         //Arrays.stream(players).forEach(p -> {if (p != null && !p.getUnites().isEmpty()) p.getUnites().get(0).draw(target);});
-        players[localPlayer].getUnites().forEach(u -> {
-            if (u.isDead())
-                target.draw(u.getSprite(), ResourceHandler.getShader("grey"));
-            else target.draw(u.getSprite());
-        });
-        players[(localPlayer+1)%2].getUnites().forEach(u -> {
+
+        players[localPlayer].getUnites().forEach(u -> {if (u.isDead()) u.draw(target);});
+        players[(localPlayer + 1) % 2].getUnites().forEach(u -> {
             if (visibles.stream().anyMatch(v -> v.equals(u.getMapPosition()))) {
-                if (u.isDead())
-                    target.draw(u.getSprite(), ResourceHandler.getShader("grey"));
-                else target.draw(u.getSprite());
+                if (u.isDead()) u.draw(target);
             }
         });
+        players[localPlayer].getUnites().forEach(u -> {if (!u.isDead()) u.draw(target);});
+        players[(localPlayer + 1) % 2].getUnites().forEach(u -> {
+            if (visibles.stream().anyMatch(v -> v.equals(u.getMapPosition()))) {
+                if (!u.isDead()) u.draw(target);
+            }
+        });
+
     }
 
     //déssine les structs (ce que voit la camera)
