@@ -21,7 +21,7 @@ public abstract class SpecialButton extends MenuButton {
             getSprite().setFillColor(new Color(178, 34, 34));}
         }
 
-        public void clicked () throws IOException {
+        public void clicked () throws IOException, InterruptedException {
             //checkIfButtonReady ();
             if (this.ready) {
                 this.clickedIfReady();
@@ -30,6 +30,6 @@ public abstract class SpecialButton extends MenuButton {
             }
         }
 
-        protected abstract void clickedIfReady () throws IOException;
-        public abstract void checkIfButtonReady ();
+        protected abstract void clickedIfReady () throws IOException, InterruptedException;
+        public abstract void checkIfButtonReady () throws IOException, InterruptedException;
     }

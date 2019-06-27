@@ -9,13 +9,12 @@ import app.MainMENU;
 import app.menu.Buttons.*;
 import util.ResourceHandler;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
 public class Menu {
-    private ArrayList<MenuButton> buttons = new ArrayList<MenuButton>();
+    private ArrayList<MenuButton> buttons = new ArrayList<>();
     private Text title;
     private Vector2f specialButtonOrigin;
     private Vector2f normalButtonOrigin;
@@ -23,7 +22,7 @@ public class Menu {
     private ConstTexture texture;
     private Sprite sprite;
 
-    public Menu(String title, int parentMenuId, Vector2f normalButtonOrigin, Vector2f specialButtonOrigin, Vector2f titleposition, boolean backbutton) throws IOException {
+    public Menu(String title, int parentMenuId, Vector2f normalButtonOrigin, Vector2f specialButtonOrigin, Vector2f titleposition, boolean backbutton) {
         this.title = new Text(ResourceHandler.getFont("default"), title);
         this.texture = ResourceHandler.getTexture("menuBackground");
         this.sprite = new Sprite(texture);
@@ -67,7 +66,7 @@ public class Menu {
 
     }
 
-    public void backbutton(int parentMenuId) {
+    private void backbutton(int parentMenuId) {
         NormalButton n = new NormalButton("Go back", parentMenuId, newButtonSprite("menuSmall"));
         n.setPosition(0, MainMENU.HEIGHT - sprite.getBounds().h);
         buttons.add(n);
@@ -110,7 +109,7 @@ public class Menu {
      */
 
 
-    public static void init(Menu[] menulist, GLFWWindow window) throws IOException {
+    public static void init(Menu[] menulist, GLFWWindow window) {
 //Main
         //  Pair<String,Integer>[][]correspondance= new Pair[15][10];//paire nombre de menu/nombre de boutons max
 //MAPCHOICE
@@ -167,7 +166,8 @@ public class Menu {
 
     }
 
-    public void update() throws IOException {
+    public void update() throws InterruptedException {
+        System.out.println("nop");
     }
 }
 

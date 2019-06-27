@@ -8,12 +8,12 @@ import java.io.IOException;
 
 
 public abstract class MenuButton extends MenuComponent {
-    public MenuButton(String title, Sprite sprite ) {
+    MenuButton(String title, Sprite sprite) {
         super(title,sprite);
 
     }
 
-    public void clicked() throws IOException {
+    public void clicked() throws IOException, InterruptedException {
         System.out.println(this.textZone.getString()); //TODO temporaire test
     }
 

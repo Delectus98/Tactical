@@ -11,7 +11,7 @@ import java.io.IOException;
 import static app.MainMENU.menulist;
 
 public class ToLobbyButton extends NormalButton {
-    byte lobbyType; //lobbyType 0=Local, 1=Host, 2=Client
+    private byte lobbyType; //lobbyType 0=Local, 1=Host, 2=Client
 
     public ToLobbyButton(String title, byte lobbyType) {
         super(title, MainMENU.LOBBY, Menu.newButtonSprite("menuSmall"));
@@ -20,7 +20,7 @@ public class ToLobbyButton extends NormalButton {
     }
 
     @Override
-    public void clicked() throws IOException {
+    public void clicked() throws IOException, InterruptedException {
 
         switch (lobbyType) {
             case 0:
@@ -38,6 +38,7 @@ public class ToLobbyButton extends NormalButton {
                 MainMENU.LOBBY = MainMENU.JOIN;
                 menulist[MainMENU.JOIN] = new OnlineLobby(false);
                 break;
+
         }
 
         MainMENU.currentMenu = MainMENU.LOBBY;

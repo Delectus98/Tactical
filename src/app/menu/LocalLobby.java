@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class LocalLobby extends Lobby {
     private Player[] playerlist = new Player[2];
-  //  int slots = 0;
+    //  int slots = 0;
 
 
     /**
@@ -65,30 +65,28 @@ public class LocalLobby extends Lobby {
 
     @Override
     public Game getGame() throws IOException {
-        if (getPlayers()[0].getUnites().size()>0 &&getPlayers()[1].getUnites().size()>0 &&getPlayers()[0].getUnites().size()<getSquadCreationPoints()&& getPlayers()[1].getUnites().size()<getSquadCreationPoints() &&getMap()!=null){
+        if (getPlayers()[0].getUnites().size() > 0 && getPlayers()[1].getUnites().size() > 0 && getPlayers()[0].getUnites().size() < getSquadCreationPoints() && getPlayers()[1].getUnites().size() < getSquadCreationPoints() && getMap() != null) {
 
-        return new LocalhostGame(MainMENU.window,getPlayers()[0],getPlayers()[1],getMap());}
-        else {return null;}
+            return new LocalhostGame(MainMENU.window, getPlayers()[0], getPlayers()[1], getMap());
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void update() {
         //int nbplayers = players.length;
         for (MenuComponent b : getButtons()) {
-
-            if (b instanceof toMapButton) {
+            if (b instanceof toMapButton) {//update miniature
                 float x = b.getSprite().getBounds().l;
                 float y = b.getSprite().getBounds().t;
-                b.setSprite(new Sprite(((MapImpl) map).getMiniature()));
+                b.setSprite(new Sprite(((MapImpl) getMap()).getMiniature()));
                 b.getSprite().setPosition(x, y);
-            } else if (b instanceof ReadyButton) {
+            } else if (b instanceof ReadyButton) {//check ready
                 ((ReadyButton) b).checkIfButtonReady();
-            } else if (b instanceof SquadButton) {
-                if (((SquadButton) b).getPlayer().getUnites().size() > getSquadCreationPoints())
-                    if (((SquadButton) b).getPlayer().getUnites().size() > getSquadCreationPoints() + 1) {
-                        ((SquadButton) b).getPlayer().getUnites().subList(getSquadCreationPoints() + 1, ((SquadButton) b).getPlayer().getUnites().size()).clear();
-                    }
-            }
+            } else if (b instanceof SquadButton)
+                for (int i = ((SquadButton) b).getPlayer().getUnites().size() - 1; i >= getSquadCreationPoints(); i--)
+                    ((SquadButton) b).getPlayer().getUnites().remove(i);
         }
     }
 }

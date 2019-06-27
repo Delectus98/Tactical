@@ -11,6 +11,9 @@ import app.menu.Buttons.SpecialButton;
 import app.menu.Lobby;
 import app.menu.MakeSquad;
 import app.menu.Menu;
+import app.menu.OnlineLobby;
+import app.network.ClientImpl;
+import app.network.ServerImpl;
 import app.sounds.Music;
 import app.units.MarksmanUnit;
 import app.units.SoldierUnit;
@@ -45,7 +48,7 @@ public class MainMENU {
     public static Game currentGame;
     public static GLFWWindow window;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         window = new GLFWWindow(new VideoMode(WIDTH, HEIGHT), "Tactical", WindowStyle.DEFAULT);
 
         Music.init();
@@ -138,7 +141,13 @@ public class MainMENU {
 
                 if (event.type == Event.Type.CLOSE) {
                     ResourceHandler.free();
+                    if(LOBBY==JOIN) {
+                        ( (ClientImpl)((OnlineLobby)menulist[LOBBY]).listener).close();
+                    }else if (LOBBY==HOST) {
+                        ( (ServerImpl)((OnlineLobby)menulist[LOBBY]).listener).close();
+                    }
                     window.close();
+                    System.exit(0);
                 }
             }
             window.clear(Color.Black);
@@ -149,16 +158,18 @@ public class MainMENU {
                 Music.updateMenuLoop();
 //DRAW BUTTONS
                 window.draw(getCurrentMenu().getSprite());
-                window.draw(getCurrentMenu().getTitle());//TODO Getbackground
+                window.draw(getCurrentMenu().getTitle());
                 for (MenuButton b : getCurrentMenu().getButtons()) {
                     if (b instanceof SpecialButton) {
                         ((SpecialButton) b).checkIfButtonReady();
-                    }//todo getsprite
+                    }
                     window.draw(b.getSprite());
                     window.draw(b.getText());
 
                 }
-
+                if(currentMenu==LOBBY){
+                    menulist[LOBBY].update();
+                }
 //CHECK BUTTON CLICKED
                 if (mousse.isButtonPressed(Mouse.Button.Left) && !isClicking) {
 
@@ -169,11 +180,9 @@ public class MainMENU {
                     }
                     if (currentMenu == MAKESQUAD) {
                         ((MakeSquad) menulist[MAKESQUAD]).update(((MakeSquad) menulist[MAKESQUAD]).player);
-                    }else if(currentMenu==LOBBY){
-                      // menulist[LOBBY].update();
                     }
                 }
-                isClicking = mousse.isButtonPressed(Mouse.Button.Left);//TODO améliorer vers: clicker sur un élément et y aller si relache sur le même
+                isClicking = mousse.isButtonPressed(Mouse.Button.Left);//
 //STATE = GAME
             } else {
                 Music.updateLoop();
@@ -191,8 +200,6 @@ public class MainMENU {
                 }
             }
             window.display();
-
-
         }
 
 

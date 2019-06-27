@@ -18,7 +18,6 @@ public class MapButton extends SpecialButton {
 
         super("", new Sprite(((MapImpl)MainMENU.availableMaps[index]).getMiniature())) ;
         setPosition(x,y);
-        this.map = map;
 
     }
 

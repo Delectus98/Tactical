@@ -16,14 +16,14 @@ public class NormalButton extends MenuButton {
      *
      * @param title          Texte affiché sur le bouton
      * @param goTOMenuNumber Index du menu où il mène ( utiliser MainMenu.
-     * @param sprite
+     * @param sprite the sprite
      */
     public NormalButton(String title, int goTOMenuNumber, Sprite sprite) {
         super(title, sprite);
         this.goTOMenuNumber = goTOMenuNumber;
     }
 
-    public void clicked() throws IOException {
+    public void clicked() throws IOException, InterruptedException {
         MainMENU.currentMenu = goTOMenuNumber;
     }
 

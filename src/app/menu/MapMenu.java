@@ -4,10 +4,13 @@ import Graphics.Vector2f;
 import app.MainMENU;
 import app.menu.Buttons.MapButton;
 import app.menu.Buttons.SpecialButton;
-import app.network.ServerImpl;
+import app.network.MapPacket;
 
 import java.io.IOException;
 import java.util.HashMap;
+
+import static app.MainMENU.LOBBY;
+import static app.MainMENU.menulist;
 
 
 public class MapMenu extends Menu {
@@ -17,7 +20,7 @@ public class MapMenu extends Menu {
      * Menu constructor
      *
      */
-    public MapMenu() {
+    MapMenu() {
         super("Select Map", MainMENU.LOBBY, new Vector2f(20, 50 + MainMENU.HEIGHT / 10), new HashMap<>(), true);
         this.getButtons().add(new okMapButton(MainMENU.WIDTH - 40, MainMENU.HEIGHT - 40));
 
@@ -35,18 +38,20 @@ public class MapMenu extends Menu {
 
 
     private class okMapButton extends SpecialButton {
-        protected okMapButton(float x, float y) {
+        okMapButton(float x, float y) {
             super("Ok", Menu.newButtonSprite("menuSmall"));
             setPosition(x, y);
         }
 
         @Override
-        protected void clickedIfReady() throws IOException {
-            ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).setMap(selectedMap.map);
-            MainMENU.menulist[MainMENU.LOBBY].update();
+        protected void clickedIfReady() throws IOException, InterruptedException {
+            ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).setMap(selectedMap.index);
+            menulist[LOBBY].update();
             MainMENU.currentMenu = MainMENU.LOBBY;
             if(MainMENU.LOBBY==MainMENU.HOST){
-                ((ServerImpl) ((OnlineLobby)MainMENU.menulist[MainMENU.HOST]).listener).send(selectedMap.index);
+                MapPacket m = new MapPacket();
+                m.index=selectedMap.index;
+               ((OnlineLobby)MainMENU.menulist[MainMENU.HOST]).addToSend(m);
             }
         }
 

@@ -8,13 +8,10 @@ import app.Player;
 import app.Unite;
 import app.menu.Buttons.MenuButton;
 import app.menu.Buttons.SpecialButton;
-import app.network.ClientImpl;
-import app.network.ServerImpl;
 import app.network.SquadPacket;
 import app.units.MarksmanUnit;
 import app.units.SoldierUnit;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import static app.MainMENU.*;
@@ -26,15 +23,15 @@ public class MakeSquad extends Menu {
         Player p;
         Unite u;
 
-        public AddUnitButton(Player player, Unite u) {//TODO if team==team,addunitbutton
-            super("", new Sprite(u.getSprite().getTexture()));//TODO unit name
+        AddUnitButton(Player player, Unite u) {//
+            super("", new Sprite(u.getSprite().getTexture()));//
             this.p = player;
             this.u = u;
             getSprite().setFillColor(new Color(169, 169, 169));
         }
 
         @Override
-        protected void clickedIfReady() throws IOException {
+        protected void clickedIfReady() {
             Unite toAdd = new SoldierUnit(p.getTeam());
             if (p.getUnites().size() < ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getSquadCreationPoints())
                 if (u instanceof SoldierUnit) {
@@ -46,7 +43,6 @@ public class MakeSquad extends Menu {
                 }
             p.addUnite(toAdd);
             ((MakeSquad) menulist[MainMENU.MAKESQUAD]).addUnitButton(p, toAdd);
-            MainMENU.menulist[MainMENU.LOBBY].update();
         }
 
         @Override
@@ -60,17 +56,17 @@ public class MakeSquad extends Menu {
         final Player p;
         protected boolean isEmpty;
 
-        public DeleteUnit(Unite unite, Player p) {
+        DeleteUnit(Unite unite, Player p) {
             super("", new Sprite(unite.getSprite().getTexture()));
             this.p = p;
             getSprite().setTextureRect(0, 0, 64, 64);
             this.unite = unite;
-            //getSprite().setFillColor(new Color(169,169,169));
+
             this.isEmpty = false;
 
         }
 
-        public DeleteUnit(Player p) {
+        DeleteUnit(Player p) {
             super("", Menu.newButtonSprite("squadSlot"));
             this.p = p;
             this.getSprite().setFillColor(new Color(169, 169, 169));
@@ -81,11 +77,10 @@ public class MakeSquad extends Menu {
         @Override
         protected void clickedIfReady() {
             if (!isEmpty) {
-                int i = p.getUnites().indexOf(unite);
-                p.getUnites().remove(i);
-                DeleteUnit d = new DeleteUnit(p /*, ori*/);
+                p.getUnites().remove(unite);
+                DeleteUnit d = new DeleteUnit(p);
                 menulist[MainMENU.MAKESQUAD].getButtons().set(menulist[MainMENU.MAKESQUAD].getButtons().indexOf(this), d);
-                //   MakeSquad.update(p);
+
             }
         }
 
@@ -95,20 +90,50 @@ public class MakeSquad extends Menu {
         }
     }
 
-    /**
-     * Menu constructor
-     *
-     * @param width
-     * @param height
-     * @param player
-     */
+    private class okSquadButton extends SpecialButton {
+        private final Player player;
+
+        okSquadButton(String title, float x, float y, Player p) {
+            super(title, Menu.newButtonSprite("menuSmall"));
+            setPosition(x, y);
+            this.player = p;
+        }
+
+        @Override
+        protected void clickedIfReady() {
+            if (LOBBY == HOST || LOBBY == JOIN) {
+                SquadPacket squad = new SquadPacket();
+                for (int i = 0; i < player.getUnites().size(); i++) {
+                    if (player.getUnites().get(i) instanceof MarksmanUnit) {
+                        squad.squad.add(1);
+                    } else if (player.getUnites().get(i) instanceof SoldierUnit) {
+                        squad.squad.add(0);
+                    } else {
+                        squad.squad.add(-1);
+                    }
+
+
+                }   ((OnlineLobby) menulist[LOBBY]).addToSend(squad);
+            }
+            currentMenu = LOBBY;
+
+        }
+
+        @Override
+        public void checkIfButtonReady() {
+            setReady(player.getUnites().size() <= ((Lobby) menulist[LOBBY]).getSquadCreationPoints());
+        }
+
+    }
+
+
     public static Player player;
 
     public MakeSquad(Player player, int squadSlots) {
 
-        super("Squad Maker", MainMENU.LOBBY, new Vector2f(), new HashMap<>(), true);
-        // this.getButtons().add(new defaultButton(player));
-        ;
+        super("Squad Maker", MainMENU.LOBBY, new Vector2f(), new HashMap<>(), false);
+
+
         this.player = player;
         int compatibleUnits = 0;
         for (Unite u : availableUnits) {
@@ -135,7 +160,7 @@ public class MakeSquad extends Menu {
             }
 //TODO attention si trop d'unités. max 5?
         }
-        this.getButtons().add(new okSquadButton("ok",MainMENU.WIDTH - 40, MainMENU.HEIGHT - 40,player));
+        this.getButtons().add(new okSquadButton("ok", MainMENU.WIDTH - 100, MainMENU.HEIGHT - 40, player));
 
 
         byte ktrue = 0;
@@ -157,7 +182,7 @@ public class MakeSquad extends Menu {
         }
     }
 
-    protected void addUnitButton(Player player, Unite unite) {
+    private void addUnitButton(Player player, Unite unite) {
         for (int i = 0; i < menulist[MainMENU.MAKESQUAD].getButtons().size(); i++) {
             MenuButton b = menulist[MainMENU.MAKESQUAD].getButtons().get(i);
             if (b instanceof DeleteUnit && ((DeleteUnit) b).isEmpty) {
@@ -188,41 +213,4 @@ public class MakeSquad extends Menu {
     }
 
 
-    private class okSquadButton extends SpecialButton {
-        private final Player player;
-
-        public okSquadButton(String title, float x, float y, Player p) {
-            super(title,Menu.newButtonSprite("menuSmall"));
-            getSprite().setPosition(x,y);
-            this.player = p;
-        }
-
-        @Override
-        protected void clickedIfReady() throws IOException {
-            if (MainMENU.LOBBY == MainMENU.HOST || LOBBY == JOIN) {
-                SquadPacket squad = new SquadPacket();
-                for (int i = 0; i < player.getUnites().size(); i++) {
-                    if (player.getUnites().get(i) instanceof MarksmanUnit) {
-                        squad.squad.add(1);
-                    } else if (player.getUnites().get(i) instanceof SoldierUnit) {
-                        squad.squad.add(0);
-                    } else {
-                        squad.squad.add(-1);
-                    }
-                    if (LOBBY == JOIN) {
-                        ((ClientImpl) ((OnlineLobby) menulist[JOIN]).listener).send(squad);
-                    } else if (LOBBY == HOST)
-                        ((ServerImpl) ((OnlineLobby) menulist[MainMENU.HOST]).listener).send(squad);
-                }
-
-            }
-            currentMenu=LOBBY;
-        }
-
-        @Override
-        public void checkIfButtonReady() {
-            setReady(player.getUnites().size() < ((Lobby) menulist[LOBBY]).getSquadCreationPoints());
-        }
-
-    }
 }

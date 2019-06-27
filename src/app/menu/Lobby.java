@@ -17,19 +17,20 @@ import java.util.HashMap;
 public abstract class Lobby extends Menu {
 
 
-    Map map= MainMENU.availableMaps[3];
-    int mapIndex=3;
+    private Map map= MainMENU.availableMaps[3];
+    private int mapIndex=3;
     Player[] players;
-    private int squadCreationPoints=4;
+    private int squadCreationPoints=5;
 
-    public Lobby(String title, int parentMenuId){
+    Lobby(String title, int parentMenuId){
         super(title,parentMenuId, new Vector2f(),new HashMap<>(),true);
     }
 
-    public void setMap(Map map) {
+   /* public void setMap(Map map) {
         this.map = map;
-    }
+    }*/
     public void setMap(int index) {
+mapIndex = index;
         this.map = MainMENU.availableMaps[index];
     }
 
@@ -37,7 +38,7 @@ public abstract class Lobby extends Menu {
         return MainMENU.availableMaps[mapIndex];
     }
 
-    public int getMapIndex() {
+    int getMapIndex() {
         return mapIndex;
     }
 
@@ -45,7 +46,7 @@ public abstract class Lobby extends Menu {
         return players;
     }
 
-    public void setPlayers(Player[] players) {
+    void setPlayers(Player[] players) {
         this.players = players;
     }
 
@@ -53,15 +54,11 @@ public abstract class Lobby extends Menu {
         return Math.min(5, Math.min(squadCreationPoints,getMap().getSpawnPoints(0).size()/2));//TODO change si bug corrigé
     }
 
-    public void setSquadCreationPoints(int squadCreationPoints) {
-        this.squadCreationPoints = squadCreationPoints;
-    }
-
 
     public abstract Game getGame() throws IOException;
 
     protected class toMapButton extends SpecialButton {
-        public toMapButton(Sprite sprite) {
+        toMapButton(Sprite sprite) {
             super("Chose Map", sprite);
             setPosition(MainMENU.WIDTH - getSprite().getBounds().w, 50 + MainMENU.HEIGHT / 10);
         }

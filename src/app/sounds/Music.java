@@ -15,7 +15,7 @@ public enum Music {
     SONG3("res\\music\\action1.wav"),
     SONG4("res\\music\\medeval.wav");
 
-    private static ArrayList<Music> pickable = new ArrayList<Music>();
+    private static ArrayList<Music> pickable = new ArrayList<>();
     private static Music current = null;
 
     // Each sound effect has its own clip, loaded with its own sound file.
@@ -29,11 +29,7 @@ public enum Music {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
             clip = AudioSystem.getClip();
             clip.open(audioIn);
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (LineUnavailableException e) {
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
     }
@@ -41,7 +37,6 @@ public enum Music {
     public static void updateLoop(){
         //refill pickables if they have all been played.
         if(pickable.isEmpty()){
-            System.out.println("chacha");
             pickable.add(Music.SONG2);
             pickable.add(Music.SONG3);
             pickable.add(Music.SONG4);

@@ -4,10 +4,7 @@ import Graphics.Sprite;
 import System.VideoMode;
 import app.*;
 import app.map.MapImpl;
-import app.menu.Buttons.ReadyButton;
-import app.menu.Buttons.RenamePlayer;
-import app.menu.Buttons.SquadButton;
-import app.menu.Buttons.TeamButton;
+import app.menu.Buttons.*;
 import app.network.*;
 import app.play.ClientGame;
 import app.play.ServerGame;
@@ -17,6 +14,8 @@ import com.esotericsoftware.kryonet.Listener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 import static app.MainMENU.window;
@@ -24,16 +23,17 @@ import static org.lwjgl.glfw.GLFW.glfwMaximizeWindow;
 
 public class OnlineLobby extends Lobby {
 
-    int myPlayerId;
-    boolean isHost;
-    String ip = "0.0.0.0";
+    private int myPlayerId;
+    private boolean isHost;
+    private String ip = "0.0.0.0";
     public Listener listener;
     private Player[] playerlist = new Player[2];
-   public boolean isClientReady = false;
-    boolean isClientHere = false;
+    public boolean isClientReady = false;
+    private boolean isClientHere = false;
+    private List<Packet> toSend = new LinkedList<>();
 
 
-    public OnlineLobby(boolean isHost) throws IOException {
+    public OnlineLobby(boolean isHost) throws IOException, InterruptedException {
 
         super(isHost ? "Host Game" : "Local Game", MainMENU.ONLINE);
         setPlayers(playerlist);
@@ -74,7 +74,7 @@ public class OnlineLobby extends Lobby {
                 getButtons().add(t);
 //INI player 2
                 playerlist[1] = new Player("Waiting for player 2...");
-                playerlist[1].setTeam(Team.MAN);
+                playerlist[1].setTeam(Team.APE);
                 playerlist[1].setId(1);
 
                 SquadButton b2 = new SquadButton(getPlayers()[1], Menu.newButtonSprite("menuLarge"));
@@ -101,154 +101,214 @@ public class OnlineLobby extends Lobby {
 
 //CLIENT MODE
         } else {//isClient
-
             myPlayerId = 1;
             ClientImpl client = null;
             this.listener = client;
             //TODO TextField ip:port
             Scanner sc = new Scanner(System.in);
-            System.out.println("Entrer IP ");
+            System.out.println("Entrer IP :");
             ip = sc.nextLine();
+
+            playerlist[1] = new Player("Player2");
+            playerlist[1].setId(1);
+            playerlist[1].setTeam(Team.APE);
+            playerlist[0] = new Player("Host");
+            playerlist[0].setTeam(Team.MAN);
+            playerlist[0].setId(0);
+            //setPlayers(playerlist);
             if (checkip(ip)) {
-
-                //get player list
-                //get map
-                //get squadcreationpoints
-
+                listener = new ClientImpl(ip, 25565, GameRegistration.instance);
+                PlayerPacket p = new PlayerPacket();
+                p.name = playerlist[1].getName();
+                p.id = 1;
+                ((ClientImpl) listener).send(p);
 
             } else {
                 System.out.println("ip incorrecte");
                 System.exit(0);
             }
-            client = new ClientImpl(ip, 25565, GameRegistration.instance);
+            while (((ClientImpl) listener).isReceptionEmpty()) {
+//wait
+            }
+            update();
+
+            for (int i = 0; i < getPlayers().length; i++) {
+                SquadButton b = new SquadButton(getPlayers()[i], Menu.newButtonSprite("menuLarge"));
+                b.setPosition(20, 50 + MainMENU.HEIGHT / 10 + b.getSprite().getBounds().l + i * (15 + b.getSprite().getBounds().h + b.getSprite().getBounds().l));
+                getButtons().add(b);
 
 
+                RenamePlayer rename = new RenamePlayer(getPlayers()[i]);
+                rename.setPosition(b.getSprite().getBounds().l + 15 + b.getSprite().getBounds().w, b.getSprite().getBounds().t);
+                getButtons().add(rename);
+
+
+                TeamButton t = new TeamButton(getPlayers()[i], Menu.newButtonSprite("menuSmall"));
+                t.setPosition(rename.getSprite().getBounds().l, rename.getSprite().getBounds().t + rename.getSprite().getBounds().h + 10);
+                getButtons().add(t);
+                if (i == 0)
+                    t.setReady(false);
+/*
+            slots=getButtons().size()-1;
+
+            for (int k = 0; k < getSquadCreationPoints(); k++) {
+                MenuButton d = new MenuButton("", new Sprite(ResourceHandler.getTexture("squadSlot"))) {
+                };
+                d.setPosition(64 + (80 * k), b.getSprite().getBounds().t + b.getSprite().getBounds().h / 4);
+                getButtons().add(d);
+            }//END TODO
+*/
+            }
+//faire les boutons.
         }
     }
 
 
     @Override
-    public void update() throws IOException {
-        if (isHost && isClientHere) {//reception of a package
-            if (((ServerImpl) listener).getClientCount() == 1) {
+    public void update() throws InterruptedException {
+        if ((!isHost &&!isClientHere)|| (isHost && !isClientHere && ((ServerImpl) listener).getClientCount() == 1)) {
+            firstContact();
+        } else if (isHost && isClientHere) {
+            getPackets();
+        } else if (!isHost) {
+            getPackets();
+        }
 
-//check changes in team,name, squad,client Ready,is client connected
-//send changes in team, name, squad, map,creationpoints,launch game
-                for (int k = 0; k < 10; k++)
-                    if (!((ServerImpl) listener).isReceptionEmpty()) {
-                        Packet p = ((ServerImpl) listener).received();
-                        if (p instanceof PlayerPacket) {
-                            playerlist[1].setName(((PlayerPacket) p).name);
+        //update buttons
+        for (MenuComponent b : getButtons()) {
+            if (b instanceof toMapButton) {//update miniature
+                float x = b.getSprite().getBounds().l;
+                float y = b.getSprite().getBounds().t;
+                b.setSprite(new Sprite(((MapImpl) getMap()).getMiniature()));
+                b.getSprite().setPosition(x, y);
+            } else if (b instanceof ReadyButton) {//check ready
+                ((ReadyButton) b).checkIfButtonReady();
+            } else if (b instanceof SquadButton)
+                for (int i = ((SquadButton) b).getPlayer().getUnites().size() - 1; i >= getSquadCreationPoints(); i--)
+                    ((SquadButton) b).getPlayer().getUnites().remove(i);
+        }
+        sendToSend();
 
-                        } else if (p instanceof SquadPacket) {
-                            playerlist[1].getUnites().clear();//reset unités du joueur
-                            for (int i = 0; i < ((SquadPacket) p).squad.size(); i++) {
-                                Unite u;
-                                switch (((SquadPacket) p).squad.get(i)) {
-                                    case 0:
-                                        u = new SoldierUnit(players[1].getTeam());
-                                        break;
-                                    case 1:
-                                        u = new MarksmanUnit(playerlist[1].getTeam());
-                                        break;
-                                    default:
-                                        System.out.println("erreur packet");
-                                        u = new SoldierUnit(Team.MAN);
-                                        break;
-                                }
-                                playerlist[1].addUnite(u);
-                            }
-                        } else if (p instanceof ReadyPacket) {
-                            isClientReady = !isClientReady;
-                        } else {
-                            System.out.println("Paquet étrange" + p.getClass());
-                        }
+    }
 
-                    }
-            } else if (isHost && !isClientHere) {//First contact, send stuff
-                if (((ServerImpl) listener).getClientCount() == 1) {
-                    isClientHere = true;
-                    //playerHost info
-                    PlayerPacket p = new PlayerPacket();
-                    p.name = playerlist[0].getName();
-                    p.id = 0;
-                    ((ServerImpl) listener).send(p);
-                    //Map
-                    MapPacket m = new MapPacket();
-                    m.index = getMapIndex();
-                    ((ServerImpl) listener).send(m);
-                    //Units
-                    ArrayList<Integer> squad = new ArrayList<>();
-                    for (Unite u : playerlist[0].getUnites()) {
-                        int type = 0;
-                        if (u instanceof MarksmanUnit) {
-                            type = 1;
-                        } else if (u instanceof SoldierUnit) {
-                            type = 0;
-                        } else {
-                            type = -1;
-                        }
-                        squad.add(type);
-                        SquadPacket sq = new SquadPacket();
-                        sq.squad=squad;
-                    }
-                    isClientHere = true;
-                }
-
-            }
-        } else {//isClient
-            for (int k = 0; k < 10; k++)
-                if (!((ServerImpl) listener).isReceptionEmpty()) {
-                    Packet p = ((ServerImpl) listener).received();
+    private void getPackets() {
+        for (int k = 0; k < 5; k++)
+            if (!isHost) {//isClient
+                if (!((ClientImpl) listener).isReceptionEmpty()) {
+                    Packet p = ((ClientImpl) listener).received();
                     if (p instanceof PlayerPacket) {
-                        playerlist[0].setName(((PlayerPacket) p).name);
+                        playerlist[((PlayerPacket) p).id].setName(((PlayerPacket) p).name);
 //                        playerlist[0].setId(((PlayerPacket) p).id);
                         //                      playerlist[0].setTeam(playerlist[0].getTeam() == Team.MAN ? Team.APE : Team.MAN);
                     } else if (p instanceof SquadPacket) {
+                        playerlist[1 - myPlayerId].getUnites().clear();
                         for (int i = 0; i < ((SquadPacket) p).squad.size(); i++) {
                             Unite u;
                             switch (((SquadPacket) p).squad.get(i)) {
                                 case 0:
-                                    u = new SoldierUnit(players[0].getTeam());
+                                    u = new SoldierUnit(players[1-myPlayerId].getTeam());
                                     break;
                                 case 1:
-                                    u = new MarksmanUnit(playerlist[0].getTeam());
+                                    u = new MarksmanUnit(playerlist[1-myPlayerId].getTeam());
                                     break;
                                 default:
-                                    System.out.println("erreur packet");
+
                                     u = new SoldierUnit(Team.MAN);
                                     break;
                             }
-                            playerlist[0].addUnite(u);
+                            playerlist[1 - myPlayerId].addUnite(u);
                         }
+                    } else if ( p instanceof MapPacket) {
+                        this.setMap(((MapPacket) p).index);
+
                     } else if (p instanceof ReadyPacket) {
-                        // isClientReady = !isClientReady;
-                            MainMENU.state = MainMENU.STATE.GAME;
+                        startgame();
+                    } else {
+                        System.out.println("Paquet étrange " + p.getClass());
+                    }
+                }
 
-                            window.setDimension(VideoMode.getDesktopMode());
-                            glfwMaximizeWindow(window.getGlId());
 
-                            if (getGame() != null) {
-                                MainMENU.currentGame =getGame();
-                                MainMENU.currentGame.start();
-                            } else {
-                                System.out.println("readybutton: game Not ready");
+            }else {//if isHost
+                if (!((ServerImpl) listener).isReceptionEmpty()) {
+                    Packet p = ((ServerImpl) listener).received();
+                    if (p instanceof PlayerPacket) {
+                        playerlist[((PlayerPacket) p).id].setName(((PlayerPacket) p).name);
+//                        playerlist[0].setId(((PlayerPacket) p).id);
+                        //                      playerlist[0].setTeam(playerlist[0].getTeam() == Team.MAN ? Team.APE : Team.MAN);
+                    } else if (p instanceof SquadPacket) {
+                        playerlist[1 - myPlayerId].getUnites().clear();
+                        for (int i = 0; i < ((SquadPacket) p).squad.size(); i++) {
+                            Unite u;
+                            switch (((SquadPacket) p).squad.get(i)) {
+                                case 0:
+                                    u = new SoldierUnit(players[1-myPlayerId].getTeam());
+                                    break;
+                                case 1:
+                                    u = new MarksmanUnit(playerlist[1-myPlayerId].getTeam());
+                                    break;
+                                default:
+                                    u = new SoldierUnit(Team.MAN);
+                                    break;
                             }
-                    } else if (p instanceof MapPacket) {
-                        this.setMap(MainMENU.availableMaps[((MapPacket) p).index]);
+                            playerlist[1 - myPlayerId].addUnite(u);
+                        }
+                    } else if (p instanceof ReadyPacket) {//&&isHost
+                        isClientReady = !isClientReady;
 
                     } else {
                         System.out.println("Paquet étrange" + p.getClass());
                     }
                 }
-        }
 
-        if (isClientReady) startgame();
+            }
     }
 
     private void startgame() {
-        //todo copier depuis readybutton
-        //MainMENU.currentGame = new Game(); etc
+ClientGame g =(ClientGame) getGame();
+        if (g != null) {
+            MainMENU.state = MainMENU.STATE.GAME;
+            MainMENU.currentGame = g;
+            MainMENU.currentGame.start();
+            window.setDimension(VideoMode.getDesktopMode());
+            glfwMaximizeWindow(window.getGlId());
+        }
+    }
+
+    private void firstContact() throws InterruptedException {
+        toSend.clear();
+        this.isClientHere = true;
+        //send player infos
+        PlayerPacket p = new PlayerPacket();
+        p.name = playerlist[getMyPlayerId()].getName();
+        p.id = getMyPlayerId();
+        addToSend(p);
+
+        if (isHost) {//if host, send map and squad
+            //send map
+            MapPacket m = new MapPacket();
+            m.index = getMapIndex();
+            addToSend(m);
+
+            //send units
+            ArrayList<Integer> squad = new ArrayList<>();
+            SquadPacket sq = new SquadPacket();
+
+            for (Unite u : playerlist[0].getUnites()) {
+                int type;
+                if (u instanceof MarksmanUnit) {
+                    type = 1;
+                } else if (u instanceof SoldierUnit) {
+                    type = 0;
+                } else {
+                    type = -1;
+                }
+                squad.add(type);
+            }
+            sq.squad = squad;
+            addToSend(sq);
+        }
+        sendToSend();
     }
 
 
@@ -266,7 +326,9 @@ public class OnlineLobby extends Lobby {
         try {
             if (ip == null || ip.isEmpty()) {
                 return false;
-            }
+            }if (ip.equals("localhost"))
+                return true;
+
             String[] parts = ip.split("\\.");
             if (parts.length != 4) {
                 return false;
@@ -288,13 +350,27 @@ public class OnlineLobby extends Lobby {
 
     @Override
     public Game getGame() {
-        if (MainMENU.LOBBY == MainMENU.JOIN) {
+        if (!isHost) {
             return new ClientGame((ClientImpl) listener, getPlayers(), myPlayerId, getMap(), MainMENU.window);
-        } else if ((MainMENU.LOBBY == MainMENU.HOST)) {
-            return new ServerGame((ServerImpl) listener, getPlayers(), myPlayerId, getMap(), MainMENU.window);
         } else {
-            System.out.println("Shouldnt happend: online lobby");
-            return null;
+            return new ServerGame((ServerImpl) listener, getPlayers(), myPlayerId, getMap(), MainMENU.window);
         }
+    }
+
+    public void sendToSend() throws InterruptedException {
+        if(toSend.size()>0)
+        for (Packet p : toSend) {
+            if (isHost) {
+                ((ServerImpl) listener).send(p);
+            } else {
+                ((ClientImpl) listener).send(p);
+            }
+            Thread.sleep(30);
+        }
+        toSend.clear();
+    }
+
+    public void addToSend(Packet packet) {
+        toSend.add(packet);
     }
 }
