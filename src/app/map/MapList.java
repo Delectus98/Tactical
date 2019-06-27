@@ -243,7 +243,7 @@ public class MapList {
 
         infos.putIfAbsent("P", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), "furniture", new FloatRect(5*64, 5*64, 192, 128), false));
         infos.putIfAbsent("R", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), "furniture", new FloatRect(4*64, 0, 127, 128), true));
-        infos.putIfAbsent("W", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), "tileset", new FloatRect(14*64, 5*64, 64, 64), true));
+        infos.putIfAbsent("W", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), "tileset", new FloatRect(15*64, 5*64, 64, 64), true));
 
 
         String[][] mapData = {
