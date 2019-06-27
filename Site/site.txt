@@ -1,0 +1,18 @@
+﻿Je n'ai malheureusement pas réussi à mettre le
+site en ligne à la fac (les fonctions "include"
+ne semblent pas fonctionner et le php s'affiche
+directement sur certaines pages).
+
+Je n'ai pas pu trouver d'hébergement gratuit
+supportant le php et le jquery en plus de
+l'html et du css et ma box ne permet pas le
+port-forwarding, je ne peux donc pas non plus
+l'hoster personnellement.
+
+La seule solution restante serait d'utiliser des
+logiciels de LAN comme ZeroTier.
+
+(ci-joint l'archive project.sql contenant les
+tables utilisées pour la base de donnée).
+
+Désolé pour l'inconvénient
