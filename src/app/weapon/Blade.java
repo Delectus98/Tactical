@@ -49,6 +49,6 @@ public class Blade extends Weapon {
 
     @Override
     public String getWeaponSound() {
-        return "smite";
+        return "uppercut";
     }
 }

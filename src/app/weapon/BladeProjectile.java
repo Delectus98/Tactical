@@ -1,11 +1,7 @@
 package app.weapon;
 
-import Graphics.FloatRect;
-import Graphics.Sprite;
-import Graphics.Vector2f;
-import System.ConstTime;
-import System.RenderTarget;
-import System.Time;
+import Graphics.*;
+import System.*;
 import app.animations.SpriteAnimation;
 import app.sounds.Sound;
 import util.ResourceHandler;
