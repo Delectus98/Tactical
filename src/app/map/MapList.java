@@ -241,9 +241,9 @@ public class MapList {
         infos.putIfAbsent("S2", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), 1));
         infos.putIfAbsent("S", new MapInfo.TileInfo("tileset", new FloatRect(2*64+32, 64+32, 64, 64), true));
 
-        infos.putIfAbsent("P", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), "furniture", new FloatRect(5*64, 5*64, 192, 128), true));
+        infos.putIfAbsent("P", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), "furniture", new FloatRect(5*64, 5*64, 192, 128), false));
         infos.putIfAbsent("R", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), "furniture", new FloatRect(4*64, 0, 127, 128), true));
-        infos.putIfAbsent("W", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), "tileset", new FloatRect(14*64, 5*64, 64, 64), true));
+        infos.putIfAbsent("W", new MapInfo.TileInfo("tileset", new FloatRect(4*64+32, 1*64+32, 64, 64), "tileset", new FloatRect(15*64, 5*64, 64, 64), true));
 
 
         String[][] mapData = {
@@ -255,9 +255,9 @@ public class MapList {
                 {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
                 {"F", "F", "F", "F", "F", "F", "F", "F", "S", "S", "F", "F", "F", "F", "F", "F", "F"},
                 {"F", "F", "F", "F", "F", "F", "F", "F", "S", "S", "F", "R", "W", "W", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "P", "W", "W", "F", "F", "F", "W", "W", "W", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "P", "W", "F", "F", "F", "W", "W", "W", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"F", "F", "F", "F", "F", "F", "F", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
                 {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
                 {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
                 {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "R", "W", "F", "F", "F", "F"},
