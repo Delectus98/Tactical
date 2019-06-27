@@ -27,3 +27,12 @@
 ![hud5](https://cdn.discordapp.com/attachments/588428154431864832/593896808346943506/player.png)
 
 
+#### Sequence d'un joueur voulant rejoindre une partie
+
+![client](https://cdn.discordapp.com/attachments/593935028610924557/593935183565291530/tactical_sequence.png)
+
+
+#### Sequence d'un joueur voulant héberger une partie
+
+![server](https://cdn.discordapp.com/attachments/593935028610924557/593937282764111872/tactical_sequence_serv.png)
+
