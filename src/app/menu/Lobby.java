@@ -16,20 +16,22 @@ import java.util.HashMap;
 public abstract class Lobby extends Menu {
 
 
-    private Map map= MainMENU.availableMaps[3];
-    private int mapIndex=3;
-    Player[] players;
-    private int squadCreationPoints=5;
+    public static MenuComponent toUpdate;
 
-    Lobby(String title, int parentMenuId){
-        super(title,parentMenuId, new Vector2f(),new HashMap<>(),true);
+    private Map map = MainMENU.availableMaps[3];
+    private int mapIndex = 3;
+    Player[] players;
+    private int squadCreationPoints = 5;
+
+    Lobby(String title, int parentMenuId) {
+        super(title, parentMenuId, new Vector2f(), new HashMap<>(), true);
     }
 
-   /* public void setMap(Map map) {
-        this.map = map;
-    }*/
+    /* public void setMap(Map map) {
+         this.map = map;
+     }*/
     public void setMap(int index) {
-mapIndex = index;
+        mapIndex = index;
         this.map = MainMENU.availableMaps[index];
     }
 
@@ -50,7 +52,7 @@ mapIndex = index;
     }
 
     public int getSquadCreationPoints() {
-        return Math.min(5, Math.min(squadCreationPoints,getMap().getSpawnPoints(0).size()/2));//TODO change si bug corrigé
+        return Math.min(5, Math.min(squadCreationPoints, getMap().getSpawnPoints(0).size() / 2));//TODO change si bug corrigé
     }
 
 
@@ -68,7 +70,7 @@ mapIndex = index;
                 if (m instanceof MapButton) {
                     // m.getSprite().setFillColor(new Color(169, 169, 169));
                     if (((MapButton) m).map == ((Lobby) MainMENU.menulist[MainMENU.LOBBY]).getMap()) {
-                       // m.getSprite().setFillColor(new Color(1f, 1f, 1f));
+                        // m.getSprite().setFillColor(new Color(1f, 1f, 1f));
                     }
                 }
             }

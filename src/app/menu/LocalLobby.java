@@ -74,7 +74,9 @@ public class LocalLobby extends Lobby {
     }
 
     @Override
-    public void update() {
+    public void update() throws IOException, InterruptedException {
+        if(this.toUpdate!=null)
+            toUpdate.update();
         //int nbplayers = players.length;
         for (MenuComponent b : getButtons()) {
             if (b instanceof toMapButton) {//update miniature

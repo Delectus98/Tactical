@@ -19,6 +19,7 @@ import app.units.MarksmanUnit;
 import app.units.SoldierUnit;
 import org.lwjgl.opengl.GL20;
 import util.ResourceHandler;
+import util.TextInput;
 
 import java.io.IOException;
 
@@ -131,20 +132,20 @@ public class MainMENU {
 
         while (window.isOpen()) {
             Time elapsed = clock.restart();
-
+            TextInput.reset();
 
             Event event;
             while ((event = window.pollEvents()) != null) {
                 // updates window events (resize, keyboard text input, ...)
                 if (currentGame != null)
                     currentGame.handle(event);//TODO si currengame=null
-
+                TextInput.handle(event);
                 if (event.type == Event.Type.CLOSE) {
                     ResourceHandler.free();
-                    if(LOBBY==JOIN) {
-                        ( (ClientImpl)((OnlineLobby)menulist[LOBBY]).listener).close();
-                    }else if (LOBBY==HOST) {
-                        ( (ServerImpl)((OnlineLobby)menulist[LOBBY]).listener).close();
+                    if (LOBBY == JOIN) {
+                        ((ClientImpl) ((OnlineLobby) menulist[LOBBY]).listener).close();
+                    } else if (LOBBY == HOST) {
+                        ((ServerImpl) ((OnlineLobby) menulist[LOBBY]).listener).close();
                     }
                     window.close();
                     System.exit(0);
@@ -167,8 +168,8 @@ public class MainMENU {
                     window.draw(b.getText());
 
                 }
-                if(currentMenu==LOBBY){
-                    menulist[LOBBY].update();
+                if (currentMenu == LOBBY ||currentMenu==ONLINE) {
+                    menulist[currentMenu].update();
                 }
 //CHECK BUTTON CLICKED
                 if (mousse.isButtonPressed(Mouse.Button.Left) && !isClicking) {

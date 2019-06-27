@@ -24,7 +24,7 @@ public abstract class SpecialButton extends MenuButton {
         public void clicked () throws IOException, InterruptedException {
             //checkIfButtonReady ();
             if (this.ready) {
-                this.clickedIfReady();
+                clickedIfReady();
             } else {
                 System.out.println(textZone.getString() + " Not ready");
             }

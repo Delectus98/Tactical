@@ -16,16 +16,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
-import static app.MainMENU.window;
+import static app.MainMENU.*;
 import static org.lwjgl.glfw.GLFW.glfwMaximizeWindow;
 
 public class OnlineLobby extends Lobby {
 
     private int myPlayerId;
     private boolean isHost;
-    private String ip = "0.0.0.0";
+    private String ip = "0";
     public Listener listener;
     private Player[] playerlist = new Player[2];
     public boolean isClientReady = false;
@@ -104,28 +103,31 @@ public class OnlineLobby extends Lobby {
             myPlayerId = 1;
             ClientImpl client = null;
             this.listener = client;
-            //TODO TextField ip:port
+/*
+            //TODO IPField ip:port
             Scanner sc = new Scanner(System.in);
             System.out.println("Entrer IP :");
             ip = sc.nextLine();
-
+            */
             playerlist[1] = new Player("Player2");
             playerlist[1].setId(1);
             playerlist[1].setTeam(Team.APE);
             playerlist[0] = new Player("Host");
             playerlist[0].setTeam(Team.MAN);
             playerlist[0].setId(0);
-            //setPlayers(playerlist);
+            ip= ((OnlineMenu)menulist[ONLINE]).getIP();
+
             if (checkip(ip)) {
                 listener = new ClientImpl(ip, 25565, GameRegistration.instance);
                 PlayerPacket p = new PlayerPacket();
-                p.name = playerlist[1].getName();
-                p.id = 1;
-                ((ClientImpl) listener).send(p);
+                p.name = playerlist[myPlayerId].getName();
+                p.id = myPlayerId;
+            //    ((ClientImpl) listener).send(p);
+                addToSend(p);
 
             } else {
-                System.out.println("ip incorrecte");
-                System.exit(0);
+                System.out.println("ip incorrecte: "+ip);
+                MainMENU.currentMenu=ONLINE;
             }
             while (((ClientImpl) listener).isReceptionEmpty()) {
 //wait
@@ -165,7 +167,10 @@ public class OnlineLobby extends Lobby {
 
 
     @Override
-    public void update() throws InterruptedException {
+    public void update() throws InterruptedException, IOException {
+        if(this.toUpdate!=null)
+            toUpdate.update();
+
         if ((!isHost &&!isClientHere)|| (isHost && !isClientHere && ((ServerImpl) listener).getClientCount() == 1)) {
             firstContact();
         } else if (isHost && isClientHere) {

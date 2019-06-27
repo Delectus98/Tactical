@@ -9,11 +9,13 @@ import app.MainMENU;
 import app.menu.Buttons.*;
 import util.ResourceHandler;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
 public class Menu {
+    public MenuComponent toUpdate;
     private ArrayList<MenuButton> buttons = new ArrayList<>();
     private Text title;
     private Vector2f specialButtonOrigin;
@@ -134,24 +136,10 @@ public class Menu {
         menulist[MainMENU.GAMEMODE].buttons.set(1, t);
 
 //ONLINE
-        correspondance.clear();
-        correspondance.put("Host", MainMENU.HOST);
-        correspondance.put("Join", MainMENU.JOIN);
-
-        menulist[MainMENU.ONLINE] = new Menu("Online", MainMENU.GAMEMODE, new Vector2f(MainMENU.WIDTH / 2, 100), correspondance, true);
-//HOST
-
-        ToLobbyButton host = new ToLobbyButton("Host game", (byte) 1);
-        host.setSprite(menulist[MainMENU.ONLINE].buttons.get(0).getSprite());
-        host.setPosition(menulist[MainMENU.ONLINE].buttons.get(0).getSprite().getX(), menulist[MainMENU.ONLINE].buttons.get(0).getSprite().getY());
-        menulist[MainMENU.ONLINE].buttons.set(0, host);
-
-//JOIN
-
-        ToLobbyButton join = new ToLobbyButton("Join game", (byte) 2);
-        join.setSprite(menulist[MainMENU.ONLINE].buttons.get(1).getSprite());
-        join.setPosition(menulist[MainMENU.ONLINE].buttons.get(1).getSprite().getX(), menulist[MainMENU.ONLINE].buttons.get(1).getSprite().getY());
-        menulist[MainMENU.ONLINE].getButtons().set(1, join);
+correspondance.clear();
+correspondance.put("Host",MainMENU.HOST);
+//correspondance.put("Join",MainMENU.JOIN);
+        menulist[MainMENU.ONLINE] = new OnlineMenu(correspondance);
 
 
 //MAKESQUAD
@@ -166,8 +154,7 @@ public class Menu {
 
     }
 
-    public void update() throws InterruptedException {
-        System.out.println("nop");
+    public void update() throws InterruptedException, IOException {
     }
 }
 

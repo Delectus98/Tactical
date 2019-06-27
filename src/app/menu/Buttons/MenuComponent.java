@@ -6,13 +6,14 @@ import Graphics.Sprite;
 import Graphics.Text;
 import util.ResourceHandler;
 
+import java.io.IOException;
+
 public class MenuComponent {
 
-    //  public Shape shape;
     protected Text textZone;
-    // private ConstTexture texture;
     String txt;
     private Sprite sprite;
+    boolean isEditing;
 
 
     public MenuComponent(String title, Sprite sprite) {
@@ -54,4 +55,6 @@ txt=title;
 
     public String getString() {return txt;}
 
+    public void update() throws IOException, InterruptedException {
+    }
 }

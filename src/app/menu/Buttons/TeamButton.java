@@ -14,7 +14,7 @@ public class TeamButton extends SpecialButton {
         update();
     }
 
-    private void update() {
+    public void update() {
         if (p.getTeam() == Team.MAN) {
             this.getSprite().setFillColor(Color.Magenta);
         } else {
