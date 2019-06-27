@@ -7,16 +7,13 @@ import app.Game;
 import app.Player;
 import app.Unite;
 import app.Weapon;
-import com.sun.xml.internal.ws.api.ResourceLoader;
 import org.lwjgl.opengl.GL20;
 import util.GameInput;
 import util.Line;
-import util.MapUtil;
 import util.ResourceHandler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ShootingManager extends ActionManager
 {

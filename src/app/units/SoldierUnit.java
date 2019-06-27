@@ -10,7 +10,6 @@ import app.weapon.Grenade;
 import app.weapon.MachineGun;
 import util.ResourceHandler;
 
-import javax.annotation.Resource;
 
 
 public class SoldierUnit extends Unite
