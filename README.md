@@ -3,6 +3,8 @@
 
 Tactical is our university project to validate our school year. The game introduce the user into a tactical game as Path Way where two squads, ordered by players, are in armed conflict to terminate each other. Current game can be played with two players offline using same monitor or online.
 
+[Here](https://www.youtube.com/watch?v=07slMJF0rzI&feature=youtu.be)'s a video demonstrating the game in a server/client situation.
+
 ## Authors
 
 -   MOREL Adam
