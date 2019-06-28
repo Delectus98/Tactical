@@ -10,10 +10,10 @@ import java.util.Random;
 
 
 public enum Music {
-    SONG("res\\music\\mainMenuMusic.wav"),
-    SONG2("res\\music\\breakingBad.wav"),
-    SONG3("res\\music\\action1.wav"),
-    SONG4("res\\music\\medeval.wav");
+    SONG("res/music/mainMenuMusic.wav"),
+    SONG2("res/music/breakingBad.wav"),
+    SONG3("res/music/action1.wav"),
+    SONG4("res/music/medeval.wav");
 
     private static ArrayList<Music> pickable = new ArrayList<>();
     private static Music current = null;
