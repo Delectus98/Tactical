@@ -106,7 +106,7 @@ public class ClientGame extends Game {
 
     @Override
     public boolean isFinished() {
-        return !running || !client.isRunning();
+        return !running || !client.isRunning() || Arrays.stream(super.players).map(Player::getUnites).anyMatch(l -> l.stream().allMatch(Unite::isDead));
     }
 
     @Override
@@ -383,6 +383,13 @@ public class ClientGame extends Game {
 
 
         input.reset();
+
+        if (this.isFinished()) {
+             GameOverPacket go = new GameOverPacket();
+             go.abandon = false;
+             go.reason = "Game Over";
+            client.send(go);
+        }
     }
 
     private void waitSpawnPacket() {

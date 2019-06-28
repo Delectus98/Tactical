@@ -108,7 +108,7 @@ public class ServerGame extends Game {
 
     @Override
     public boolean isFinished() {
-        return !running || !server.isRunning() || server.getClientCount() == 0;
+        return !running || !server.isRunning() || server.getClientCount() == 0 || Arrays.stream(super.players).map(Player::getUnites).anyMatch(l -> l.stream().allMatch(Unite::isDead));
     }
 
     @Override
@@ -388,6 +388,13 @@ public class ServerGame extends Game {
 
 
         input.reset();
+
+        if (this.isFinished()) {
+            GameOverPacket go = new GameOverPacket();
+            go.abandon = false;
+            go.reason = "Game Over";
+            server.send(go);
+        }
     }
 
     public void waitSpawnPacket() {
