@@ -313,7 +313,7 @@ public class ServerGame extends Game {
                         if (i != localPlayer) {
                             final int index = i;
                             players[i].getUnites().forEach(u -> {
-                                if (!u.isDead() && u.getSprite().getBounds().contains(input.getMousePositionOnMap().x, input.getMousePositionOnMap().y)) {
+                                if (!u.isDead() && u.getSprite().getBounds().contains(input.getMousePositionOnMap().x, input.getMousePositionOnMap().y) && new ArrayList<>(visibles).contains(u.getMapPosition()) ) {
                                     System.out.println("SELECTION UNITE ENNEMIE :" + index);
 
                                     selectedUnite = u;

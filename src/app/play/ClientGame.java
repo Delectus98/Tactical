@@ -254,7 +254,7 @@ public class ClientGame extends Game {
                         if (i != localPlayer) {
                             final int index = i;
                             players[i].getUnites().forEach(u -> {
-                                if (!u.isDead() && u.getSprite().getBounds().contains(input.getMousePositionOnMap().x, input.getMousePositionOnMap().y)) {
+                                if (!u.isDead() && u.getSprite().getBounds().contains(input.getMousePositionOnMap().x, input.getMousePositionOnMap().y) && new ArrayList<>(visibles).contains(u.getMapPosition()) ) {
                                     selectedUnite = u;
                                     //reset player HUD
                                     // selection sur le HUD du joueur

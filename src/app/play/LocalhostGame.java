@@ -18,6 +18,7 @@ import util.MapUtil;
 import util.ResourceHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -329,7 +330,7 @@ public class LocalhostGame extends Game {
             // selection d'unité ennemie sur la map (sauf si une action va se produire)
             if (currentAction == null) {
                 Arrays.stream(players).filter(p -> p != players[currentPlayer]).forEach(lu -> lu/*players[currentPlayer]*/.getUnites().forEach(u -> {
-                            if (!u.isDead() && u.getSprite().getBounds().contains(inputs[currentPlayer].getMousePositionOnMap().x, inputs[currentPlayer].getMousePositionOnMap().y)) {
+                            if (!u.isDead() && u.getSprite().getBounds().contains(inputs[currentPlayer].getMousePositionOnMap().x, inputs[currentPlayer].getMousePositionOnMap().y) && new ArrayList<>(visibles[currentPlayer]).contains(u.getMapPosition()) ) {
                                 selectedUnite = u;
                                 //reset player HUD
                                 // selection sur le HUD du joueur
