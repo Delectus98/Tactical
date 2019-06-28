@@ -34,5 +34,5 @@
 
 #### Sequence d'un joueur voulant héberger une partie
 
-![server](https://cdn.discordapp.com/attachments/593935028610924557/593937282764111872/tactical_sequence_serv.png)
+![server](https://cdn.discordapp.com/attachments/593935028610924557/593954920777121793/server_sequence_2.png)
 
