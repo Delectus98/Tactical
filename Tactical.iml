@@ -11,5 +11,6 @@
     <orderEntry type="library" name="kryonet-2.21-all" level="project" />
     <orderEntry type="library" name="kryonet-all-2.21" level="project" />
     <orderEntry type="library" name="IsticLWJGL" level="project" />
+    <orderEntry type="library" name="kryonet-all-2.21" level="project" />
   </component>
 </module>

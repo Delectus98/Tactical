@@ -5,9 +5,11 @@ import app.MainMENU;
 import app.menu.LocalLobby;
 import app.menu.Menu;
 import app.menu.OnlineLobby;
+import app.network.ServerImpl;
 
 import java.io.IOException;
 
+import static app.MainMENU.HOST;
 import static app.MainMENU.menulist;
 
 public class ToLobbyButton extends NormalButton {
@@ -31,6 +33,8 @@ public class ToLobbyButton extends NormalButton {
             case 1:
 
                 MainMENU.LOBBY = MainMENU.HOST;
+                if(menulist[HOST]!=null )
+                    ((ServerImpl)((OnlineLobby)menulist[HOST]).listener).close();
                 menulist[MainMENU.HOST] = new OnlineLobby(true);
                 break;
             case 2:

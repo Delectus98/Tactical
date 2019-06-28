@@ -188,41 +188,49 @@ public class MapList {
     private static void loadDemoField() {
         HashMap<String, MapInfo.TileInfo> infos = new HashMap<>();
 
-        infos.putIfAbsent("F", new MapInfo.TileInfo("res/floor.png", new FloatRect(0, 0, 64, 64), false));
-        infos.putIfAbsent("S1", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), 0));
-        infos.putIfAbsent("S2", new MapInfo.TileInfo("res/floor.png", new FloatRect(64, 0, 64, 64), 1));
-        infos.putIfAbsent("W", new MapInfo.TileInfo("res/wall.png", new FloatRect(0, 0, 64, 64), true));
-        infos.putIfAbsent("M", new MapInfo.TileInfo("res/wall.png", new FloatRect(64, 0, 64, 64), true));
+        infos.putIfAbsent("F", new MapInfo.TileInfo("tileset", new FloatRect(32, 64+32, 64, 64), false));
+        infos.putIfAbsent("F0", new MapInfo.TileInfo("tileset", new FloatRect(0, 64, 64, 64), false));
+        infos.putIfAbsent("F1", new MapInfo.TileInfo("tileset", new FloatRect(32, 64, 64, 64), false));
+        infos.putIfAbsent("F2", new MapInfo.TileInfo("tileset", new FloatRect(0, 64+32, 64, 64), false));
+        infos.putIfAbsent("F3", new MapInfo.TileInfo("tileset", new FloatRect(64, 64+32, 64, 64), false));
+        infos.putIfAbsent("F4", new MapInfo.TileInfo("tileset", new FloatRect(64, 64, 64, 64), false));
+        infos.putIfAbsent("S1", new MapInfo.TileInfo("tileset", new FloatRect(1*64, 5*64, 64, 64), 0));
+        infos.putIfAbsent("S2", new MapInfo.TileInfo("tileset", new FloatRect(3*64, 5*64, 64, 64), 1));
+        infos.putIfAbsent("W", new MapInfo.TileInfo("tileset", new FloatRect(2*64+32, 64+32, 64, 64), true));
+        infos.putIfAbsent("M", new MapInfo.TileInfo("tileset", new FloatRect(4*64, 3*64, 64, 64), true));
+        infos.putIfAbsent("M2", new MapInfo.TileInfo("tileset", new FloatRect(4*64, 4*64, 64, 64), true));
 
 
         String[][] mapData = {
-                {"F", "F", "F", "F", "F", "F", "S1", "S1", "S1", "S1", "S1", "F", "F", "F", "F", "F", "F"},
-                {"F", "F", "F", "W", "F", "F", "F", "S1", "S1", "S1", "F", "F", "F", "W", "F", "F", "F"},
-                {"F", "F", "F", "F", "W", "F", "F", "F", "F", "F", "F", "F", "W", "F", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W"},
-                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W"},
-                {"W", "W", "F", "F", "F", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
-                {"W", "W", "F", "F", "F", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "F", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "F", "F", "W", "F", "W", "F", "F", "F", "F", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "F", "F", "F", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "F", "F", "F", "W", "W"},
-                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W"},
-                {"W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
-                {"W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F"},
-                {"F", "F", "F", "F", "W", "F", "F", "F", "F", "F", "F", "F", "W", "F", "F", "F", "F"},
-                {"F", "F", "F", "W", "F", "F", "F", "S2", "S2", "S2", "F", "F", "F", "W", "F", "F", "F"},
-                {"F", "F", "F", "F", "F", "F", "S2", "S2", "S2", "S2", "S2", "F", "F", "F", "F", "F", "F"}
+                {"M","M2","F0", "F2", "F2", "F2", "F2", "F2", "F2", "F2", "F2", "F2", "F2", "F2", "F2", "F2", "F2", "F2", "F2"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "S1", "S1", "S1", "S1", "S1", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "W", "F", "F", "F", "S1", "S1", "S1", "F", "F", "F", "W", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "W", "F", "F", "F", "F", "F", "F", "F", "W", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W"},
+                {"M","M2","W", "W", "F", "F", "F", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","W", "W", "F", "F", "F", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "F", "W", "F", "W", "F", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "F", "F", "F", "W", "W"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "F", "F", "F", "W", "W"},
+                {"M","M2","W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "W", "F", "F", "F", "F", "F", "F", "F", "W", "F", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "W", "F", "F", "F", "S2", "S2", "S2", "F", "F", "F", "W", "F", "F", "F"},
+                {"M","M2","F1", "F", "F", "F", "F", "F", "S2", "S2", "S2", "S2", "S2", "F", "F", "F", "F", "F", "F"},
+                {"M","M2","F4", "F3", "F3", "F3", "F3", "F3", "F3", "F3", "F3", "F3", "F3", "F3", "F3", "F3", "F3", "F3", "F3"}
 
         };
 
-        DemoField = new MapInfo("Demo Battlefield", 23, 17);
+        DemoField = new MapInfo("Demo Battlefield", 25, 19);
         for (int i = 0; i < DemoField.width; ++i) {
             for (int j = 0; j < DemoField.height; ++j) {
                 DemoField.setTileInfo(i, j, infos.get(mapData[i][j]));

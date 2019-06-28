@@ -95,6 +95,7 @@ public class OnlineLobby extends Lobby {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                ((ServerImpl)listener).close();
             }
 
 
@@ -117,24 +118,28 @@ public class OnlineLobby extends Lobby {
             playerlist[0].setId(0);
             ip= ((OnlineMenu)menulist[ONLINE]).getIP();
 
-            if (checkip(ip)) {
-                listener = new ClientImpl(ip, 25565, GameRegistration.instance);
+              try{  listener = new ClientImpl(ip, 25565, GameRegistration.instance);
+              if(!((ClientImpl)listener).isRunning()){
+                  System.out.println("listener is not running");
+              }
+              }
+              catch (Exception e){
+                      e.printStackTrace();
+                  ((ClientImpl)listener).close();
+              }
                 PlayerPacket p = new PlayerPacket();
                 p.name = playerlist[myPlayerId].getName();
                 p.id = myPlayerId;
             //    ((ClientImpl) listener).send(p);
                 addToSend(p);
-
-            } else {
-                System.out.println("ip incorrecte: "+ip);
-                MainMENU.currentMenu=ONLINE;
-            }
-            while (((ClientImpl) listener).isReceptionEmpty()) {
+                int i=0;
+            while (((ClientImpl) listener).isReceptionEmpty() && i<10000) {
 //wait
+                i++;
             }
             update();
 
-            for (int i = 0; i < getPlayers().length; i++) {
+            for (i = 0; i < getPlayers().length; i++) {
                 SquadButton b = new SquadButton(getPlayers()[i], Menu.newButtonSprite("menuLarge"));
                 b.setPosition(20, 50 + MainMENU.HEIGHT / 10 + b.getSprite().getBounds().l + i * (15 + b.getSprite().getBounds().h + b.getSprite().getBounds().l));
                 getButtons().add(b);

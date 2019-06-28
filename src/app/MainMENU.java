@@ -169,7 +169,11 @@ public class MainMENU {
 
                 }
                 if (currentMenu == LOBBY ||currentMenu==ONLINE) {
-                    menulist[currentMenu].update();
+                    try{menulist[currentMenu].update();}
+                    catch (Exception e){
+                        e.printStackTrace();
+                        System.out.println("Erreur update currentmenu");
+                    }
                 }
 //CHECK BUTTON CLICKED
                 if (mousse.isButtonPressed(Mouse.Button.Left) && !isClicking) {

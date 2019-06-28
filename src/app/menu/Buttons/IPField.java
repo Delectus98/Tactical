@@ -50,10 +50,11 @@ public class IPField extends SpecialButton {
                 this.textZone.setString(tmp);
                 MainMENU.menulist[MainMENU.ONLINE].toUpdate = null;
                 isEditing = false;
-                MainMENU.LOBBY = MainMENU.JOIN;
-                menulist[MainMENU.JOIN] = new OnlineLobby(false);
-                currentMenu = LOBBY;
-
+                if(checkip(tmp)) {
+                    MainMENU.LOBBY = MainMENU.JOIN;
+                    menulist[MainMENU.JOIN] = new OnlineLobby(false);
+                    currentMenu = LOBBY;
+                }
             }
             this.textZone.setString(tmp);
         } else {
@@ -62,6 +63,31 @@ public class IPField extends SpecialButton {
         }
 
 
+    }
+    private static boolean checkip(String ip) {
+        try {
+            if (ip.equals("localhost"))
+                return true;
+            if (ip == null || ip.isEmpty()) {
+                return false;
+            }
+            String[] parts = ip.split("\\.");
+            if (parts.length != 4) {
+                return false;
+            }
+            for (String s : parts) {
+                int i = Integer.parseInt(s);
+                if ((i < 0) || (i > 255)) {
+                    return false;
+                }
+            }
+            if (ip.endsWith(".")) {
+                return false;
+            }
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
     }
 
     @Override
