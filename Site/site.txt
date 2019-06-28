@@ -1,7 +1,7 @@
 ﻿Je n'ai malheureusement pas réussi à mettre le
-site en ligne à la fac (les fonctions "include"
-ne semblent pas fonctionner et le php s'affiche
-directement sur certaines pages).
+site en ligne à la fac (le php semble empêcher
+tout le reste de fonctionner et de s'afficher
+correctement).
 
 Je n'ai pas pu trouver d'hébergement gratuit
 supportant le php et le jquery en plus de
