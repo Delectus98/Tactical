@@ -65,7 +65,7 @@ public class LocalLobby extends Lobby {
 
     @Override
     public Game getGame() throws IOException {
-        if (getPlayers()[0].getUnites().size() > 0 && getPlayers()[1].getUnites().size() > 0 && getPlayers()[0].getUnites().size() < getSquadCreationPoints() && getPlayers()[1].getUnites().size() < getSquadCreationPoints() && getMap() != null) {
+        if (getPlayers()[0].getUnites().size() > 0 && getPlayers()[1].getUnites().size() > 0 && getPlayers()[0].getUnites().size() <= getSquadCreationPoints() && getPlayers()[1].getUnites().size() <= getSquadCreationPoints() && getMap() != null) {
 
             return new LocalhostGame(MainMENU.window, getPlayers()[0], getPlayers()[1], getMap());
         } else {
