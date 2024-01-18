@@ -142,11 +142,11 @@ public class MainMENU {
                 TextInput.handle(event);
                 if (event.type == Event.Type.CLOSE) {
                     ResourceHandler.free();
-                    if (LOBBY == JOIN) {
-                        ((ClientImpl) ((OnlineLobby) menulist[LOBBY]).listener).close();
-                    } else if (LOBBY == HOST) {
-                        ((ServerImpl) ((OnlineLobby) menulist[LOBBY]).listener).close();
-                    }
+//                    if (LOBBY == JOIN) {
+//                        ((ClientImpl) ((OnlineLobby) menulist[LOBBY]).listener).close();
+//                    } else if (LOBBY == HOST) {
+//                        ((ServerImpl) ((OnlineLobby) menulist[LOBBY]).listener).close();
+//                    }
                     window.close();
                     System.exit(0);
                 }

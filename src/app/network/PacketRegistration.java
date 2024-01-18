@@ -1,7 +1,7 @@
 package app.network;
 
-import com.esotericsoftware.kryonet.EndPoint;
+//import com.esotericsoftware.kryonet.EndPoint;
 
 public abstract class PacketRegistration {
-    abstract public void register(EndPoint point);
+   // abstract public void register(EndPoint point);
 }

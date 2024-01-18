@@ -33,8 +33,8 @@ public class ToLobbyButton extends NormalButton {
             case 1:
 
                 MainMENU.LOBBY = MainMENU.HOST;
-                if(menulist[HOST]!=null )
-                    ((ServerImpl)((OnlineLobby)menulist[HOST]).listener).close();
+//                if(menulist[HOST]!=null )
+//                    ((ServerImpl)((OnlineLobby)menulist[HOST]).listener).close();
                 menulist[MainMENU.HOST] = new OnlineLobby(true);
                 break;
             case 2:

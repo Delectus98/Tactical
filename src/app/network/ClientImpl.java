@@ -1,18 +1,18 @@
 package app.network;
 
-import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
+//import com.esotericsoftware.kryonet.Client;
+//import com.esotericsoftware.kryonet.Connection;
+//import com.esotericsoftware.kryonet.Listener;
 
 import java.io.IOException;
 import java.util.PriorityQueue;
 
 
-public class ClientImpl extends Listener{
+public class ClientImpl {
 
     private PriorityQueue<Packet> packets = new PriorityQueue<>(new Packet.Comparator());
     private boolean running;
-    protected final Client c;
+   //protected final Client c;
     protected final String ip;
     protected final int tcpPort;
     protected final int udpPort;
@@ -26,14 +26,14 @@ public class ClientImpl extends Listener{
         this.tcpPort = tcp;
         this.udpPort = udp;
 
-        c = new Client();
-
-        registration.register(c);
-
-        c.start();
-        c.connect(1000, ip, tcp, udp);
-
-        c.addListener(this);
+//        c = new Client();
+//
+//        registration.register(c);
+//
+//        c.start();
+//        c.connect(1000, ip, tcp, udp);
+//
+//        c.addListener(this);
 
         running = true;
     }
@@ -43,14 +43,14 @@ public class ClientImpl extends Listener{
     }
 
     public synchronized void close() {
-        running = false;
-        c.close();
+//        running = false;
+//        c.close();
     }
 
     public synchronized void send(Object o) {
-        if (this.isRunning()) {
-            c.sendTCP(o);
-        }
+//        if (this.isRunning()) {
+//            c.sendTCP(o);
+//        }
     }
 
     public synchronized boolean isReceptionEmpty() {
@@ -61,25 +61,25 @@ public class ClientImpl extends Listener{
         return packets.remove();
     }
 
-    @Override
-    public void connected(Connection connection) {
-        System.out.println("Connexion success");
-        running = true;
-    }
-
-    @Override
-    public synchronized void received(Connection connection, Object p) {
-        if (p instanceof Packet) {
-            ((Packet)p).onReceive(connection.getRemoteAddressTCP().getAddress().toString(), connection.getRemoteAddressTCP().getPort());
-            packets.add((Packet)p);
-        }
-    }
-
-    @Override
-    public void disconnected(Connection connection) {
-        System.out.println("Disconnection success");
-        this.close();
-    }
+//    @Override
+//    public void connected(Connection connection) {
+//        System.out.println("Connexion success");
+//        running = true;
+//    }
+//
+//    @Override
+//    public synchronized void received(Connection connection, Object p) {
+//        if (p instanceof Packet) {
+//            ((Packet)p).onReceive(connection.getRemoteAddressTCP().getAddress().toString(), connection.getRemoteAddressTCP().getPort());
+//            packets.add((Packet)p);
+//        }
+//    }
+//
+//    @Override
+//    public void disconnected(Connection connection) {
+//        System.out.println("Disconnection success");
+//        this.close();
+//    }
 
     public static void main(String[] args) throws IOException, InterruptedException {
         ClientImpl c = new ClientImpl("localhost", 5002, GameRegistration.instance);
